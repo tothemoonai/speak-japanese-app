@@ -1,0 +1,8 @@
+{
+  "plugins": {
+    "LocalASR": {
+      "pkg": "com.speakjapanese.app.plugins",
+      "classpath": "com.speakjapanese.app.plugins.LocalASRPlugin"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+# Dependencies
+node_modules
+
+# Build outputs and cache
+.next
+out
+dist
+.swc
+
+# Cache directories
+.claude
+.playwright-mcp
+.vercel
+
+# Android (1.5GB+)
+android
+*.apk
+*.aab
+
+# Documents and misc
+documents
+.env*.local
+*.log
+
+# Git
+.git
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Test coverage
+coverage
+*.lcov

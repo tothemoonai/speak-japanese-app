@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit",             // 允许所有文件编辑
+      "Bash(git *)",      // 允许所有 git 命令
+      "Bash(pnpm *)",     // 允许 pnpm 相关
+      "Bash(make *)"      // 常用构建命令
+	"Bash(/c/Users/laixi/AppData/Local/Android/Sdk/platform-tools/adb.exe *)"
+    ],
+    //"deny": [
+     // "Bash(rm *)",       // 禁止 rm
+     // "Bash(curl *)",     // 禁止 curl（视情况）
+     // "Read(./.env)",     // 保护环境变量
+      //"WebFetch"          // 如果不希望联网
+    //]
+  }
+}
