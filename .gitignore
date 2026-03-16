@@ -51,6 +51,11 @@ check-tothemoonai.js
 query-user-data.js
 list-all-users.js
 
+# Security: Never commit files with API keys
+scripts/setup-via-api.js
+**/SERVICE_ROLE_KEY*
+**/service-role-key*
+
 # OS generated files
 Thumbs.db
 .DS_Store
