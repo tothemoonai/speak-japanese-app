@@ -8,7 +8,7 @@ import WebSocket from 'ws';
 
 // API配置
 const ALIYUN_CONFIG = {
-  apiKey: process.env.DASHSCOPE_API_KEY || 'sk-ad3cb691dfb04b8b8551b895c31ed67d',
+  apiKey: process.env.DASHSCOPE_API_KEY || '', // 安全：不使用硬编码密钥，必须通过环境变量设置
   model: 'qwen3-asr-flash-realtime',
   // 新加坡地域（国际）
   baseUrlIntl: 'wss://dashscope-intl.aliyuncs.com/api-ws/v1/realtime',
