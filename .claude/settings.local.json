@@ -189,7 +189,14 @@
       "Bash(gh --version 2>/dev/null || echo \"GitHub CLI not installed\")",
       "Bash(git init:*)",
       "Bash(git add:*)",
-      "Bash(find . -name \"nul\" -type f -delete 2>/dev/null; echo \"Cleaned up 'nul' files\")"
+      "Bash(find . -name \"nul\" -type f -delete 2>/dev/null; echo \"Cleaned up 'nul' files\")",
+      "Bash(export FILTER_BRANCH_SQUELCH_WARNING=1 && git filter-branch --force --index-filter \"git rm --cached --ignore-unmatch scripts/setup-via-api.js\" --prune-empty --tag-name-filter cat -- --all 2>&1)",
+      "Bash(git rm:*)",
+      "Bash(echo \"🔍 扫描1: 检查常见的 API Key 模式\" && echo \"\" && grep -r \"sk-ant-\" . --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=.git --exclude-dir=test-results --exclude-dir=playwright-report --include=\"*.js\" --include=\"*.ts\" --include=\"*.tsx\" --include=\"*.json\" --include=\"*.env*\" 2>/dev/null | head -5 || echo \"未找到 Anthropic API keys\")",
+      "Bash(echo \"🔍 扫描2: 检查 OpenAI API keys\" && echo \"\" && grep -r \"sk-[a-zA-Z0-9]\\\\{20,\\\\}\" . --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=.git --exclude-dir=test-results --exclude-dir=playwright-report --include=\"*.js\" --include=\"*.ts\" --include=\"*.tsx\" --include=\"*.json\" --include=\"*.env*\" 2>/dev/null | grep -v \"node_modules\" | grep -v \"test-key\" | head -5 || echo \"✅ 未找到 OpenAI API keys\")",
+      "Bash(echo \"🔍 扫描3: 检查 Zhipu GLM API keys\" && echo \"\" && grep -r \"zhipu\\\\|glm\\\\|智谱\" . --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=.git --exclude-dir=test-results --exclude-dir=playwright-report --include=\"*.js\" --include=\"*.ts\" --include=\"*.tsx\" --include=\"*.json\" --include=\"*.env*\" --exclude-dir=.playwright-mcp 2>/dev/null | grep -i \"key\\\\|token\\\\|secret\" | head -10 || echo \"未找到 Zhipu API keys\")",
+      "Bash(echo \"🧹 清理 Git reflog\" && git reflog expire --expire=now --all && echo \"✅ reflog 已清理\")",
+      "Bash(cat > .env.local << 'EOF'\n# App\nNEXT_PUBLIC_APP_URL=http://localhost:3000\n\n# Supabase - 使用新的密钥系统\nNEXT_PUBLIC_SUPABASE_URL=https://utvbpbxhdckgzhxcgqui.supabase.co\nNEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_Y4TUqiph8G0B9BeNcI-4ww_60Aaz6hT\nSUPABASE_SERVICE_ROLE_KEY=sb_secret_YOUR_SECRET_KEY_HERE\n\n# AI Services \\(用户自提供，这里只是示例\\)\n# OPENAI_API_KEY=your_openai_api_key\n# ANTHROPIC_API_KEY=your_anthropic_api_key\n# ZHIPU_API_KEY=your_zhipu_api_key\n\n# Feature Flags\nNEXT_PUBLIC_ENABLE_AUDIO_RECORDING=true\nNEXT_PUBLIC_ENABLE_TTS=true\nNEXT_PUBLIC_ENABLE_ASR=true\nNEXT_PUBLIC_ENABLE_SHARE=true\nEOF\necho \"✅ .env.local 文件已更新\")"
     ]
   }
 }

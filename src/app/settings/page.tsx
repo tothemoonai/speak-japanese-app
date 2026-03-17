@@ -13,6 +13,7 @@ import { Settings, User, Shield, Palette, LogOut, Sun, Moon, Check, Loader2 } fr
 import { useTheme } from 'next-themes';
 import { useToast } from '@/hooks/use-toast';
 import { getUserLevel } from '@/lib/utils/user';
+import { ApiKeySettings } from '@/components/settings/ApiKeySettings';
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -405,6 +406,9 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* API Key Settings */}
+        <ApiKeySettings />
 
         {/* Logout Button */}
         <Card className="mt-6 border-red-200 dark:border-red-900">

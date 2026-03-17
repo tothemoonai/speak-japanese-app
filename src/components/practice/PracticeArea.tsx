@@ -13,6 +13,7 @@ import { useAuthStore } from '@/store/authStore';
 import type { Sentence, Character } from '@/types';
 import { Volume2, Mic, CheckCircle, Loader2, AlertCircle, ChevronLeft, ChevronRight, List } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { getApiKey } from '@/lib/storage/apiKeyStorage';
 
 interface PracticeAreaProps {
   course: number;
@@ -441,7 +442,26 @@ export function PracticeArea({ course, character, sentences }: PracticeAreaProps
 }
 
 /**
+ * 获取用户的 API Key
+ * 从本地存储中读取用户配置的密钥
+ */
+async function getUserApiKey(provider: 'dashscope' | 'openai' | 'anthropic' | 'zhipu'): Promise<string | undefined> {
+  try {
+    const key = await getApiKey(provider);
+    if (!key || key.trim() === '') {
+      console.warn(`未配置 ${provider} API Key`);
+      return undefined;
+    }
+    return key;
+  } catch (error) {
+    console.error('获取 API Key 失败:', error);
+    return undefined;
+  }
+}
+
+/**
  * Transcribe audio using Aliyun ASR API
+ * 支持用户提供的 API Key
  */
 async function transcribeAudio(audioBlob: Blob): Promise<string> {
   try {
@@ -449,6 +469,12 @@ async function transcribeAudio(audioBlob: Blob): Promise<string> {
       size: audioBlob.size,
       type: audioBlob.type,
     });
+
+    // 获取用户的 API Key
+    const apiKey = await getUserApiKey('dashscope');
+    if (!apiKey) {
+      throw new Error('请先在设置中配置阿里云 DashScope API Key');
+    }
 
     // Convert blob to base64
     const base64Data = await new Promise<string>((resolve, reject) => {
@@ -461,7 +487,7 @@ async function transcribeAudio(audioBlob: Blob): Promise<string> {
       reader.readAsDataURL(audioBlob);
     });
 
-    // Call Aliyun ASR API
+    // Call Aliyun ASR API with user's API key
     const response = await fetch('/api/asr/aliyun', {
       method: 'POST',
       headers: {
@@ -469,8 +495,8 @@ async function transcribeAudio(audioBlob: Blob): Promise<string> {
       },
       body: JSON.stringify({
         audioData: base64Data,
+        apiKey: apiKey, // 使用用户提供的密钥
         language: 'ja',
-        enableVad: true,
       }),
     });
 
