@@ -60,7 +60,9 @@ export async function POST(request: NextRequest) {
 }
 
 /**
- * 使用阿里云 DashScope 进行语音识别
+ * 使用阿里云 DashScope qwen3-asr-flash 进行语音识别
+ * 使用 OpenAI SDK 兼容的 chat/completions API
+ * 支持国际部署 (dashscope-intl) 和内地部署 (dashscope)
  */
 async function transcribeWithDashScope(
   audioBuffer: Buffer,
@@ -69,62 +71,85 @@ async function transcribeWithDashScope(
 ): Promise<{ transcript: string; isFinal: boolean }> {
   const fetch = (await import('node-fetch')).default;
 
-  // DashScope Realtime ASR API endpoint
-  const url = 'https://dashscope.aliyuncs.com/api/v1/services/audio/asr/transcription';
+  // 尝试国际部署，如果失败则尝试内地部署
+  const endpoints = [
+    'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions', // 国际部署
+    'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'        // 内地部署
+  ];
 
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'qwen-audio-asr',
-        input: {
-          audio: (audioBuffer.toString('base64')),
-        },
-        parameters: {
-          language_hints: [language],
-          format: 'wav',
-          sample_rate: 16000,
-          word_timestamps: false,
-        },
-      }),
-    });
+  // 将音频转换为 data URI 格式
+  const audioDataUri = `data:audio/wav;base64,${audioBuffer.toString('base64')}`;
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(
-        `DashScope API 错误 ${response.status}: ${errorData.message || response.statusText}`
-      );
+  // 构建请求体 (OpenAI SDK 兼容格式)
+  const requestBody = {
+    model: 'qwen3-asr-flash',
+    messages: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'input_audio',
+            input_audio: {
+              data: audioDataUri
+            }
+          }
+        ]
+      }
+    ],
+    stream: false,
+    asr_options: {
+      enable_lid: true,
+      enable_itn: false
+      // language: language // 可选：指定语言
     }
+  };
 
-    const data = await response.json();
+  // 尝试不同的端点
+  for (const url of endpoints) {
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
 
-    if (data.output?.results?.[0]?.transcription_text) {
-      return {
-        transcript: data.output.results[0].transcription_text,
-        isFinal: true,
-      };
-    } else {
-      throw new Error('识别失败：无法解析 API 响应');
-    }
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        // 如果是 401/403，Key 无效，不重试
+        if (response.status === 401 || response.status === 403) {
+          throw new Error(`API Key 无效: ${errorData.error?.message || errorData.message || response.statusText}`);
+        }
+        // 其他错误，尝试下一个端点
+        continue;
+      }
 
-  } catch (error) {
-    console.error('Dashscope API 调用失败:', error);
+      const data = await response.json();
 
-    // 提供更详细的错误信息
-    if (error instanceof Error) {
-      if (error.message.includes('401') || error.message.includes('Unauthorized')) {
-        throw new Error('API Key 无效，请检查配置');
-      } else if (error.message.includes('429') || error.message.includes('quota')) {
-        throw new Error('API 调用次数超限，请检查账户余额');
+      // 解析 OpenAI SDK 兼容格式的响应
+      if (data.choices?.[0]?.message?.content) {
+        return {
+          transcript: data.choices[0].message.content,
+          isFinal: true,
+        };
+      } else {
+        console.error('API响应格式:', JSON.stringify(data, null, 2));
+        throw new Error('识别失败：无法解析 API 响应');
+      }
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('API Key 无效')) {
+        throw error; // Key 无效，直接抛出
+      }
+      // 其他错误，继续尝试下一个端点
+      if (url === endpoints[endpoints.length - 1]) {
+        throw error; // 最后一个端点也失败了，抛出错误
       }
     }
-
-    throw error;
   }
+
+  throw new Error('所有部署端点都无法访问');
 }
 
 /**
