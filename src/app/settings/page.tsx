@@ -9,7 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Settings, User, Shield, Palette, LogOut, Sun, Moon, Check, Loader2 } from 'lucide-react';
+import { Settings, User, Palette, LogOut, Check, Loader2 } from 'lucide-react';
+import { Footer } from '@/components/layout/Footer';
 import { useTheme } from 'next-themes';
 import { useToast } from '@/hooks/use-toast';
 import { getUserLevel } from '@/lib/utils/user';
@@ -410,6 +411,66 @@ export default function SettingsPage() {
         {/* API Key Settings */}
         <ApiKeySettings />
 
+        {/* ASR Model Info */}
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Palette className="h-5 w-5" />
+              语音识别服务配置
+            </CardTitle>
+            <CardDescription>
+              当前使用的语音识别模型信息
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <div className="text-sm text-muted-foreground">模型名称</div>
+                <div className="font-mono text-sm font-medium">qwen3-asr-flash</div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-sm text-muted-foreground">API提供商</div>
+                <div className="flex items-center gap-2">
+                  <span>阿里云 DashScope</span>
+                  <Badge variant="outline" className="text-xs">国际版</Badge>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-sm text-muted-foreground">API端点</div>
+                <div className="text-xs font-mono text-muted-foreground break-all">
+                  dashscope-intl.aliyuncs.com
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-sm text-muted-foreground">支持语言</div>
+                <div>日语、中文、英语（自动检测）</div>
+              </div>
+            </div>
+
+            <div className="border-t pt-4">
+              <div className="text-sm text-muted-foreground mb-2">模型特性</div>
+              <ul className="space-y-1 text-sm">
+                <li className="flex items-start gap-2">
+                  <Check className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span>快速识别：flash 模型，响应时间约 5-10 秒</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="h-4 w-4 text-green-600 flex-sh-0 mt-0.5" />
+                  <span>高准确率：专业日语语音识别，准确率 &gt; 95%</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span>多语言支持：自动检测日语、中文、英语</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span>智能分析：返回情感分析和语言检测结果</span>
+                </li>
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Logout Button */}
         <Card className="mt-6 border-red-200 dark:border-red-900">
           <CardContent className="pt-6">
@@ -424,6 +485,8 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
       </main>
+
+      <Footer />
     </div>
   );
 }
