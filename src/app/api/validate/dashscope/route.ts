@@ -35,26 +35,81 @@ export async function POST(request: NextRequest) {
     // 测试 API 调用
     const fetch = (await import('node-fetch')).default;
 
-    // 使用 DashScope 的简单 API 进行验证
-    // 这里我们调用一个简单的模型列表接口
-    const response = await fetch('https://dashscope.aliyuncs.com/api/v1/services/audio/asr/transcription', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'qwen-audio-asr',
-        input: {
-          // 使用一个小的测试音频数据
-          audio: 'UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=', // 1ms 静音
+    // 使用公开音频 URL 进行验证（避免 base64 格式问题）
+    const testAudioUrl = 'https://dashscope.oss-cn-beijing.aliyuncs.com/audios/welcome.mp3';
+
+    // 尝试国际部署和内地部署
+    const endpoints = [
+      'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions', // 国际部署
+      'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'        // 内地部署
+    ];
+
+    for (const url of endpoints) {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
         },
-        parameters: {
-          format: 'wav',
-          sample_rate: 16000,
-        },
-      }),
-    });
+        body: JSON.stringify({
+          model: 'qwen3-asr-flash',
+          messages: [
+            {
+              role: 'user',
+              content: [
+                {
+                  type: 'input_audio',
+                  input_audio: {
+                    data: testAudioUrl
+                  }
+                }
+              ]
+            }
+          ],
+          stream: false,
+          asr_options: {
+            enable_itn: false
+          }
+        }),
+      });
+
+      if (response.status === 401 || response.status === 403) {
+        return NextResponse.json({
+          valid: false,
+          message: 'API Key 无效或已过期',
+          error: '认证失败',
+        });
+      }
+
+      if (response.status === 429) {
+        return NextResponse.json({
+          valid: true,
+          message: 'API Key 有效，但调用次数已达上限',
+          warning: '请检查账户余额',
+        });
+      }
+
+      if (response.ok) {
+        return NextResponse.json({
+          valid: true,
+          message: 'DashScope API Key 验证成功',
+          provider: 'dashscope',
+          model: 'qwen3-asr-flash',
+        });
+      }
+
+      // 如果不是最后一个端点，继续尝试
+      if (url !== endpoints[endpoints.length - 1]) {
+        continue;
+      }
+
+      // 最后一个端点也失败了
+      return NextResponse.json({
+        valid: false,
+        message: 'API Key 验证失败',
+        error: `HTTP ${response.status}`,
+      });
+    }
 
     const responseData = await response.json();
 

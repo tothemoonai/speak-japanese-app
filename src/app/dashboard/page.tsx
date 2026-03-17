@@ -8,16 +8,32 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CourseList } from '@/components/course/CourseList';
 import { Badge } from '@/components/ui/badge';
-import { BookOpen, Mic, TrendingUp, Trophy, Target, LogOut, User, Settings } from 'lucide-react';
+import { BookOpen, Mic, TrendingUp, Trophy, Target, LogOut, Settings } from 'lucide-react';
 import { getUserLevel } from '@/lib/utils/user';
+import { userProgressService } from '@/services/supabase/userProgress.service';
+import { createClient } from '@/lib/supabase/client';
 
 // 强制动态渲染，因为页面依赖用户认证状态
 export const dynamic = 'force-dynamic';
+
+interface UserStats {
+  total_practices: number;
+  average_score: number;
+  courses_completed: number;
+  achievements_count: number;
+}
 
 export default function DashboardPage() {
   const router = useRouter();
   const { user, logout } = useAuthStore();
   const [mounted, setMounted] = useState(false);
+  const [userStats, setUserStats] = useState<UserStats>({
+    total_practices: 0,
+    average_score: 0,
+    courses_completed: 0,
+    achievements_count: 0,
+  });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setMounted(true);
@@ -28,6 +44,45 @@ export default function DashboardPage() {
       router.push('/login');
     }
   }, [user, router, mounted]);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserStats();
+    }
+  }, [user]);
+
+  const fetchUserStats = async () => {
+    if (!user) return;
+
+    try {
+      setLoading(true);
+
+      // 获取基础统计数据
+      const stats = await userProgressService.getUserStats(user.id);
+
+      // 获取成就数量
+      const supabaseClient = createClient();
+      const { data: achievements, error: achievementsError } = await supabaseClient
+        .from('user_achievements')
+        .select('id')
+        .eq('user_id', user.id);
+
+      if (achievementsError) {
+        console.error('获取成就失败:', achievementsError);
+      }
+
+      setUserStats({
+        total_practices: stats?.total_practices || 0,
+        average_score: stats?.average_score || 0,
+        courses_completed: stats?.courses_completed || 0,
+        achievements_count: achievements?.length || 0,
+      });
+    } catch (error) {
+      console.error('获取用户统计失败:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -41,6 +96,9 @@ export default function DashboardPage() {
   if (!mounted || !user) {
     return null;
   }
+
+  // 计算总的课程数
+  const totalCourses = 32;
 
   return (
     <div className="min-h-screen bg-background">
@@ -87,85 +145,77 @@ export default function DashboardPage() {
       {/* Main Content */}
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
         {/* Welcome Section */}
-        <div className="mb-6 sm:mb-8">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-2">
-            欢迎回来，{user.nickname || user.user_metadata?.nickname || user.email.split('@')[0]}！
+        <div className="mb-4 sm:mb-6">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1.5 sm:mb-2">
+            欢迎回来，{user.nickname || user.user_metadata?.nickname || user.email?.split('@')[0] || '学员'}！
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground">
             继续你的IT日语练习之旅
           </p>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                总练习次数
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="text-2xl font-bold">12</div>
-                <Mic className="h-5 w-5 text-muted-foreground" />
+        {/* Stats Cards - 紧凑的一行布局 */}
+        <Card className="mb-6">
+          <CardContent className="p-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {/* 总练习次数 */}
+              <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-secondary/30">
+                <div className="flex items-center gap-2 mb-1">
+                  <Mic className="h-4 w-4 text-primary" />
+                  <span className="text-xs text-muted-foreground">总练习</span>
+                </div>
+                {loading ? (
+                  <div className="text-xl font-bold text-muted-foreground">-</div>
+                ) : (
+                  <div className="text-xl font-bold">{userStats.total_practices}</div>
+                )}
+                <div className="text-xs text-muted-foreground">次</div>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                本周 +3 次
-              </p>
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                平均分数
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="text-2xl font-bold">85</div>
-                <TrendingUp className="h-5 w-5 text-muted-foreground" />
+              {/* 平均分数 */}
+              <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-secondary/30">
+                <div className="flex items-center gap-2 mb-1">
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                  <span className="text-xs text-muted-foreground">平均分</span>
+                </div>
+                {loading ? (
+                  <div className="text-xl font-bold text-muted-foreground">-</div>
+                ) : (
+                  <div className="text-xl font-bold">{userStats.average_score}</div>
+                )}
+                <div className="text-xs text-muted-foreground">分</div>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                比上周 +5 分
-              </p>
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                已完成课程
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="text-2xl font-bold">3</div>
-                <BookOpen className="h-5 w-5 text-muted-foreground" />
+              {/* 已完成课程 */}
+              <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-secondary/30">
+                <div className="flex items-center gap-2 mb-1">
+                  <BookOpen className="h-4 w-4 text-primary" />
+                  <span className="text-xs text-muted-foreground">已完成</span>
+                </div>
+                {loading ? (
+                  <div className="text-xl font-bold text-muted-foreground">-</div>
+                ) : (
+                  <div className="text-xl font-bold">{userStats.courses_completed}</div>
+                )}
+                <div className="text-xs text-muted-foreground">/ {totalCourses} 课程</div>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                共 32 门课程
-              </p>
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                获得成就
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="text-2xl font-bold">5</div>
-                <Trophy className="h-5 w-5 text-muted-foreground" />
+              {/* 获得成就 */}
+              <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-secondary/30">
+                <div className="flex items-center gap-2 mb-1">
+                  <Trophy className="h-4 w-4 text-primary" />
+                  <span className="text-xs text-muted-foreground">成就</span>
+                </div>
+                {loading ? (
+                  <div className="text-xl font-bold text-muted-foreground">-</div>
+                ) : (
+                  <div className="text-xl font-bold">{userStats.achievements_count}</div>
+                )}
+                <div className="text-xs text-muted-foreground">个</div>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                总共 20 个成就
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -182,7 +232,7 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  32 门课程等待你学习
+                  {totalCourses} 门课程等待你学习
                 </p>
               </CardContent>
             </Card>
