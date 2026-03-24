@@ -55,8 +55,8 @@ function PracticePageContent() {
 
   if (courseLoading || sentencesLoading) {
     return (
-      <div className="min-h-screen bg-background">
-        <header className="bg-background border-b border-border">
+      <div className="min-h-screen">
+        <header className="glass border-b border-border">
           <div className="container mx-auto px-4 py-4">
             <Link href="/courses">
               <h1 className="text-2xl font-bold">练习</h1>
@@ -77,8 +77,8 @@ function PracticePageContent() {
 
   if (courseError || sentencesError || !course || !sentences || sentences.length === 0) {
     return (
-      <div className="min-h-screen bg-background">
-        <header className="bg-background border-b border-border">
+      <div className="min-h-screen">
+        <header className="glass border-b border-border">
           <div className="container mx-auto px-4 py-4">
             <Link href="/courses">
               <h1 className="text-2xl font-bold">练习</h1>
@@ -106,9 +106,9 @@ function PracticePageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* Header */}
-      <header className="bg-background border-b border-border sticky top-0 z-10">
+      <header className="glass border-b border-border sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href={`/courses/${courseId}`}>
@@ -177,8 +177,8 @@ function PracticePageContent() {
 export default function PracticePage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-background">
-        <header className="bg-background border-b border-border">
+      <div className="min-h-screen">
+        <header className="glass border-b border-border">
           <div className="container mx-auto px-4 py-4">
             <h1 className="text-2xl font-bold">练习</h1>
           </div>

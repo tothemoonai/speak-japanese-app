@@ -30,7 +30,7 @@ const statusColors = {
 
 export function CourseCard({ course }: CourseCardProps) {
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
+    <Card className="course-card hover:shadow-lg transition-all duration-300 h-full flex flex-col">
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1">

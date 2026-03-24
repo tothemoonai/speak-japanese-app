@@ -16,6 +16,16 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: [
+          'var(--font-noto-sans-jp)',
+          'var(--font-outfit)',
+          'system-ui',
+          'sans-serif',
+        ],
+        display: ['var(--font-outfit)', 'sans-serif'],
+        mono: ['var(--font-jetbrains-mono)', 'monospace'],
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -50,11 +60,31 @@ const config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        sakura: {
+          DEFAULT: 'hsl(var(--sakura))',
+          light: 'hsl(var(--sakura-light))',
+          dark: 'hsl(var(--sakura-dark))',
+        },
+        'japan-blue': {
+          DEFAULT: 'hsl(var(--japan-blue))',
+          light: 'hsl(var(--japan-blue-light))',
+          dark: 'hsl(var(--japan-blue-dark))',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+      spacing: {
+        'xs': 'var(--spacing-xs)',
+        'sm': 'var(--spacing-sm)',
+        'md': 'var(--spacing-md)',
+        'lg': 'var(--spacing-lg)',
+        'xl': 'var(--spacing-xl)',
+        '2xl': 'var(--spacing-2xl)',
+        '3xl': 'var(--spacing-3xl)',
+        '4xl': 'var(--spacing-4xl)',
       },
       keyframes: {
         'accordion-down': {
@@ -65,10 +95,35 @@ const config = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
+        'fade-up': {
+          from: {
+            opacity: '0',
+            transform: 'translateY(20px)',
+          },
+          to: {
+            opacity: '1',
+            transform: 'translateY(0)',
+          },
+        },
+        'glow': {
+          '0%, 100%': {
+            boxShadow: '0 0 20px -5px hsl(var(--sakura) / 0.5)',
+          },
+          '50%': {
+            boxShadow: '0 0 30px -5px hsl(var(--sakura) / 0.8)',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'fade-up': 'fade-up 0.5s ease-out forwards',
+        'glow': 'glow 2s ease-in-out infinite',
+      },
+      backgroundImage: {
+        'gradient-sakura': 'linear-gradient(135deg, hsl(var(--sakura-light)), hsl(var(--sakura)))',
+        'gradient-japan-blue': 'linear-gradient(135deg, hsl(var(--japan-blue-light)), hsl(var(--japan-blue)))',
+        'gradient-mesh': 'radial-gradient(at 40% 20%, hsl(var(--sakura-light) / 0.3) 0px, transparent 50%), radial-gradient(at 80% 0%, hsl(var(--japan-blue-light) / 0.3) 0px, transparent 50%)',
       },
     },
   },

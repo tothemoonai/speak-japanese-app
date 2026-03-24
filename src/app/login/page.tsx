@@ -32,7 +32,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="min-h-screen flex items-center justify-center">
       <Card className="w-full max-w-md">
         <h1 className="sr-only">登录</h1>
         <CardHeader>

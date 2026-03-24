@@ -4,6 +4,17 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Play, Pause, Volume2 } from 'lucide-react';
+import { Capacitor } from '@capacitor/core';
+
+// 声明cordova插件类型
+declare global {
+  interface Window {
+    TTS?: {
+      speak: (text: string, callback?: () => void) => void;
+      stop: () => void;
+    };
+  }
+}
 
 interface AudioPlayerProps {
   audioUrl?: string | null;
@@ -106,7 +117,7 @@ export function AudioPlayer({
 /**
  * TTS Player Component
  * Plays text using text-to-speech
- * Enhanced for Android WebView support
+ * Enhanced for Android WebView support with native TTS
  */
 interface TTSPlayerProps {
   text: string;
@@ -125,39 +136,66 @@ export function TTSPlayer({
 }: TTSPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isSupported, setIsSupported] = useState(false);
-  const [voicesLoaded, setVoicesLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isNative, setIsNative] = useState(false);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
-  // Initialize speech synthesis and load voices
+  // Initialize TTS
   useEffect(() => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
-      setIsSupported(false);
+    if (typeof window === 'undefined') {
+      setIsLoading(false);
       return;
     }
 
-    // Check if voices are available
-    const loadVoices = () => {
-      const voices = window.speechSynthesis.getVoices();
-      if (voices && voices.length > 0) {
-        setVoicesLoaded(true);
-        setIsSupported(true);
+    // 检查是否是原生平台
+    const checkNativePlatform = () => {
+      try {
+        // @ts-ignore - Capacitor全局对象
+        const isNativeApp = typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform();
+        setIsNative(isNativeApp);
+
+        if (isNativeApp && window.TTS) {
+          // 使用原生TTS
+          setIsSupported(true);
+          setIsLoading(false);
+          return;
+        }
+      } catch (e) {
+        // Capacitor不可用，继续检查Web Speech API
+      }
+
+      // Web平台检查Web Speech API
+      if ('speechSynthesis' in window) {
+        const loadVoices = () => {
+          const voices = window.speechSynthesis.getVoices();
+          if (voices && voices.length > 0) {
+            setIsSupported(true);
+            setIsLoading(false);
+          }
+        };
+
+        loadVoices();
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+      } else {
+        setIsLoading(false);
       }
     };
 
-    // Load voices immediately
-    loadVoices();
-
-    // Also listen for voiceschanged event (important for Android)
-    window.speechSynthesis.onvoiceschanged = loadVoices;
+    checkNativePlatform();
 
     return () => {
-      window.speechSynthesis.onvoiceschanged = null;
+      if (utteranceRef.current) {
+        window.speechSynthesis.cancel();
+      }
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = null;
+      }
     };
   }, []);
 
-  // Create utterance when voices are loaded and text changes
+  // Create utterance when text changes (Web only)
   useEffect(() => {
-    if (!voicesLoaded || !text) return;
+    if (isNative || !text || !isSupported) return;
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = lang;
@@ -186,20 +224,34 @@ export function TTSPlayer({
     return () => {
       window.speechSynthesis.cancel();
     };
-  }, [text, lang, voicesLoaded, onEnded]);
+  }, [text, lang, isNative, isSupported, onEnded]);
 
   const handlePlay = () => {
-    if (utteranceRef.current && isSupported && voicesLoaded) {
-      // Cancel any ongoing speech
-      window.speechSynthesis.cancel();
+    if (isNative && window.TTS) {
+      // 使用原生TTS
+      setIsPlaying(true);
+      window.TTS.speak(text, () => {
+        setIsPlaying(false);
+        onEnded?.();
+      });
+      return;
+    }
 
-      // Speak
+    // Web Speech API
+    if (utteranceRef.current && isSupported) {
+      window.speechSynthesis.cancel();
       window.speechSynthesis.speak(utteranceRef.current);
     }
   };
 
   const handleStop = () => {
-    if (isSupported) {
+    if (isNative && window.TTS) {
+      window.TTS.stop();
+      setIsPlaying(false);
+      return;
+    }
+
+    if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       setIsPlaying(false);
     }
@@ -213,24 +265,24 @@ export function TTSPlayer({
     }
   };
 
-  if (!isSupported) {
+  if (isLoading) {
     return (
       <Card className="w-full">
         <CardContent className="pt-4 sm:pt-6">
           <div className="text-center text-xs sm:text-sm text-muted-foreground">
-            您的浏览器不支持语音播放
+            正在加载语音...
           </div>
         </CardContent>
       </Card>
     );
   }
 
-  if (!voicesLoaded) {
+  if (!isSupported) {
     return (
       <Card className="w-full">
         <CardContent className="pt-4 sm:pt-6">
           <div className="text-center text-xs sm:text-sm text-muted-foreground">
-            正在加载语音...
+            您的浏览器不支持语音播放，请使用Chrome浏览器或安卓APP
           </div>
         </CardContent>
       </Card>

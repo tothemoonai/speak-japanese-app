@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT日语设计对比 - Before vs After</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Before - 当前设计 */
+    .design-before {
+      font-family: 'Inter', sans-serif;
+      --primary: 221.2 83.2% 53.3%;
+      --primary-foreground: 210 40% 98%;
+    }
+
+    /* After - 改进设计 */
+    .design-after {
+      font-family: 'Noto Sans JP', sans-serif;
+      --sakura: 350 85% 68%;
+      --japan-blue: 215 88% 58%;
+    }
+
+    .text-gradient-sakura {
+      background: linear-gradient(135deg, hsl(350, 85%, 68%), hsl(215, 88%, 58%));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .bg-gradient-sakura {
+      background: linear-gradient(135deg, hsl(350, 80%, 85%), hsl(350, 85%, 68%));
+    }
+
+    .bg-gradient-mesh {
+      background:
+        radial-gradient(at 40% 20%, hsl(350, 80%, 85% / 0.3) 0px, transparent 50%),
+        radial-gradient(at 80% 0%, hsl(215, 80%, 75% / 0.3) 0px, transparent 50%),
+        radial-gradient(at 0% 50%, hsl(150, 60%, 70% / 0.2) 0px, transparent 50%),
+        radial-gradient(at 80% 50%, hsl(350, 85% 68% / 0.2) 0px, transparent 50%);
+    }
+
+    .card-enhanced {
+      transition: all 0.25s ease-out;
+    }
+
+    .card-enhanced:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    }
+
+    @keyframes fade-up {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-up {
+      animation: fade-up 0.5s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold mb-4">IT日语 UI设计对比</h1>
+      <p class="text-lg text-gray-600">Tech-Zen Modern 美学方向</p>
+    </div>
+
+    <!-- Comparison Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+
+      <!-- Before -->
+      <div class="design-before">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-4">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-2xl font-bold text-gray-900">Before - 当前设计</h2>
+            <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">标准布局</span>
+          </div>
+
+          <!-- Before Demo -->
+          <div class="bg-gray-50 rounded-lg p-4 space-y-4">
+            <div>
+              <h3 class="text-xl font-bold text-gray-900">欢迎回来，学员！</h3>
+              <p class="text-sm text-gray-600">继续你的IT日语练习之旅</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="bg-white rounded-lg p-4 border border-gray-200">
+              <div class="grid grid-cols-4 gap-4">
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-blue-500">12</div>
+                  <div class="text-xs text-gray-500">总练习</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-blue-500">85</div>
+                  <div class="text-xs text-gray-500">平均分</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-blue-500">3</div>
+                  <div class="text-xs text-gray-500">已完成</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-blue-500">5</div>
+                  <div class="text-xs text-gray-500">成就</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Cards -->
+            <div class="grid grid-cols-3 gap-4">
+              <div class="bg-white rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow">
+                <div class="text-blue-500 mb-2">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+                <div class="font-semibold text-sm">继续学习</div>
+                <div class="text-xs text-gray-500">32门课程</div>
+              </div>
+              <div class="bg-white rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow">
+                <div class="text-blue-500 mb-2">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div class="font-semibold text-sm">每日目标</div>
+                <div class="text-xs text-gray-500">今日 0/3</div>
+              </div>
+              <div class="bg-white rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow">
+                <div class="text-blue-500 mb-2">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                </div>
+                <div class="font-semibold text-sm">学习报告</div>
+                <div class="text-xs text-gray-500">查看进度</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analysis -->
+        <div class="bg-red-50 rounded-lg p-4 border border-red-200">
+          <h4 class="font-semibold text-red-900 mb-2">❌ 问题诊断</h4>
+          <ul class="text-sm text-red-800 space-y-1">
+            <li>• 字体：Inter（通用，无个性）</li>
+            <li>• 配色：标准蓝色（缺乏识别度）</li>
+            <li>• 布局：传统网格（缺少创新）</li>
+            <li>• 交互：简单悬停（缺少惊喜）</li>
+            <li>• 视觉：过于平淡（缺少层次）</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- After -->
+      <div class="design-after bg-gradient-mesh rounded-lg p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-3xl font-bold text-gradient-sakura">After - 改进设计</h2>
+          <span class="px-3 py-1 bg-pink-100 text-pink-600 rounded-full text-sm font-medium">Tech-Zen Modern</span>
+        </div>
+
+        <!-- After Demo -->
+        <div class="space-y-6">
+          <div class="animate-fade-up">
+            <div class="flex items-center gap-3 mb-2">
+              <svg class="w-8 h-8 text-pink-500" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <div>
+                <h3 class="text-3xl font-bold tracking-tight">
+                  欢迎回来，
+                  <span class="text-gradient-sakura">学员！</span>
+                </h3>
+              </div>
+            </div>
+            <p class="text-base text-gray-600">
+              继续你的IT日语练习之旅。每一次练习，都让你离流利更近一步。
+            </p>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 border-2 border-pink-200 animate-fade-up delay-100">
+            <div class="grid grid-cols-4 gap-6">
+              <div class="text-center">
+                <div class="p-3 rounded-xl bg-gradient-to-br from-pink-100 to-pink-50 mb-2">
+                  <svg class="w-6 h-6 text-pink-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                  </svg>
+                </div>
+                <div class="text-4xl font-bold text-pink-600">12</div>
+                <div class="text-xs text-gray-500">总练习</div>
+              </div>
+              <div class="text-center">
+                <div class="p-3 rounded-xl bg-gradient-to-br from-blue-100 to-blue-50 mb-2">
+                  <svg class="w-6 h-6 text-blue-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                  </svg>
+                </div>
+                <div class="text-4xl font-bold text-blue-600">85</div>
+                <div class="text-xs text-gray-500">平均分</div>
+              </div>
+              <div class="text-center">
+                <div class="p-3 rounded-xl bg-gradient-to-br from-green-100 to-green-50 mb-2">
+                  <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+                <div class="text-4xl font-bold text-green-600">3</div>
+                <div class="text-xs text-gray-500">已完成</div>
+              </div>
+              <div class="text-center">
+                <div class="p-3 rounded-xl bg-gradient-to-br from-orange-100 to-orange-50 mb-2">
+                  <svg class="w-6 h-6 text-orange-500 mx-auto" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                  </svg>
+                </div>
+                <div class="text-4xl font-bold text-orange-600">5</div>
+                <div class="text-xs text-gray-500">成就</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Cards -->
+          <div class="grid grid-cols-3 gap-4 animate-fade-up delay-200">
+            <div class="card-enhanced bg-white/90 backdrop-blur-sm rounded-xl p-5">
+              <div class="p-3 rounded-xl bg-gradient-sakura mb-3 inline-block">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              </div>
+              <div class="font-bold text-base mb-1">继续学习</div>
+              <div class="text-sm text-gray-500 mb-3">32门课程</div>
+              <div class="text-sm font-medium text-pink-500 flex items-center">
+                开始学习
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7V17" />
+                </svg>
+              </div>
+            </div>
+
+            <div class="card-enhanced bg-white/90 backdrop-blur-sm rounded-xl p-5">
+              <div class="p-3 rounded-xl bg-gradient-to-br from-blue-400 to-blue-500 mb-3 inline-block">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div class="font-bold text-base mb-1">每日目标</div>
+              <div class="text-sm text-gray-500 mb-3">今日 0/3</div>
+              <div class="text-sm font-medium text-blue-500 flex items-center">
+                完成目标
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7V17" />
+                </svg>
+              </div>
+            </div>
+
+            <div class="card-enhanced bg-white/90 backdrop-blur-sm rounded-xl p-5">
+              <div class="p-3 rounded-xl bg-gradient-to-br from-green-400 to-green-500 mb-3 inline-block">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+              <div class="font-bold text-base mb-1">学习报告</div>
+              <div class="text-sm text-gray-500 mb-3">查看进度</div>
+              <div class="text-sm font-medium text-green-500 flex items-center">
+                查看报告
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7V17" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analysis -->
+        <div class="bg-green-50 rounded-lg p-4 border border-green-200 mt-6">
+          <h4 class="font-semibold text-green-900 mb-2">✅ 改进亮点</h4>
+          <ul class="text-sm text-green-800 space-y-1">
+            <li>• 字体：Noto Sans JP（现代日式）+ Outfit（几何科技）</li>
+            <li>• 配色：樱花粉 + 日本蓝（独特识别度）</li>
+            <li>• 布局：渐变背景 + 玻璃态效果（视觉层次）</li>
+            <li>• 交互：悬停上浮 + 箭头动画（惊喜感）</li>
+            <li>• 视觉：渐变图标 + 大胆字体（强烈对比）</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Differences -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-2xl font-bold mb-6 text-center">关键改进点</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-gradient-to-br from-pink-400 to-pink-500 rounded-2xl mx-auto mb-3 flex items-center justify-center">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+          </div>
+          <h3 class="font-bold mb-2">独特字体</h3>
+          <p class="text-sm text-gray-600">Noto Sans JP + Outfit<br/>告别通用 Inter</p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-500 rounded-2xl mx-auto mb-3 flex items-center justify-center">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+            </svg>
+          </div>
+          <h3 class="font-bold mb-2">日式配色</h3>
+          <p class="text-sm text-gray-600">樱花粉 + 日本蓝<br/>独特品牌识别</p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-500 rounded-2xl mx-auto mb-3 flex items-center justify-center">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+            </svg>
+          </div>
+          <h3 class="font-bold mb-2">动态交互</h3>
+          <p class="text-sm text-gray-600">Staggered 动画<br/>悬停上浮效果</p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-500 rounded-2xl mx-auto mb-3 flex items-center justify-center">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+            </svg>
+          </div>
+          <h3 class="font-bold mb-2">视觉层次</h3>
+          <p class="text-sm text-gray-600">超大标题<br/>渐变背景 + 玻璃态</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="text-center">
+      <p class="text-lg text-gray-600 mb-4">
+        准备好升级你的 IT日语 体验了吗？
+      </p>
+      <div class="flex items-center justify-center gap-4">
+        <a href="#implementation" class="px-6 py-3 bg-gradient-sakura text-white rounded-xl font-semibold hover:shadow-lg transition-all">
+          查看实施指南
+        </a>
+        <a href="https://speak-japanese-app.vercel.app" target="_blank" class="px-6 py-3 bg-white text-gray-700 rounded-xl font-semibold border-2 border-gray-200 hover:border-pink-300 transition-all">
+          访问当前应用
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

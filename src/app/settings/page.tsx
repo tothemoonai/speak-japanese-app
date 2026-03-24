@@ -9,12 +9,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Settings, User, Palette, LogOut, Check, Loader2 } from 'lucide-react';
+import { Settings, User, Palette, LogOut, Check, Loader2, Shield, Sun, Moon } from 'lucide-react';
 import { Footer } from '@/components/layout/Footer';
 import { useTheme } from 'next-themes';
 import { useToast } from '@/hooks/use-toast';
 import { getUserLevel } from '@/lib/utils/user';
 import { ApiKeySettings } from '@/components/settings/ApiKeySettings';
+import { FontSizeSettings } from '@/components/settings/FontSizeSettings';
+import { ColorSchemeSettings } from '@/components/settings/ColorSchemeSettings';
+import { VERSION_DISPLAY } from '@/../../VERSION';
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -152,7 +155,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* Header */}
       <header className="bg-background border-b border-border sticky top-0 z-10">
         <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
@@ -195,6 +198,12 @@ export default function SettingsPage() {
                 {getUserLevel(user) === 'beginner' && '初级'}
                 {getUserLevel(user) === 'intermediate' && '中级'}
                 {getUserLevel(user) === 'advanced' && '高级'}
+              </Badge>
+            </div>
+            <div className="flex items-center justify-between py-2">
+              <span className="text-sm text-muted-foreground">当前版本</span>
+              <Badge variant="secondary" className="font-mono">
+                {VERSION_DISPLAY}
               </Badge>
             </div>
           </CardContent>
@@ -407,6 +416,16 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Font Size Settings */}
+        <div className="mb-6">
+          <FontSizeSettings />
+        </div>
+
+        {/* Color Scheme Settings */}
+        <div className="mb-6">
+          <ColorSchemeSettings />
+        </div>
 
         {/* API Key Settings */}
         <ApiKeySettings />

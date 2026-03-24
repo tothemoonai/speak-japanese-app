@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle, XCircle } from 'lucide-react';
+import { VERSION_DISPLAY } from '../../VERSION';
 
 function AuthMessageHandler() {
   const router = useRouter();
@@ -180,7 +181,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="border-t py-8">
         <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p>&copy; 2026 IT日语. All rights reserved.</p>
+          <p>&copy; 2026 IT日语 {VERSION_DISPLAY}. All rights reserved.</p>
         </div>
       </footer>
     </div>

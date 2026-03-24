@@ -1,18 +1,28 @@
 'use client';
 
+import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { BookOpen, Trophy, Target, TrendingUp, AlertCircle, CheckCircle, Info, HelpCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { BookOpen, Trophy, Target, TrendingUp, AlertCircle, CheckCircle, Info, HelpCircle, ArrowLeft } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
 export default function HelpPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* Header */}
-      <header className="bg-background border-b border-border sticky top-0 z-10" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
+      <header className="glass border-b border-border sticky top-0 z-10" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
         <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4" style={{ paddingTop: '0' }}>
-          <h1 className="text-xl sm:text-2xl font-bold">帮助中心</h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl sm:text-2xl font-bold">帮助中心</h1>
+            <Link href="/dashboard">
+              <Button variant="outline" size="sm">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                返回首页
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 

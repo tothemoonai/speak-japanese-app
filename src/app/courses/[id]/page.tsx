@@ -29,8 +29,8 @@ export default function CourseDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
-        <header className="bg-background border-b border-border">
+      <div className="min-h-screen">
+        <header className="glass border-b border-border">
           <div className="container mx-auto px-4 py-4">
             <Link href="/courses">
               <h1 className="text-2xl font-bold">课程详情</h1>
@@ -55,8 +55,8 @@ export default function CourseDetailPage() {
 
   if (error || !course) {
     return (
-      <div className="min-h-screen bg-background">
-        <header className="bg-background border-b border-border">
+      <div className="min-h-screen">
+        <header className="glass border-b border-border">
           <div className="container mx-auto px-4 py-4">
             <Link href="/courses">
               <h1 className="text-2xl font-bold">课程详情</h1>

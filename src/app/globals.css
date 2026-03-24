@@ -2,69 +2,970 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * IT日语设计系统 - Tech-Zen Modern
+ * 结合日本美学与现代科技感
+ */
+
 @layer base {
   :root {
+    /* ===== 字体大小缩放 ===== */
+    --font-scale: 1;
+
+    /* ===== 配色方案标识 ===== */
+    --color-scheme: warm;
+
+    /* ===== 主色板：日式色彩 + 科技蓝 ===== */
+
+    /* 樱花粉 - 主品牌色 */
+    --sakura: 350 85% 68%;
+    --sakura-light: 350 80% 85%;
+    --sakura-dark: 350 75% 50%;
+
+    /* 日本蓝 - 强调色 */
+    --japan-blue: 215 88% 58%;
+    --japan-blue-light: 215 80% 75%;
+    --japan-blue-dark: 215 85% 45%;
+
+    /* 深靛蓝 - 背景/文本 */
+    --deep-indigo: 235 40% 15%;
+    --deep-indigo-light: 235 35% 25%;
+
+    /* 竹绿 - 成功/积极 */
+    --bamboo: 150 65% 45%;
+    --bamboo-light: 150 60% 70%;
+    --bamboo-dark: 150 60% 35%;
+
+    /* 枫红 - 警告/重要 */
+    --maple: 25 85% 58%;
+
+    /* ===== 中性色 ===== */
+    --stone-50: 60 20% 97%;
+    --stone-100: 60 15% 92%;
+    --stone-200: 60 12% 85%;
+    --stone-300: 60 10% 75%;
+    --stone-400: 60 8% 60%;
+    --stone-500: 60 6% 45%;
+    --stone-600: 60 5% 35%;
+    --stone-700: 60 5% 25%;
+    --stone-800: 60 6% 18%;
+    --stone-900: 60 8% 12%;
+
+    /* ===== 语义化颜色 ===== */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 235 30% 15%;
+
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 235 30% 15%;
+
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
+    --popover-foreground: 235 30% 15%;
+
+    --primary: var(--sakura);
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: var(--japan-blue);
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: var(--stone-100);
+    --muted-foreground: var(--stone-500);
+
+    --accent: var(--japan-blue);
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: var(--maple);
+    --destructive-foreground: 0 0% 100%;
+
+    --success: var(--bamboo);
+    --success-foreground: 0 0% 100%;
+
+    --border: var(--stone-200);
+    --input: var(--stone-200);
+    --ring: var(--sakura);
+
+    /* ===== 间距系统（8px 基准）===== */
+    --spacing-xs: 0.25rem;   /* 4px */
+    --spacing-sm: 0.5rem;    /* 8px */
+    --spacing-md: 1rem;      /* 16px */
+    --spacing-lg: 1.5rem;    /* 24px */
+    --spacing-xl: 2rem;      /* 32px */
+    --spacing-2xl: 3rem;     /* 48px */
+    --spacing-3xl: 4rem;     /* 64px */
+    --spacing-4xl: 6rem;     /* 96px */
+
+    /* ===== 圆角 ===== */
+    --radius-sm: 0.25rem;   /* 4px */
+    --radius-md: 0.5rem;    /* 8px */
+    --radius-lg: 0.75rem;   /* 12px */
+    --radius-xl: 1rem;      /* 16px */
+    --radius-2xl: 1.5rem;   /* 24px */
+    --radius-full: 9999px;
+
+    /* ===== 阴影系统 ===== */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+    /* 樱花阴影 */
+    --shadow-sakura: 0 8px 30px -4px hsl(var(--sakura) / 0.35);
+    --shadow-primary: var(--shadow-sakura);
   }
 
+  /* ===== 深色主题 ===== */
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
-  }
-}
+    --background: var(--deep-indigo);
+    --foreground: var(--stone-100);
 
-@layer base {
+    --card: var(--deep-indigo-light);
+    --card-foreground: var(--stone-100);
+
+    --popover: var(--deep-indigo-light);
+    --popover-foreground: var(--stone-100);
+
+    --primary: var(--sakura);
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: var(--japan-blue);
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: var(--stone-800);
+    --muted-foreground: var(--stone-400);
+
+    --accent: var(--japan-blue);
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: var(--maple);
+    --destructive-foreground: 0 0% 100%;
+
+    --border: var(--stone-700);
+    --input: var(--stone-700);
+    --ring: var(--sakura);
+  }
+
+  /* ===== Cool配色方案：科技感冷色调 ===== */
+  [data-color-scheme="cool"] {
+    --color-scheme: cool;
+
+    /* 赛博蓝 - 主品牌色 */
+    --cyber-blue: 190 100% 50%;
+    --cyber-blue-light: 190 95% 65%;
+    --cyber-blue-dark: 190 100% 40%;
+
+    /* 青绿 - 强调色 */
+    --neon-cyan: 170 100% 50%;
+    --neon-cyan-light: 170 95% 65%;
+    --neon-cyan-dark: 170 100% 40%;
+
+    /* 紫罗兰 - 辅助色 */
+    --neon-purple: 260 85% 65%;
+    --neon-purple-light: 260 80% 75%;
+    --neon-purple-dark: 260 90% 55%;
+
+    /* 银灰 - 中性色 */
+    --silver-gray: 210 15% 75%;
+    --silver-gray-light: 210 10% 85%;
+    --silver-gray-dark: 210 20% 65%;
+
+    /* 电光蓝 - 高光 */
+    --electric-blue: 200 100% 55%;
+    --electric-blue-glow: 200 95% 70%;
+
+    /* 深蓝黑 - 背景 */
+    --deep-void: 220 40% 10%;
+    --deep-void-light: 220 35% 15%;
+
+    /* 赛博阴影 */
+    --shadow-cyber: 0 8px 30px -4px hsl(var(--cyber-blue) / 0.35);
+    --shadow-primary: var(--shadow-cyber);
+
+    /* 覆盖语义化颜色 */
+    --primary: var(--cyber-blue);
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: var(--neon-cyan);
+    --secondary-foreground: 220 40% 15%;
+
+    --muted: var(--silver-gray);
+    --muted-foreground: var(--silver-gray-dark);
+
+    --accent: var(--electric-blue);
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 340 80% 55%; /* 洋红 */
+    --destructive-foreground: 0 0% 100%;
+
+    --success: var(--neon-cyan);
+    --success-foreground: 220 40% 15%;
+
+    --background: var(--deep-void);
+    --foreground: var(--silver-gray-light);
+
+    --card: var(--deep-void-light);
+    --card-foreground: var(--silver-gray-light);
+
+    --popover: var(--deep-void-light);
+    --popover-foreground: var(--silver-gray-light);
+
+    --border: var(--silver-gray-dark);
+    --input: var(--silver-gray-dark);
+    --ring: var(--cyber-blue);
+  }
+
+  /* Cool配色深色模式 */
+  [data-color-scheme="cool"].dark {
+    --background: var(--deep-void);
+    --foreground: var(--silver-gray);
+
+    --card: var(--deep-void-light);
+    --card-foreground: var(--silver-gray);
+
+    --muted: rgb(30 41 59);
+    --muted-foreground: rgb(148 163 184);
+
+    --border: rgb(51 65 85);
+    --input: rgb(51 65 85);
+    --ring: var(--cyber-blue);
+  }
+
   * {
     @apply border-border;
   }
+
+  html {
+    /* 应用字体大小缩放到根元素，影响所有rem单位 */
+    font-size: calc(16px * var(--font-scale));
+  }
+
   body {
     @apply bg-background text-foreground;
-    /* 添加安全区域适配 - 增加顶部 padding */
+    font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* 添加安全区域适配 */
     padding-top: calc(env(safe-area-inset-top) + 16px);
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
   }
 
+  /* 基础 Card 组件的浅色渐变 */
+  [class*="bg-card"] {
+    background-color: transparent;
+    background-image: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.93) 0%,
+      rgba(255, 244, 249, 0.90) 50%,
+      rgba(242, 249, 255, 0.91) 100%
+    );
+  }
+
+  .dark [class*="bg-card"] {
+    background-image: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.93) 0%,
+      rgba(42, 38, 72, 0.90) 50%,
+      rgba(31, 47, 67, 0.91) 100%
+    );
+  }
+
+  /* Cool配色的卡片渐变 */
+  [data-color-scheme="cool"] [class*="bg-card"] {
+    background-image: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.88) 0%,
+      rgba(35, 45, 65, 0.85) 50%,
+      rgba(32, 42, 62, 0.87) 100%
+    );
+  }
+
+  [data-color-scheme="cool"].dark [class*="bg-card"] {
+    background-image: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.92) 0%,
+      rgba(35, 45, 65, 0.89) 50%,
+      rgba(32, 42, 62, 0.91) 100%
+    );
+  }
+
   /* Header 额外的安全区域 */
   header {
     padding-top: max(1rem, env(safe-area-inset-top));
     padding-left: max(0.5rem, env(safe-area-inset-left));
+  }
+
+  /* 改进的排版 */
+  h1 {
+    @apply text-4xl sm:text-5xl md:text-6xl lg:text-7xl;
+    @apply font-bold;
+    @apply tracking-tight;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  h2 {
+    @apply text-3xl sm:text-4xl md:text-5xl;
+    @apply font-semibold;
+    @apply tracking-tight;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+  }
+
+  h3 {
+    @apply text-2xl sm:text-3xl;
+    @apply font-semibold;
+    @apply tracking-tight;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  h4 {
+    @apply text-xl sm:text-2xl;
+    @apply font-medium;
+    line-height: 1.4;
+  }
+
+  p {
+    @apply text-base sm:text-lg;
+    line-height: 1.7;
+  }
+
+  /* 平滑滚动 */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* 选中文本样式 */
+  ::selection {
+    background-color: hsl(var(--sakura-light));
+    color: hsl(var(--deep-indigo));
+  }
+}
+
+/* ===== 动画关键帧 ===== */
+@layer utilities {
+  /* Fade up - 进入动画 */
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Fade in - 淡入 */
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Scale in - 缩放进入 */
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Glow pulse */
+  @keyframes glow-pulse {
+    0%, 100% {
+      box-shadow: 0 0 20px -5px hsl(var(--sakura) / 0.5);
+    }
+    50% {
+      box-shadow: 0 0 30px -5px hsl(var(--sakura) / 0.8);
+    }
+  }
+
+  /* ===== 动画工具类 ===== */
+  .animate-fade-up {
+    animation: fade-up var(--duration-slow) var(--ease-out) forwards;
+  }
+
+  .animate-fade-in {
+    animation: fade-in var(--duration-normal) var(--ease-out) forwards;
+  }
+
+  .animate-scale-in {
+    animation: scale-in var(--duration-normal) var(--ease-spring) forwards;
+  }
+
+  .animate-glow {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+
+  /* ===== 延迟工具类 ===== */
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+}
+
+/* ===== 渐变背景 ===== */
+@layer utilities {
+  .bg-gradient-sakura {
+    background: linear-gradient(135deg, hsl(var(--sakura-light)), hsl(var(--sakura)));
+  }
+
+  .bg-gradient-japan-blue {
+    background: linear-gradient(135deg, hsl(var(--japan-blue-light)), hsl(var(--japan-blue)));
+  }
+
+  .bg-gradient-mesh {
+    background:
+      radial-gradient(at 40% 20%, hsl(var(--sakura-light) / 0.3) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(var(--japan-blue-light) / 0.3) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(var(--bamboo-light) / 0.2) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, hsl(var(--sakura) / 0.2) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsl(var(--japan-blue) / 0.2) 0px, transparent 50%);
+  }
+
+  .bg-gradient-mesh-dark {
+    background:
+      radial-gradient(at 40% 20%, hsl(var(--sakura) / 0.15) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(var(--japan-blue) / 0.15) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(var(--bamboo) / 0.1) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, hsl(var(--sakura) / 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsl(var(--japan-blue) / 0.1) 0px, transparent 50%);
+  }
+
+  /* Cool配色方案的渐变背景 */
+  [data-color-scheme="cool"] .bg-gradient-mesh {
+    background:
+      radial-gradient(at 40% 20%, hsl(var(--cyber-blue-light) / 0.25) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(var(--neon-cyan-light) / 0.25) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(var(--neon-purple-light) / 0.15) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, hsl(var(--electric-blue-glow) / 0.15) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsl(var(--cyber-blue) / 0.15) 0px, transparent 50%);
+  }
+
+  [data-color-scheme="cool"] .bg-gradient-mesh-dark {
+    background:
+      radial-gradient(at 40% 20%, hsl(var(--cyber-blue) / 0.12) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(var(--neon-cyan) / 0.12) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(var(--neon-purple) / 0.08) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, hsl(var(--electric-blue) / 0.08) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsl(var(--cyber-blue-dark) / 0.08) 0px, transparent 50%);
+  }
+
+  /* Cool配色的body背景 */
+  [data-color-scheme="cool"] body {
+    background:
+      radial-gradient(at 40% 20%, hsl(var(--cyber-blue-light) / 0.15) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(var(--neon-cyan-light) / 0.15) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(var(--neon-purple-light) / 0.08) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, hsl(var(--electric-blue-glow) / 0.08) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsl(var(--cyber-blue) / 0.08) 0px, transparent 50%),
+      linear-gradient(135deg, hsl(235 40% 11%) 0%, hsl(230 35% 7%) 100%);
+  }
+
+  [data-color-scheme="cool"].dark body {
+    background:
+      radial-gradient(at 40% 20%, hsl(var(--cyber-blue) / 0.08) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(var(--neon-cyan) / 0.08) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(var(--neon-purple) / 0.05) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, hsl(var(--electric-blue) / 0.05) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsl(var(--cyber-blue-dark) / 0.05) 0px, transparent 50%),
+      linear-gradient(135deg, hsl(235 40% 9%) 0%, hsl(230 35% 5%) 100%);
+  }
+}
+
+/* ===== 玻璃态效果 ===== */
+@layer utilities {
+  .glass {
+    /* 浅色渐变背景 */
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(255, 243, 248, 0.82) 50%,
+      rgba(245, 250, 255, 0.84) 100%
+    );
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+  }
+
+  /* 深色模式下的 .glass */
+  .dark .glass {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.85) 0%,
+      rgba(40, 38, 70, 0.82) 50%,
+      rgba(33, 48, 68, 0.84) 100%
+    );
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  /* Cool配色的玻璃效果 */
+  [data-color-scheme="cool"] .glass {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.86) 0%,
+      rgba(35, 45, 65, 0.83) 50%,
+      rgba(32, 42, 62, 0.85) 100%
+    );
+    border-color: rgba(0, 212, 255, 0.25);
+  }
+
+  [data-color-scheme="cool"].dark .glass {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.88) 0%,
+      rgba(35, 45, 65, 0.85) 50%,
+      rgba(32, 42, 62, 0.87) 100%
+    );
+    border-color: rgba(0, 212, 255, 0.2);
+  }
+
+  .glass-dark {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.90) 0%,
+      rgba(35, 38, 68, 0.88) 50%,
+      rgba(30, 45, 65, 0.89) 100%
+    );
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* ===== 卡片增强 ===== */
+@layer components {
+  .card-enhanced {
+    @apply relative;
+    @apply rounded-2xl;
+    @apply p-6;
+    @apply border;
+    @apply transition-all;
+    transition-duration: var(--duration-normal);
+    box-shadow: var(--shadow-md);
+
+    /* 方案三：浅色渐变背景 */
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.92) 0%,
+      rgba(255, 245, 248, 0.88) 50%,
+      rgba(240, 249, 255, 0.90) 100%
+    );
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+
+  .card-enhanced:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg), var(--shadow-sakura);
+    border-color: hsl(var(--sakura) / 0.4);
+
+    /* hover时渐变更明显 */
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 240, 245, 0.92) 50%,
+      rgba(235, 245, 255, 0.93) 100%
+    );
+  }
+
+  /* 深色模式 */
+  .dark .card-enhanced {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.92) 0%,
+      rgba(41, 37, 71, 0.88) 50%,
+      rgba(28, 45, 65, 0.90) 100%
+    );
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .dark .card-enhanced:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.95) 0%,
+      rgba(45, 40, 75, 0.92) 50%,
+      rgba(32, 50, 70, 0.93) 100%
+    );
+    border-color: hsl(var(--sakura) / 0.5);
+  }
+
+  /* 带渐变边框的卡片 */
+  .card-gradient-border {
+    @apply relative;
+    @apply rounded-2xl;
+    @apply p-6;
+    position: relative;
+
+    /* 浅色渐变 */
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.90) 0%,
+      rgba(255, 242, 247, 0.86) 50%,
+      rgba(238, 248, 255, 0.88) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+
+  .card-gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 1.1rem;
+    background: linear-gradient(135deg, hsl(var(--sakura)), hsl(var(--japan-blue)));
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 250ms ease-out;
+  }
+
+  .card-gradient-border:hover::before {
+    opacity: 1;
+  }
+
+  .card-gradient-border:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.94) 0%,
+      rgba(255, 238, 245, 0.90) 50%,
+      rgba(232, 245, 255, 0.92) 100%
+    );
+  }
+
+  /* 深色模式 */
+  .dark .card-gradient-border {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.90) 0%,
+      rgba(43, 38, 73, 0.86) 50%,
+      rgba(30, 48, 68, 0.88) 100%
+    );
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .dark .card-gradient-border:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.94) 0%,
+      rgba(48, 42, 78, 0.90) 50%,
+      rgba(34, 53, 73, 0.92) 100%
+    );
+  }
+
+  /* 课程卡片专用渐变 */
+  .course-card {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.94) 0%,
+      rgba(255, 241, 247, 0.91) 30%,
+      rgba(241, 248, 255, 0.92) 70%,
+      rgba(255, 250, 252, 0.93) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    transition: all var(--duration-normal) ease-out;
+  }
+
+  .course-card:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.96) 0%,
+      rgba(255, 238, 246, 0.93) 30%,
+      rgba(238, 246, 255, 0.94) 70%,
+      rgba(255, 248, 252, 0.95) 100%
+    );
+    border-color: hsl(var(--sakura) / 0.3);
+    transform: translateY(-2px);
+  }
+
+  .dark .course-card {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.94) 0%,
+      rgba(44, 39, 74, 0.91) 30%,
+      rgba(32, 49, 69, 0.92) 70%,
+      rgba(38, 43, 63, 0.93) 100%
+    );
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .dark .course-card:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.96) 0%,
+      rgba(48, 42, 78, 0.93) 30%,
+      rgba(36, 53, 73, 0.94) 70%,
+      rgba(42, 47, 67, 0.95) 100%
+    );
+    border-color: hsl(var(--sakura) / 0.4);
+  }
+
+  /* ===== Cool配色的卡片样式 ===== */
+  [data-color-scheme="cool"] .card-enhanced {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.90) 0%,
+      rgba(35, 45, 65, 0.87) 50%,
+      rgba(32, 42, 62, 0.89) 100%
+    );
+    border-color: rgba(0, 212, 255, 0.25);
+  }
+
+  [data-color-scheme="cool"] .card-enhanced:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.93) 0%,
+      rgba(38, 48, 68, 0.90) 50%,
+      rgba(35, 45, 65, 0.91) 100%
+    );
+    border-color: hsl(var(--cyber-blue) / 0.4);
+    box-shadow: var(--shadow-lg), var(--shadow-cyber);
+  }
+
+  [data-color-scheme="cool"].dark .card-enhanced {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.92) 0%,
+      rgba(35, 45, 65, 0.89) 50%,
+      rgba(32, 42, 62, 0.90) 100%
+    );
+    border-color: rgba(0, 212, 255, 0.2);
+  }
+
+  [data-color-scheme="cool"].dark .card-enhanced:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.94) 0%,
+      rgba(40, 50, 70, 0.91) 50%,
+      rgba(37, 47, 67, 0.92) 100%
+    );
+    border-color: hsl(var(--cyber-blue) / 0.5);
+  }
+
+  /* Cool配色的渐变边框卡片 */
+  [data-color-scheme="cool"] .card-gradient-border {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.88) 0%,
+      rgba(35, 45, 65, 0.85) 50%,
+      rgba(32, 42, 62, 0.87) 100%
+    );
+    border-color: rgba(0, 212, 255, 0.25);
+  }
+
+  [data-color-scheme="cool"] .card-gradient-border::before {
+    background: linear-gradient(135deg, hsl(var(--cyber-blue)), hsl(var(--neon-cyan)));
+  }
+
+  [data-color-scheme="cool"] .card-gradient-border:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.92) 0%,
+      rgba(38, 48, 68, 0.89) 50%,
+      rgba(35, 45, 65, 0.90) 100%
+    );
+  }
+
+  [data-color-scheme="cool"].dark .card-gradient-border {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.90) 0%,
+      rgba(35, 45, 65, 0.87) 50%,
+      rgba(32, 42, 62, 0.88) 100%
+    );
+    border-color: rgba(0, 212, 255, 0.2);
+  }
+
+  [data-color-scheme="cool"].dark .card-gradient-border:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.93) 0%,
+      rgba(40, 50, 70, 0.90) 50%,
+      rgba(37, 47, 67, 0.91) 100%
+    );
+  }
+
+  /* Cool配色的课程卡片 */
+  [data-color-scheme="cool"] .course-card {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.91) 0%,
+      rgba(33, 43, 63, 0.88) 30%,
+      rgba(35, 45, 65, 0.89) 70%,
+      rgba(31, 41, 61, 0.90) 100%
+    );
+    border-color: rgba(0, 212, 255, 0.25);
+  }
+
+  [data-color-scheme="cool"] .course-card:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.93) 0%,
+      rgba(35, 45, 65, 0.90) 30%,
+      rgba(38, 48, 68, 0.91) 70%,
+      rgba(33, 43, 63, 0.92) 100%
+    );
+    border-color: hsl(var(--cyber-blue) / 0.35);
+  }
+
+  [data-color-scheme="cool"].dark .course-card {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.92) 0%,
+      rgba(33, 43, 63, 0.89) 30%,
+      rgba(35, 45, 65, 0.90) 70%,
+      rgba(31, 41, 61, 0.91) 100%
+    );
+    border-color: rgba(0, 212, 255, 0.2);
+  }
+
+  [data-color-scheme="cool"].dark .course-card:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.94) 0%,
+      rgba(35, 45, 65, 0.91) 30%,
+      rgba(40, 50, 70, 0.92) 70%,
+      rgba(33, 43, 63, 0.93) 100%
+    );
+    border-color: hsl(var(--cyber-blue) / 0.4);
+  }
+}
+
+/* ===== 文本渐变 ===== */
+@layer utilities {
+  .text-gradient-sakura {
+    background: linear-gradient(135deg, hsl(var(--sakura)), hsl(var(--japan-blue)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* ===== 滚动条样式 ===== */
+@layer base {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--stone-100));
+    border-radius: var(--radius-full);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--sakura) / 0.5);
+    border-radius: var(--radius-full);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--sakura) / 0.7);
+  }
+
+  .dark ::-webkit-scrollbar-track {
+    background: hsl(var(--stone-800));
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: hsl(var(--sakura) / 0.4);
+  }
+
+  /* ===== 统计卡片样式 ===== */
+  .stat-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.3));
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+  }
+
+  .dark .stat-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  /* 樱粉统计卡片 */
+  .stat-card-sakura {
+    background: linear-gradient(135deg, hsl(var(--sakura-light) / 0.4), hsl(var(--sakura) / 0.2));
+    border: 1px solid hsl(var(--sakura) / 0.3);
+  }
+
+  .dark .stat-card-sakura {
+    background: linear-gradient(135deg, hsl(var(--sakura) / 0.25), hsl(var(--sakura) / 0.1));
+    border: 1px solid hsl(var(--sakura) / 0.2);
+  }
+
+  /* 蓝色统计卡片 */
+  .stat-card-blue {
+    background: linear-gradient(135deg, hsl(var(--japan-blue-light) / 0.4), hsl(var(--japan-blue) / 0.2));
+    border: 1px solid hsl(var(--japan-blue) / 0.3);
+  }
+
+  .dark .stat-card-blue {
+    background: linear-gradient(135deg, hsl(var(--japan-blue) / 0.25), hsl(var(--japan-blue) / 0.1));
+    border: 1px solid hsl(var(--japan-blue) / 0.2);
+  }
+
+  /* 绿色统计卡片 */
+  .stat-card-green {
+    background: linear-gradient(135deg, hsl(var(--bamboo-light) / 0.4), hsl(var(--bamboo) / 0.2));
+    border: 1px solid hsl(var(--bamboo) / 0.3);
+  }
+
+  .dark .stat-card-green {
+    background: linear-gradient(135deg, hsl(var(--bamboo) / 0.25), hsl(var(--bamboo) / 0.1));
+    border: 1px solid hsl(var(--bamboo) / 0.2);
+  }
+
+  /* 橙色统计卡片 */
+  .stat-card-orange {
+    background: linear-gradient(135deg, hsl(var(--maple) / 0.4), hsl(var(--maple) / 0.2));
+    border: 1px solid hsl(var(--maple) / 0.3);
+  }
+
+  .dark .stat-card-orange {
+    background: linear-gradient(135deg, hsl(var(--maple) / 0.25), hsl(var(--maple) / 0.1));
+    border: 1px solid hsl(var(--maple) / 0.2);
+  }
+
+  /* Cool配色的统计卡片 */
+  [data-color-scheme="cool"] .stat-card-sakura {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.35), rgba(0, 212, 255, 0.18));
+    border: 1px solid rgba(0, 212, 255, 0.4);
+  }
+
+  [data-color-scheme="cool"].dark .stat-card-sakura {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(0, 212, 255, 0.12));
+    border: 1px solid rgba(0, 212, 255, 0.3);
+  }
+
+  [data-color-scheme="cool"] .stat-card-blue {
+    background: linear-gradient(135deg, rgba(0, 255, 200, 0.35), rgba(0, 255, 200, 0.18));
+    border: 1px solid rgba(0, 255, 200, 0.4);
+  }
+
+  [data-color-scheme="cool"].dark .stat-card-blue {
+    background: linear-gradient(135deg, rgba(0, 255, 200, 0.25), rgba(0, 255, 200, 0.12));
+    border: 1px solid rgba(0, 255, 200, 0.3);
+  }
+
+  [data-color-scheme="cool"] .stat-card-green {
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.35), rgba(167, 139, 250, 0.18));
+    border: 1px solid rgba(167, 139, 250, 0.4);
+  }
+
+  [data-color-scheme="cool"].dark .stat-card-green {
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.25), rgba(167, 139, 250, 0.12));
+    border: 1px solid rgba(167, 139, 250, 0.3);
+  }
+
+  [data-color-scheme="cool"] .stat-card-orange {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.35), rgba(251, 146, 60, 0.18));
+    border: 1px solid rgba(251, 146, 60, 0.4);
+  }
+
+  [data-color-scheme="cool"].dark .stat-card-orange {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.25), rgba(251, 146, 60, 0.12));
+    border: 1px solid rgba(251, 146, 60, 0.3);
   }
 }

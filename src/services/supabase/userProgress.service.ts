@@ -58,11 +58,12 @@ export class UserProgressService {
   async getUserStats(userId: string): Promise<UserStats | null> {
     try {
       // 获取总练习次数和平均分数
-      const { data: practices, error: practiceError } = await supabase
+      // 注意：数据库使用 total_score，不是 overall_score
+      const { data: practices, error: practiceError } = await supabase()
         .from('practice_records')
-        .select('overall_score')
+        .select('total_score')
         .eq('user_id', userId)
-        .not('overall_score', 'is', null);
+        .not('total_score', 'is', null);
 
       if (practiceError) throw practiceError;
 
@@ -70,13 +71,13 @@ export class UserProgressService {
       const average_score =
         total_practices > 0
           ? Math.round(
-              practices.reduce((sum, p) => sum + (p.overall_score || 0), 0) /
+              practices.reduce((sum, p) => sum + (p.total_score || 0), 0) /
                 total_practices
             )
           : 0;
 
       // 获取完成的课程数（假设练习记录覆盖不同课程）
-      const { data: courses, error: courseError } = await supabase
+      const { data: courses, error: courseError } = await supabase()
         .from('practice_records')
         .select('course_id')
         .eq('user_id', userId);
@@ -133,7 +134,7 @@ export class UserProgressService {
   async checkAndUpgrade(userId: string): Promise<boolean> {
     try {
       // 获取当前用户level
-      const { data: user, error: userError } = await supabase
+      const { data: user, error: userError } = await supabase()
         .from('users')
         .select('level')
         .eq('id', userId)
@@ -154,7 +155,7 @@ export class UserProgressService {
 
       // 执行升级 - 更新public.users表
       const newLevel = progress.next_level!;
-      const { error: updateError } = await supabase
+      const { error: updateError } = await supabase()
         .from('users')
         .update({ level: newLevel })
         .eq('id', userId);
@@ -162,7 +163,7 @@ export class UserProgressService {
       if (updateError) throw updateError;
 
       // 同时更新auth.user_metadata.level
-      const { error: authUpdateError } = await supabase.auth.updateUser({
+      const { error: authUpdateError } = await supabase().auth.updateUser({
         data: { level: newLevel }
       });
 
@@ -186,7 +187,7 @@ export class UserProgressService {
     userId: string
   ): Promise<LevelProgress | null> {
     try {
-      const { data: user, error: userError } = await supabase
+      const { data: user, error: userError } = await supabase()
         .from('users')
         .select('level')
         .eq('id', userId)

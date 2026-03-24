@@ -26,14 +26,17 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
 
-  // ESLint构建时忽略错误
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  // ESLint构建时忽略错误（已废弃，保留用于兼容性）
+  // eslint: {
+  //   ignoreDuringBuilds: true,
+  // },
+
+  // Turbopack 配置（使用 webpack 配置）
+  turbopack: {},
 
   // Webpack 配置
   webpack: (config, { isServer }) => {
-    // 排除 sherpa-onnx 的 Node.js 特定模块
+    // 客户端构建配置
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -41,22 +44,6 @@ const nextConfig = {
         path: false,
         crypto: false,
       };
-
-      // 在客户端构建中忽略整个 sherpa-onnx 包和相关hooks
-      // 注意：不要排除 @/plugins/local-asr，因为 Capacitor 需要它
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        'sherpa-onnx': false,
-        '@/hooks/useLocalASR': false,
-        '@/hooks/useLocalASRAndroid': false,
-        '@/services/asr/sherpa.service': false,
-      };
-    }
-
-    // 外部化 sherpa-onnx-nodejs 模块（只在服务器端使用）
-    if (isServer) {
-      config.externals = config.externals || [];
-      config.externals.push('sherpa-onnx/sherpa-onnx-wasm-nodejs');
     }
 
     return config;

@@ -9,6 +9,7 @@ import { TTSPlayer } from './AudioPlayer';
 import { FeedbackDisplay } from './FeedbackDisplay';
 import { evaluationService, type EvaluationResult } from '@/services/processing/eval.service';
 import { userProgressService } from '@/services/supabase/userProgress.service';
+import { practiceRecordService } from '@/services/supabase/practiceRecord.service';
 import { useAuthStore } from '@/store/authStore';
 import type { Sentence, Character } from '@/types';
 import { Volume2, Mic, CheckCircle, Loader2, AlertCircle, ChevronLeft, ChevronRight, List } from 'lucide-react';
@@ -77,6 +78,11 @@ export function PracticeArea({ course, character, sentences }: PracticeAreaProps
   const isLastSentence = currentIndex === filteredSentences.length - 1;
   const isFirstSentence = currentIndex === 0;
 
+  // 练习记录状态
+  const [practiceId, setPracticeId] = useState<number | null>(null);
+  const [results, setResults] = useState<any[]>([]);
+  const [practiceStartTime, setPracticeStartTime] = useState<number>(Date.now());
+
   // 当角色改变时，重置到第一句
   useEffect(() => {
     setCurrentIndex(0);
@@ -98,6 +104,34 @@ export function PracticeArea({ course, character, sentences }: PracticeAreaProps
     setManualTranscript('');
     setShowManualInput(false);
   }, [currentIndex]);
+
+  // 初始化练习记录（首次加载时）
+  useEffect(() => {
+    const initPracticeRecord = async () => {
+      if (!user?.id || practiceId !== null) {
+        return; // 已初始化或用户未登录
+      }
+
+      try {
+        const id = await practiceRecordService.createPracticeRecord({
+          userId: user.id,
+          courseId: course,
+          characterId: character?.id || 1, // 默认使用角色1
+          sentences: filteredSentences,
+        });
+
+        if (id) {
+          setPracticeId(id);
+          setPracticeStartTime(Date.now());
+          console.log('✅ 练习记录已创建，ID:', id);
+        }
+      } catch (error) {
+        console.error('创建练习记录失败:', error);
+      }
+    };
+
+    initPracticeRecord();
+  }, [user?.id]); // 只在用户变化时执行一次
 
   const handleRecordingComplete = useCallback((blob: Blob, url: string) => {
     setRecordedAudio({ blob, url });
@@ -143,6 +177,48 @@ export function PracticeArea({ course, character, sentences }: PracticeAreaProps
       setResult(evaluation);
       setError(null); // Clear the warning if evaluation succeeds
 
+      // 保存练习结果到数据库
+      if (practiceId && user?.id) {
+        try {
+          await practiceRecordService.savePracticeResult({
+            practiceId: practiceId,
+            sentenceId: currentSentence.id,
+            userText: transcript,
+            standardText: currentSentence.text_jp,
+            audioUrl: recordedAudio.url,
+            overallScore: evaluation.overall_score || 0,
+            dimensionScores: evaluation.dimension_scores || {
+              emotion: 0,
+              fluency: 0,
+              freedom: 0,
+              accuracy: 0,
+              pronunciation: 0,
+            },
+            grade: evaluation.grade || 'D',
+            feedback: evaluation.feedback || {
+              issues: [],
+              highlights: [],
+              suggestions: [],
+            },
+            detailedAnalysis: evaluation.detailed_analysis,
+          });
+
+          // 保存到结果列表，用于完成时计算总分
+          setResults((prev) => [
+            ...prev,
+            {
+              sentenceId: currentSentence.id,
+              overallScore: evaluation.overall_score || 0,
+            },
+          ]);
+
+          console.log('✅ 练习结果已保存');
+        } catch (saveError) {
+          console.error('保存练习结果失败:', saveError);
+          // 不影响用户体验，继续流程
+        }
+      }
+
       // 检查是否可以升级（每次评估后都检查）
       if (user?.id) {
         const upgraded = await userProgressService.checkAndUpgrade(user.id);
@@ -166,9 +242,48 @@ export function PracticeArea({ course, character, sentences }: PracticeAreaProps
 
   const handleNext = async () => {
     if (isLastSentence) {
-      // Practice completed
-      // TODO: Show completion screen or redirect to report
-      alert('恭喜完成所有句子练习！');
+      // Practice completed - save data
+      if (practiceId && user?.id) {
+        try {
+          // Calculate total time spent
+          const totalTimeSpent = Math.round((Date.now() - practiceStartTime) / 1000);
+
+          // Calculate average score from results
+          const averageScore = results.length > 0
+            ? Math.round(results.reduce((sum, r) => sum + r.overallScore, 0) / results.length)
+            : 0;
+
+          // Complete practice - save record and all results
+          const success = await practiceRecordService.completePractice(
+            practiceId,
+            totalTimeSpent,
+            averageScore,
+            results
+          );
+
+          if (success) {
+            // Format time for display
+            const minutes = Math.floor(totalTimeSpent / 60);
+            const seconds = totalTimeSpent % 60;
+            const timeString = minutes > 0 ? `${minutes}分${seconds}秒` : `${seconds}秒`;
+
+            // Show success message
+            alert(`🎉 恭喜完成所有句子练习！\n\n⏱️ 用时: ${timeString}\n📊 平均分: ${averageScore}分`);
+
+            // Redirect to dashboard
+            router.push('/dashboard');
+          } else {
+            alert('❌ 保存练习数据失败，请重试');
+          }
+        } catch (error) {
+          console.error('完成练习失败:', error);
+          alert('❌ 完成练习时出错，请重试');
+        }
+      } else {
+        // No practice record - just redirect
+        alert('🎉 恭喜完成所有句子练习！');
+        router.push('/dashboard');
+      }
     } else {
       setCurrentIndex((prev) => prev + 1);
     }

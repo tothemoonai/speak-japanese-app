@@ -5,15 +5,26 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { CourseList } from '@/components/course/CourseList';
 import { Badge } from '@/components/ui/badge';
-import { BookOpen, Mic, TrendingUp, Trophy, Target, LogOut, Settings } from 'lucide-react';
+import {
+  BookOpen,
+  Mic,
+  TrendingUp,
+  Trophy,
+  Target,
+  LogOut,
+  Sparkles,
+  ArrowUpRight,
+  Flame,
+  BarChart,
+} from 'lucide-react';
 import { getUserLevel } from '@/lib/utils/user';
 import { userProgressService } from '@/services/supabase/userProgress.service';
 import { createClient } from '@/lib/supabase/client';
+import { Footer } from '@/components/layout/Footer';
 
-// 强制动态渲染，因为页面依赖用户认证状态
 export const dynamic = 'force-dynamic';
 
 interface UserStats {
@@ -21,6 +32,7 @@ interface UserStats {
   average_score: number;
   courses_completed: number;
   achievements_count: number;
+  today_practices: number;
 }
 
 export default function DashboardPage() {
@@ -32,6 +44,7 @@ export default function DashboardPage() {
     average_score: 0,
     courses_completed: 0,
     achievements_count: 0,
+    today_practices: 0,
   });
   const [loading, setLoading] = useState(true);
 
@@ -57,28 +70,73 @@ export default function DashboardPage() {
     try {
       setLoading(true);
 
-      // 获取基础统计数据
-      const stats = await userProgressService.getUserStats(user.id);
+      // 获取基础统计数据（如果表结构不存在，返回默认值）
+      let stats = { total_practices: 0, average_score: 0, courses_completed: 0 };
+      try {
+        const result = await userProgressService.getUserStats(user.id);
+        if (result) {
+          stats = result;
+        }
+      } catch (statsError) {
+        // practice_records 表结构可能不完整，使用默认值
+        console.warn('统计数据不可用，使用默认值');
+      }
 
-      // 获取成就数量
-      const supabaseClient = createClient();
-      const { data: achievements, error: achievementsError } = await supabaseClient
-        .from('user_achievements')
-        .select('id')
-        .eq('user_id', user.id);
+      // 获取成就数量（如果表不存在，返回0）
+      let achievementsCount = 0;
+      try {
+        const supabaseClient = createClient();
+        const { data: achievements, error: achievementsError } = await supabaseClient
+          .from('user_achievements')
+          .select('id')
+          .eq('user_id', user.id);
 
-      if (achievementsError) {
-        console.error('获取成就失败:', achievementsError);
+        if (!achievementsError && achievements) {
+          achievementsCount = achievements.length;
+        }
+      } catch (achievementsError) {
+        // user_achievements 表可能不存在，使用默认值
+        console.warn('成就数据不可用，使用默认值');
+      }
+
+      // 获取今日练习次数
+      let todayPractices = 0;
+      try {
+        const supabaseClient = createClient();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // 设置为今天的00:00:00
+
+        const { data: todayRecords, error: todayError } = await supabaseClient
+          .from('practice_records')
+          .select('id')
+          .eq('user_id', user.id)
+          .gte('started_at', today.toISOString())
+          .not('completed_at', 'is', null); // 只统计已完成的练习
+
+        if (!todayError && todayRecords) {
+          todayPractices = todayRecords.length;
+        }
+      } catch (todayError) {
+        console.warn('今日练习数据不可用，使用默认值');
       }
 
       setUserStats({
-        total_practices: stats?.total_practices || 0,
-        average_score: stats?.average_score || 0,
-        courses_completed: stats?.courses_completed || 0,
-        achievements_count: achievements?.length || 0,
+        total_practices: stats.total_practices,
+        average_score: stats.average_score,
+        courses_completed: stats.courses_completed,
+        achievements_count: achievementsCount,
+        today_practices: todayPractices,
       });
     } catch (error) {
-      console.error('获取用户统计失败:', error);
+      // 任何其他错误也使用默认值
+      console.warn('获取用户统计时出错，使用默认值');
+      setUserStats({
+        total_practices: 0,
+        average_score: 0,
+        courses_completed: 0,
+        achievements_count: 0,
+        today_practices: 0,
+      });
     } finally {
       setLoading(false);
     }
@@ -97,193 +155,231 @@ export default function DashboardPage() {
     return null;
   }
 
-  // 计算总的课程数
   const totalCourses = 32;
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-background border-b border-border sticky top-0 z-10" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
-        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4" style={{ paddingTop: '0' }}>
+    <div className="min-h-screen">
+      {/* Header - 玻璃态效果 */}
+      <header className="glass sticky top-0 z-50">
+        <div
+          className="container mx-auto px-1.5 sm:px-2 py-2 sm:py-3"
+          style={{ paddingTop: '0' }}
+        >
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-primary">IT日语</h1>
-            <nav className="flex flex-wrap items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
-              <Link href="/dashboard" className="flex-shrink-0">
-                <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
+            <div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-gradient-sakura">
+                IT日语
+              </h1>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                通过AI技术，沉浸式学习日语
+              </p>
+            </div>
+            <nav className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+              <Link href="/dashboard">
+                <Button variant="ghost" size="sm" className="text-sm">
                   首页
                 </Button>
               </Link>
-              <Link href="/courses" className="flex-shrink-0">
-                <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
+              <Link href="/courses">
+                <Button variant="ghost" size="sm" className="text-sm">
                   <BookOpen className="h-4 w-4 mr-1" />
-                  <span className="hidden xs:inline">课程</span>
+                  课程
                 </Button>
               </Link>
-              <Link href="/reports" className="flex-shrink-0">
-                <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
+              <Link href="/reports">
+                <Button variant="ghost" size="sm" className="text-sm">
                   <TrendingUp className="h-4 w-4 mr-1" />
-                  <span className="hidden xs:inline">学习报告</span>
+                  学习报告
                 </Button>
               </Link>
-              <span className="text-xs text-muted-foreground hidden md:inline truncate max-w-[100px]">
-                {user.nickname || user.user_metadata?.nickname || user.email}
-              </span>
-              <Badge variant="outline" className="text-xs">
+              <Badge
+                variant="outline"
+                className="border-sakura/50 text-sakura text-xs"
+              >
                 {getUserLevel(user) === 'beginner' && '初级'}
                 {getUserLevel(user) === 'intermediate' && '中级'}
                 {getUserLevel(user) === 'advanced' && '高级'}
               </Badge>
-              <Button variant="outline" size="sm" onClick={handleLogout} className="text-xs sm:text-sm">
-                <LogOut className="h-4 w-4 mr-1" />
-                <span className="hidden xs:inline">登出</span>
-              </Button>
             </nav>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
-        {/* Welcome Section */}
-        <div className="mb-4 sm:mb-6">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1.5 sm:mb-2">
-            欢迎回来，{user.nickname || user.user_metadata?.nickname || user.email?.split('@')[0] || '学员'}！
-          </h2>
-          <p className="text-sm sm:text-base text-muted-foreground">
-            继续你的IT日语练习之旅
+      <main className="container mx-auto px-1.5 sm:px-2 py-3 sm:py-4 md:py-6">
+        {/* Welcome Section - 带动画 */}
+        <div className="mb-4 sm:mb-6 animate-fade-up">
+          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-sakura animate-glow" />
+            <div>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+                欢迎回来，
+                <span className="text-gradient-sakura">
+                  {user.nickname ||
+                    user.user_metadata?.nickname ||
+                    user.email?.split('@')[0] ||
+                    '学员'}
+                  ！
+                </span>
+              </h2>
+            </div>
+          </div>
+          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl">
+            继续你的IT日语练习之旅。每一次练习，都让你离流利更近一步。
           </p>
         </div>
 
-        {/* Stats Cards - 紧凑的一行布局 */}
-        <Card className="mb-6">
-          <CardContent className="p-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {/* Stats Cards - 增强版 */}
+        <Card className="mb-4 sm:mb-6 card-gradient-border animate-fade-up delay-100">
+          <CardContent className="p-2 sm:p-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
               {/* 总练习次数 */}
-              <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-secondary/30">
-                <div className="flex items-center gap-2 mb-1">
-                  <Mic className="h-4 w-4 text-primary" />
-                  <span className="text-xs text-muted-foreground">总练习</span>
-                </div>
+              <div className="stat-card stat-card-sakura flex items-center justify-center gap-1.5 p-2 rounded-lg">
+                <Mic className="h-4 w-4 text-sakura flex-shrink-0" />
+                <span className="text-xs text-muted-foreground">
+                  总练习
+                </span>
                 {loading ? (
-                  <div className="text-xl font-bold text-muted-foreground">-</div>
+                  <div className="text-lg font-bold text-muted-foreground">-</div>
                 ) : (
-                  <div className="text-xl font-bold">{userStats.total_practices}</div>
+                  <div className="flex items-baseline gap-0.5">
+                    <span className="text-lg sm:text-xl font-bold text-sakura-dark dark:text-sakura-light">
+                      {userStats.total_practices}
+                    </span>
+                    <span className="text-xs text-muted-foreground">次</span>
+                  </div>
                 )}
-                <div className="text-xs text-muted-foreground">次</div>
               </div>
 
               {/* 平均分数 */}
-              <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-secondary/30">
-                <div className="flex items-center gap-2 mb-1">
-                  <TrendingUp className="h-4 w-4 text-primary" />
-                  <span className="text-xs text-muted-foreground">平均分</span>
-                </div>
+              <div className="stat-card stat-card-blue flex items-center justify-center gap-1.5 p-2 rounded-lg">
+                <Flame className="h-4 w-4 text-japan-blue flex-shrink-0" />
+                <span className="text-xs text-muted-foreground">
+                  平均分
+                </span>
                 {loading ? (
-                  <div className="text-xl font-bold text-muted-foreground">-</div>
+                  <div className="text-lg font-bold text-muted-foreground">-</div>
                 ) : (
-                  <div className="text-xl font-bold">{userStats.average_score}</div>
+                  <div className="flex items-baseline gap-0.5">
+                    <span className="text-lg sm:text-xl font-bold text-japan-blue-dark dark:text-japan-blue-light">
+                      {userStats.average_score}
+                    </span>
+                    <span className="text-xs text-muted-foreground">分</span>
+                  </div>
                 )}
-                <div className="text-xs text-muted-foreground">分</div>
               </div>
 
               {/* 已完成课程 */}
-              <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-secondary/30">
-                <div className="flex items-center gap-2 mb-1">
-                  <BookOpen className="h-4 w-4 text-primary" />
-                  <span className="text-xs text-muted-foreground">已完成</span>
-                </div>
+              <div className="stat-card stat-card-green flex items-center justify-center gap-1.5 p-2 rounded-lg">
+                <BookOpen className="h-4 w-4 text-bamboo flex-shrink-0" />
+                <span className="text-xs text-muted-foreground">
+                  已完成
+                </span>
                 {loading ? (
-                  <div className="text-xl font-bold text-muted-foreground">-</div>
+                  <div className="text-lg font-bold text-muted-foreground">-</div>
                 ) : (
-                  <div className="text-xl font-bold">{userStats.courses_completed}</div>
+                  <div className="flex items-baseline gap-0.5">
+                    <span className="text-lg sm:text-xl font-bold text-bamboo">
+                      {userStats.courses_completed}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      /{totalCourses}
+                    </span>
+                  </div>
                 )}
-                <div className="text-xs text-muted-foreground">/ {totalCourses} 课程</div>
               </div>
 
               {/* 获得成就 */}
-              <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-secondary/30">
-                <div className="flex items-center gap-2 mb-1">
-                  <Trophy className="h-4 w-4 text-primary" />
-                  <span className="text-xs text-muted-foreground">成就</span>
-                </div>
+              <div className="stat-card stat-card-orange flex items-center justify-center gap-1.5 p-2 rounded-lg">
+                <Trophy className="h-4 w-4 text-maple flex-shrink-0" />
+                <span className="text-xs text-muted-foreground">
+                  成就
+                </span>
                 {loading ? (
-                  <div className="text-xl font-bold text-muted-foreground">-</div>
+                  <div className="text-lg font-bold text-muted-foreground">-</div>
                 ) : (
-                  <div className="text-xl font-bold">{userStats.achievements_count}</div>
+                  <div className="flex items-baseline gap-0.5">
+                    <span className="text-lg sm:text-xl font-bold text-maple">
+                      {userStats.achievements_count}
+                    </span>
+                    <span className="text-xs text-muted-foreground">个</span>
+                  </div>
                 )}
-                <div className="text-xs text-muted-foreground">个</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Link href="/courses">
-            <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BookOpen className="h-5 w-5 text-primary" />
-                  继续学习
-                </CardTitle>
-                <CardDescription>
-                  查看所有可用课程
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  {totalCourses} 门课程等待你学习
-                </p>
+        {/* Quick Actions - 紧凑卡片 */}
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-6 sm:mb-8">
+          <Link href="/courses" className="group">
+            <Card className="card-enhanced h-full">
+              <CardContent className="p-1.5 sm:p-2">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  {/* 图标 */}
+                  <div className="p-1.5 rounded-lg bg-gradient-sakura flex-shrink-0">
+                    <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                  </div>
+                  {/* 文字内容 */}
+                  <div className="flex-1 min-w-0 text-left">
+                    <h3 className="text-xs sm:text-sm font-bold mb-0.5 truncate leading-tight">继续学习</h3>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {totalCourses}门课程
+                    </p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </Link>
 
-          <Link href="/courses">
-            <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="h-5 w-5 text-primary" />
-                  每日目标
-                </CardTitle>
-                <CardDescription>
-                  完成每日练习目标
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  今日已完成 0/3 次练习
-                </p>
+          <Link href="/courses" className="group">
+            <Card className="card-enhanced h-full">
+              <CardContent className="p-1.5 sm:p-2">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <div className="p-1.5 rounded-lg bg-gradient-japan-blue flex-shrink-0">
+                    <Target className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0 text-left">
+                    <h3 className="text-xs sm:text-sm font-bold mb-0.5 truncate leading-tight">每日目标</h3>
+                    <p className="text-xs text-muted-foreground truncate">
+                      今日{userStats.today_practices}/3次
+                    </p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </Link>
 
-          <Link href="/reports">
-            <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-primary" />
-                  学习报告
-                </CardTitle>
-                <CardDescription>
-                  查看学习进度和成绩
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  追踪你的学习成果
-                </p>
+          <Link href="/reports" className="group">
+            <Card className="card-enhanced h-full">
+              <CardContent className="p-1.5 sm:p-2">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <div className="p-1.5 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex-shrink-0">
+                    <BarChart className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0 text-left">
+                    <h3 className="text-xs sm:text-sm font-bold mb-0.5 truncate leading-tight">学习报告</h3>
+                    <p className="text-xs text-muted-foreground truncate">
+                      学习成果
+                    </p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </Link>
         </div>
 
         {/* Recent Courses */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bold">课程列表</h3>
+        <div className="animate-fade-up delay-200">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <Sparkles className="h-6 w-6 text-sakura" />
+              <h3 className="text-2xl font-bold">课程列表</h3>
+            </div>
             <Link href="/courses">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="group">
                 查看全部
+                <ArrowUpRight className="h-4 w-4 ml-1 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </Button>
             </Link>
           </div>
@@ -292,19 +388,7 @@ export default function DashboardPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 mt-12">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-            <p>&copy; 2026 IT日语. All rights reserved.</p>
-            <div className="flex items-center gap-4">
-              <Link href="/settings" className="hover:text-foreground">
-                <Settings className="h-4 w-4 inline mr-1" />
-                设置
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -52,7 +52,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="min-h-screen flex items-center justify-center">
       <Card className="w-full max-w-md">
         <h1 className="sr-only">注册</h1>
         <CardHeader>
