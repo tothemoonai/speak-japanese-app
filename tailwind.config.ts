@@ -60,15 +60,43 @@ const config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        warning: {
+          DEFAULT: 'hsl(var(--warning))',
+          foreground: 'hsl(var(--warning-foreground))',
+        },
+        success: {
+          DEFAULT: 'hsl(var(--success))',
+          foreground: 'hsl(var(--success-foreground))',
+        },
+        /* 专业紫蓝 */
+        'primary-blue': {
+          DEFAULT: 'hsl(var(--primary-blue))',
+          light: 'hsl(var(--primary-blue-light))',
+          dark: 'hsl(var(--primary-blue-dark))',
+        },
+        /* 樱花粉（点缀色） */
         sakura: {
           DEFAULT: 'hsl(var(--sakura))',
           light: 'hsl(var(--sakura-light))',
           dark: 'hsl(var(--sakura-dark))',
         },
+        /* 日本蓝 */
         'japan-blue': {
           DEFAULT: 'hsl(var(--japan-blue))',
           light: 'hsl(var(--japan-blue-light))',
           dark: 'hsl(var(--japan-blue-dark))',
+        },
+        /* 竹绿 */
+        bamboo: {
+          DEFAULT: 'hsl(var(--bamboo))',
+          light: 'hsl(var(--bamboo-light))',
+          dark: 'hsl(var(--bamboo-dark))',
+        },
+        /* 琥珀色 */
+        amber: {
+          DEFAULT: 'hsl(var(--amber))',
+          light: 'hsl(var(--amber-light))',
+          dark: 'hsl(var(--amber-dark))',
         },
       },
       borderRadius: {
@@ -107,10 +135,10 @@ const config = {
         },
         'glow': {
           '0%, 100%': {
-            boxShadow: '0 0 20px -5px hsl(var(--sakura) / 0.5)',
+            boxShadow: '0 0 20px -5px hsl(var(--primary-blue) / 0.5)',
           },
           '50%': {
-            boxShadow: '0 0 30px -5px hsl(var(--sakura) / 0.8)',
+            boxShadow: '0 0 30px -5px hsl(var(--primary-blue) / 0.8)',
           },
         },
       },
@@ -121,9 +149,11 @@ const config = {
         'glow': 'glow 2s ease-in-out infinite',
       },
       backgroundImage: {
+        'gradient-primary': 'linear-gradient(135deg, hsl(var(--primary-blue-light)), hsl(var(--primary-blue)))',
+        'gradient-secondary': 'linear-gradient(135deg, hsl(var(--japan-blue-light)), hsl(var(--japan-blue)))',
+        'gradient-mesh': 'radial-gradient(at 40% 20%, hsl(var(--primary-blue-light) / 0.3) 0px, transparent 50%), radial-gradient(at 80% 0%, hsl(var(--japan-blue-light) / 0.3) 0px, transparent 50%)',
+        /* 保留樱花渐变用于特殊场景 */
         'gradient-sakura': 'linear-gradient(135deg, hsl(var(--sakura-light)), hsl(var(--sakura)))',
-        'gradient-japan-blue': 'linear-gradient(135deg, hsl(var(--japan-blue-light)), hsl(var(--japan-blue)))',
-        'gradient-mesh': 'radial-gradient(at 40% 20%, hsl(var(--sakura-light) / 0.3) 0px, transparent 50%), radial-gradient(at 80% 0%, hsl(var(--japan-blue-light) / 0.3) 0px, transparent 50%)',
       },
     },
   },
