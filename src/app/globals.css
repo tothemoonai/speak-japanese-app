@@ -17,42 +17,42 @@
 
     /* ===== 主色板：专业科技风格 ===== */
 
-    /* 专业紫蓝 - 主品牌色（替代樱花粉） */
-    --primary-blue: 255 75% 60%;      /* #7766EB - 专业紫蓝 */
-    --primary-blue-light: 255 80% 75%; /* #a5b4fc */
-    --primary-blue-dark: 255 70% 50%;  /* #4f46e5 */
+    /* 专业紫蓝 - 主品牌色（使用十六进制确保精确匹配） */
+    --primary-blue: 248 77% 66%;      /* #7766EB - 完全匹配 */
+    --primary-blue-light: 230 94% 82%; /* #a5b4fc - 接近值 */
+    --primary-blue-dark: 243 76% 59%;  /* #4f46e5 - 接近值 */
 
-    /* 樱花粉 - 点缀色（仅用于装饰和情感化设计） */
-    --sakura: 350 85% 68%;
-    --sakura-light: 350 80% 85%;
-    --sakura-dark: 350 75% 50%;
+    /* 樱花粉 - 点缀色 */
+    --sakura: 330 79% 60%;            /* #ec4899 - 接近值 */
+    --sakura-light: 330 74% 80%;
+    --sakura-dark: 330 84% 50%;
 
     /* 深化日本蓝 - 强调色 */
-    --japan-blue: 215 90% 55%;        /* 更深的蓝色 */
-    --japan-blue-light: 215 85% 70%;
-    --japan-blue-dark: 215 95% 45%;
+    --japan-blue: 221 83% 53%;        /* #2563eb - 接近值 */
+    --japan-blue-light: 213 94% 68%;
+    --japan-blue-dark: 224 76% 48%;
 
     /* 深靛蓝 - 背景/文本 */
     --deep-indigo: 235 40% 15%;
     --deep-indigo-light: 235 35% 25%;
 
     /* 竹绿 - 成功/积极 */
-    --bamboo: 150 65% 45%;
-    --bamboo-light: 150 60% 70%;
-    --bamboo-dark: 150 60% 35%;
+    --bamboo: 142 70% 45%;            /* #22c55e - 接近值 */
+    --bamboo-light: 142 65% 70%;
+    --bamboo-dark: 142 75% 35%;
 
-    /* 琥珀色 - 警告/重要（替代枫红） */
-    --amber: 35 90% 60%;
-    --amber-light: 35 85% 75%;
-    --amber-dark: 35 95% 50%;
+    /* 琥珀色 - 警告/重要 */
+    --amber: 38 91% 50%;              /* #f59e0b - 接近值 */
+    --amber-light: 38 86% 65%;
+    --amber-dark: 38 96% 40%;
 
     /* 枫红 - 保留用于特殊场景 */
     --maple: 25 85% 58%;
 
     /* 纯红 - 错误/危险 */
-    --danger-red: 0 75% 55%;
-    --danger-red-light: 0 70% 70%;
-    --danger-red-dark: 0 80% 45%;
+    --danger-red: 0 83% 60%;          /* #ef4444 - 接近值 */
+    --danger-red-light: 0 78% 75%;
+    --danger-red-dark: 0 88% 45%;
 
     /* ===== 中性色（优化对比度）===== */
     --stone-50: 220 20% 97%;
