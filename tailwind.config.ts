@@ -32,17 +32,24 @@ const config = {
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+        // 使用精确的十六进制值，确保与预览页面完全匹配
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
+          DEFAULT: '#7766EB',
+          light: '#a5b4fc',
+          dark: '#4f46e5',
+          foreground: '#ffffff',
         },
         secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
+          DEFAULT: '#2563eb',
+          light: '#60a5fa',
+          dark: '#1d4ed8',
+          foreground: '#ffffff',
         },
         destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
+          DEFAULT: '#ef4444',
+          light: '#fca5a5',
+          dark: '#b91c1c',
+          foreground: '#ffffff',
         },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
@@ -61,42 +68,46 @@ const config = {
           foreground: 'hsl(var(--card-foreground))',
         },
         warning: {
-          DEFAULT: 'hsl(var(--warning))',
-          foreground: 'hsl(var(--warning-foreground))',
+          DEFAULT: '#f59e0b',
+          light: '#fcd34d',
+          dark: '#b45309',
+          foreground: '#ffffff',
         },
         success: {
-          DEFAULT: 'hsl(var(--success))',
-          foreground: 'hsl(var(--success-foreground))',
+          DEFAULT: '#22c55e',
+          light: '#86efac',
+          dark: '#15803d',
+          foreground: '#ffffff',
         },
-        /* 专业紫蓝 */
+        /* 专业紫蓝（完整变体） */
         'primary-blue': {
-          DEFAULT: 'hsl(var(--primary-blue))',
-          light: 'hsl(var(--primary-blue-light))',
-          dark: 'hsl(var(--primary-blue-dark))',
+          DEFAULT: '#7766EB',
+          light: '#a5b4fc',
+          dark: '#4f46e5',
         },
         /* 樱花粉（点缀色） */
         sakura: {
-          DEFAULT: 'hsl(var(--sakura))',
-          light: 'hsl(var(--sakura-light))',
-          dark: 'hsl(var(--sakura-dark))',
+          DEFAULT: '#ec4899',
+          light: '#fce7f3',
+          dark: '#be185d',
         },
         /* 日本蓝 */
         'japan-blue': {
-          DEFAULT: 'hsl(var(--japan-blue))',
-          light: 'hsl(var(--japan-blue-light))',
-          dark: 'hsl(var(--japan-blue-dark))',
+          DEFAULT: '#2563eb',
+          light: '#60a5fa',
+          dark: '#1d4ed8',
         },
         /* 竹绿 */
         bamboo: {
-          DEFAULT: 'hsl(var(--bamboo))',
-          light: 'hsl(var(--bamboo-light))',
-          dark: 'hsl(var(--bamboo-dark))',
+          DEFAULT: '#22c55e',
+          light: '#86efac',
+          dark: '#15803d',
         },
         /* 琥珀色 */
         amber: {
-          DEFAULT: 'hsl(var(--amber))',
-          light: 'hsl(var(--amber-light))',
-          dark: 'hsl(var(--amber-dark))',
+          DEFAULT: '#f59e0b',
+          light: '#fcd34d',
+          dark: '#b45309',
         },
       },
       borderRadius: {
