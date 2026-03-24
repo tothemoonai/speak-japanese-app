@@ -52,6 +52,18 @@ check-tothemoonai.js
 query-user-data.js
 list-all-users.js
 
+# Test scripts and files
+test-*.mjs
+test-*.js
+testwaves/
+*-enhanced.tsx
+*-old.tsx
+app_screenshot.png
+
+# Personal documents
+继承者.MD
+To继承者.MD
+
 # Security: Never commit files with API keys
 scripts/setup-via-api.js
 **/SERVICE_ROLE_KEY*
