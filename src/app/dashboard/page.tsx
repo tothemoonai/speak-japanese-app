@@ -230,100 +230,100 @@ export default function DashboardPage() {
         </div>
 
         {/* Stats Cards - 增强版 */}
-        <Card className="mb-4 sm:mb-6 card-gradient-border animate-fade-up delay-100">
-          <CardContent className="p-2 sm:p-3">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <Card className="mb-3 sm:mb-6 card-gradient-border animate-fade-up delay-100">
+          <CardContent className="p-1.5 sm:p-3">
+            <div className="grid grid-cols-4 gap-1 sm:gap-2 md:gap-3">
               {/* 总练习次数 */}
-              <div className="stat-card stat-card-sakura flex items-center justify-center gap-1.5 p-2 rounded-lg">
-                <Mic className="h-4 w-4 text-sakura flex-shrink-0" />
-                <span className="text-xs text-muted-foreground">
-                  总练习
-                </span>
+              <div className="stat-card stat-card-sakura flex flex-col items-center justify-center gap-0.5 p-1 sm:p-2 rounded-lg">
+                <Mic className="h-3 w-3 sm:h-4 sm:w-4 text-sakura flex-shrink-0" />
                 {loading ? (
-                  <div className="text-lg font-bold text-muted-foreground">-</div>
+                  <div className="text-sm font-bold text-muted-foreground">-</div>
                 ) : (
-                  <div className="flex items-baseline gap-0.5">
-                    <span className="text-lg sm:text-xl font-bold text-sakura-dark dark:text-sakura-light">
+                  <div className="flex items-baseline gap-0">
+                    <span className="text-sm sm:text-lg font-bold text-sakura-dark dark:text-sakura-light">
                       {userStats.total_practices}
                     </span>
-                    <span className="text-xs text-muted-foreground">次</span>
+                    <span className="text-[10px] sm:text-xs text-muted-foreground">次</span>
                   </div>
                 )}
+                <span className="text-[10px] sm:text-xs text-muted-foreground">
+                  总练习
+                </span>
               </div>
 
               {/* 平均分数 */}
-              <div className="stat-card stat-card-blue flex items-center justify-center gap-1.5 p-2 rounded-lg">
-                <Flame className="h-4 w-4 text-japan-blue flex-shrink-0" />
-                <span className="text-xs text-muted-foreground">
-                  平均分
-                </span>
+              <div className="stat-card stat-card-blue flex flex-col items-center justify-center gap-0.5 p-1 sm:p-2 rounded-lg">
+                <Flame className="h-3 w-3 sm:h-4 sm:w-4 text-japan-blue flex-shrink-0" />
                 {loading ? (
-                  <div className="text-lg font-bold text-muted-foreground">-</div>
+                  <div className="text-sm font-bold text-muted-foreground">-</div>
                 ) : (
-                  <div className="flex items-baseline gap-0.5">
-                    <span className="text-lg sm:text-xl font-bold text-japan-blue-dark dark:text-japan-blue-light">
+                  <div className="flex items-baseline gap-0">
+                    <span className="text-sm sm:text-lg font-bold text-japan-blue-dark dark:text-japan-blue-light">
                       {userStats.average_score}
                     </span>
-                    <span className="text-xs text-muted-foreground">分</span>
+                    <span className="text-[10px] sm:text-xs text-muted-foreground">分</span>
                   </div>
                 )}
+                <span className="text-[10px] sm:text-xs text-muted-foreground">
+                  平均分
+                </span>
               </div>
 
               {/* 已完成课程 */}
-              <div className="stat-card stat-card-green flex items-center justify-center gap-1.5 p-2 rounded-lg">
-                <BookOpen className="h-4 w-4 text-bamboo flex-shrink-0" />
-                <span className="text-xs text-muted-foreground">
-                  已完成
-                </span>
+              <div className="stat-card stat-card-green flex flex-col items-center justify-center gap-0.5 p-1 sm:p-2 rounded-lg">
+                <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 text-bamboo flex-shrink-0" />
                 {loading ? (
-                  <div className="text-lg font-bold text-muted-foreground">-</div>
+                  <div className="text-sm font-bold text-muted-foreground">-</div>
                 ) : (
-                  <div className="flex items-baseline gap-0.5">
-                    <span className="text-lg sm:text-xl font-bold text-bamboo">
+                  <div className="flex items-baseline gap-0">
+                    <span className="text-sm sm:text-lg font-bold text-bamboo">
                       {userStats.courses_completed}
                     </span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-[10px] sm:text-xs text-muted-foreground">
                       /{totalCourses}
                     </span>
                   </div>
                 )}
+                <span className="text-[10px] sm:text-xs text-muted-foreground">
+                  已完成
+                </span>
               </div>
 
               {/* 获得成就 */}
-              <div className="stat-card stat-card-orange flex items-center justify-center gap-1.5 p-2 rounded-lg">
-                <Trophy className="h-4 w-4 text-maple flex-shrink-0" />
-                <span className="text-xs text-muted-foreground">
-                  成就
-                </span>
+              <div className="stat-card stat-card-orange flex flex-col items-center justify-center gap-0.5 p-1 sm:p-2 rounded-lg">
+                <Trophy className="h-3 w-3 sm:h-4 sm:w-4 text-maple flex-shrink-0" />
                 {loading ? (
-                  <div className="text-lg font-bold text-muted-foreground">-</div>
+                  <div className="text-sm font-bold text-muted-foreground">-</div>
                 ) : (
-                  <div className="flex items-baseline gap-0.5">
-                    <span className="text-lg sm:text-xl font-bold text-maple">
+                  <div className="flex items-baseline gap-0">
+                    <span className="text-sm sm:text-lg font-bold text-maple">
                       {userStats.achievements_count}
                     </span>
-                    <span className="text-xs text-muted-foreground">个</span>
+                    <span className="text-[10px] sm:text-xs text-muted-foreground">个</span>
                   </div>
                 )}
+                <span className="text-[10px] sm:text-xs text-muted-foreground">
+                  成就
+                </span>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Quick Actions - 紧凑卡片 */}
-        <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-6 sm:mb-8">
-          <Link href="/books" className="group">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-2 mb-4 sm:mb-8">
+          <Link href="/books" className="group col-span-1">
             <Card className="card-enhanced h-full">
-              <CardContent className="p-1.5 sm:p-2">
-                <div className="flex items-center gap-1.5 sm:gap-2">
+              <CardContent className="p-2">
+                <div className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2 text-center sm:text-left">
                   {/* 图标 */}
                   <div className="p-1.5 rounded-lg bg-gradient-sakura flex-shrink-0">
                     <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                   </div>
                   {/* 文字内容 */}
-                  <div className="flex-1 min-w-0 text-left">
+                  <div className="flex-1 min-w-0">
                     <h3 className="text-xs sm:text-sm font-bold mb-0.5 truncate leading-tight">继续学习</h3>
-                    <p className="text-xs text-muted-foreground truncate">
+                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
                       {totalCourses}门课程
                     </p>
                   </div>
@@ -332,16 +332,16 @@ export default function DashboardPage() {
             </Card>
           </Link>
 
-          <Link href="/books" className="group">
+          <Link href="/books" className="group col-span-1">
             <Card className="card-enhanced h-full">
-              <CardContent className="p-1.5 sm:p-2">
-                <div className="flex items-center gap-1.5 sm:gap-2">
+              <CardContent className="p-2">
+                <div className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2 text-center sm:text-left">
                   <div className="p-1.5 rounded-lg bg-gradient-japan-blue flex-shrink-0">
                     <Target className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                   </div>
-                  <div className="flex-1 min-w-0 text-left">
+                  <div className="flex-1 min-w-0">
                     <h3 className="text-xs sm:text-sm font-bold mb-0.5 truncate leading-tight">每日目标</h3>
-                    <p className="text-xs text-muted-foreground truncate">
+                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
                       今日{userStats.today_practices}/3次
                     </p>
                   </div>
@@ -350,16 +350,16 @@ export default function DashboardPage() {
             </Card>
           </Link>
 
-          <Link href="/reports" className="group">
+          <Link href="/reports" className="group col-span-2 sm:col-span-1">
             <Card className="card-enhanced h-full">
-              <CardContent className="p-1.5 sm:p-2">
-                <div className="flex items-center gap-1.5 sm:gap-2">
+              <CardContent className="p-2">
+                <div className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2 text-center sm:text-left">
                   <div className="p-1.5 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex-shrink-0">
                     <BarChart className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                   </div>
-                  <div className="flex-1 min-w-0 text-left">
+                  <div className="flex-1 min-w-0">
                     <h3 className="text-xs sm:text-sm font-bold mb-0.5 truncate leading-tight">学习报告</h3>
-                    <p className="text-xs text-muted-foreground truncate">
+                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
                       学习成果
                     </p>
                   </div>

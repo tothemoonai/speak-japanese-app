@@ -1,0 +1,140 @@
+{
+  "book": {
+    "book_number": 2,
+    "title_cn": "大家的日语",
+    "title_jp": "みんなの日本語",
+    "description": "专为初学者设计的日语教材，涵盖日常会话场景",
+    "difficulty": "N5",
+    "target_audience": "初学者",
+    "cover_image_url": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800",
+    "sort_order": 2,
+    "is_published": true
+  },
+  "courses": [
+    {
+      "course_number": 1,
+      "title_cn": "自我介绍",
+      "title_jp": "自己紹介",
+      "description": "学习基本的自我介绍表达方式",
+      "difficulty": "N5",
+      "theme": "日常会话",
+      "scene_image_url": "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800",
+      "total_sentences": 3,
+      "vocab_count": 15,
+      "grammar_count": 3,
+      "sort_order": 1,
+      "sentences": [
+        {
+          "sentence_order": 1,
+          "character_id": 1,
+          "text_jp": "こんにちは、はじめまして。",
+          "text_cn": "你好，初次见面。",
+          "text_furigana": "こんにちは、はじめまして。",
+          "text_romaji": "Konnichiwa, hajimemashite.",
+          "vocabulary": {
+            "こんにちは": "你好",
+            "はじめまして": "初次见面"
+          },
+          "grammar_points": {
+            "问候语": "基本的自我介绍问候，初次见面时的礼貌用语"
+          },
+          "difficulty_level": "easy"
+        },
+        {
+          "sentence_order": 2,
+          "character_id": 1,
+          "text_jp": "田中です。よろしくお願いします。",
+          "text_cn": "我是田中，请多关照。",
+          "text_furigana": "たなかです。よろしくおねがいします。",
+          "text_romaji": "Tanaka desu. Yoroshiku onegaishimasu.",
+          "vocabulary": {
+            "田中": "日本常见姓氏",
+            "よろしくお願いします": "请多关照（礼貌用语）"
+          },
+          "grammar_points": {
+            "自我介绍": "〜です（是...），表示身份"
+          },
+          "difficulty_level": "easy"
+        },
+        {
+          "sentence_order": 3,
+          "character_id": 2,
+          "text_jp": "こちらこそ、よろしくお願いします。",
+          "text_cn": "彼此彼此，请多关照。",
+          "text_furigana": "こちらこそ、よろしくおねがいします。",
+          "text_romaji": "Kochira koso, yoroshiku onegaishimasu.",
+          "vocabulary": {
+            "こちらこそ": "彼此彼此、我才应该"
+          },
+          "grammar_points": {
+            "礼貌用语": "こちらこそ（我也应该...），表示谦虚和礼貌"
+          },
+          "difficulty_level": "medium"
+        }
+      ]
+    },
+    {
+      "course_number": 2,
+      "title_cn": "购物场景",
+      "title_jp": "買い物",
+      "description": "学习在商店购物时的常用表达",
+      "difficulty": "N5",
+      "theme": "日常会话",
+      "scene_image_url": "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?w=800",
+      "total_sentences": 3,
+      "vocab_count": 20,
+      "grammar_count": 4,
+      "sort_order": 2,
+      "sentences": [
+        {
+          "sentence_order": 1,
+          "character_id": 1,
+          "text_jp": "すみません、これはいくらですか。",
+          "text_cn": "请问，这个多少钱？",
+          "text_furigana": "すみません、これはいくらですか。",
+          "text_romaji": "Sumimasen, kore wa ikura desu ka.",
+          "vocabulary": {
+            "すみません": "对不起/请问",
+            "いくら": "多少钱"
+          },
+          "grammar_points": {
+            "疑问句": "〜ですか（是...吗？），询问价格"
+          },
+          "difficulty_level": "easy"
+        },
+        {
+          "sentence_order": 2,
+          "character_id": 2,
+          "text_jp": "それは1000円です。",
+          "text_cn": "那个是1000日元。",
+          "text_furigana": "それは1000えんです。",
+          "text_romaji": "Sore wa sen-en desu.",
+          "vocabulary": {
+            "それ": "那个（离对方近）",
+            "円": "日元"
+          },
+          "grammar_points": {
+            "代词": "これ（这）、それ（那）、あれ（那远处）"
+          },
+          "difficulty_level": "easy"
+        },
+        {
+          "sentence_order": 3,
+          "character_id": 1,
+          "text_jp": "じゃあ、これをください。",
+          "text_cn": "那么，我要这个。",
+          "text_furigana": "じゃあ、これをください。",
+          "text_romaji": "Jaa, kore o kudasai.",
+          "vocabulary": {
+            "じゃあ": "那么",
+            "ください": "请给我"
+          },
+          "grammar_points": {
+            "购物用语": "〜をください（请给我...），购买物品时的表达"
+          },
+          "difficulty_level": "medium"
+        }
+      ]
+    }
+  ]
+}
