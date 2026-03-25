@@ -170,6 +170,79 @@ export class CourseService {
   }
 
   /**
+   * Get courses by book ID
+   */
+  async getCoursesByBookId(bookId: number, userId?: string): Promise<{
+    data: CourseWithProgress[] | null;
+    error: PostgrestError | null;
+  }> {
+    const client = this.getClient();
+
+    const { data, error } = await client
+      .from('courses')
+      .select('*')
+      .eq('book_id', bookId)
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      return { data: null, error };
+    }
+
+    // If userId provided, fetch user progress for each course
+    let coursesWithProgress: CourseWithProgress[] = data;
+
+    if (userId && data) {
+      const courseIds = data.map((course) => course.id);
+
+      // Fetch practice records for these courses
+      const { data: practices } = await client
+        .from('practice_records')
+        .select('course_id, completed_at, total_score, id')
+        .eq('user_id', userId)
+        .in('course_id', courseIds)
+        .order('completed_at', { ascending: false });
+
+      // Map progress to courses
+      coursesWithProgress = data.map((course) => {
+        const coursePractices = practices?.filter((p) => p.course_id === course.id) || [];
+        const practiceCount = coursePractices.length;
+        const bestScore = coursePractices.length > 0
+          ? Math.max(...coursePractices.map(p => p.total_score || 0))
+          : undefined;
+        const lastPracticed = coursePractices.length > 0
+          ? coursePractices[0].completed_at
+          : undefined;
+
+        let status: 'not_started' | 'in_progress' | 'completed' = 'not_started';
+        let progress = 0;
+
+        // Simple progress logic: if practiced at least once, in_progress
+        // If score >= 90, considered completed
+        if (practiceCount > 0) {
+          if (bestScore && bestScore >= 90) {
+            status = 'completed';
+            progress = 100;
+          } else {
+            status = 'in_progress';
+            progress = Math.min(90, practiceCount * 30); // Simple progress calculation
+          }
+        }
+
+        return {
+          ...course,
+          progress,
+          status,
+          last_practiced_at: lastPracticed,
+          best_score: bestScore,
+          practice_count: practiceCount,
+        };
+      });
+    }
+
+    return { data: coursesWithProgress, error: null };
+  }
+
+  /**
    * Get courses by filter
    */
   async getCoursesByFilter(filter: CourseFilter, userId?: string): Promise<{
@@ -178,6 +251,11 @@ export class CourseService {
   }> {
     const client = this.getClient();
     let query = client.from('courses').select('*');
+
+    // Apply book_id filter
+    if (filter.book_id) {
+      query = query.eq('book_id', filter.book_id);
+    }
 
     // Apply difficulty filter
     if (filter.difficulty && filter.difficulty.length > 0) {

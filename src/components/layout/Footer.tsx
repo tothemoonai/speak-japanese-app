@@ -1,4 +1,4 @@
-import { VERSION_DISPLAY } from '@/../../VERSION';
+import { VERSION_DISPLAY } from '@/VERSION';
 
 export function Footer() {
   return (

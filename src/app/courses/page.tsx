@@ -17,7 +17,7 @@ export default function CoursesPage() {
   const router = useRouter();
   const { user } = useAuthStore();
   const [filter, setFilter] = useState<CourseFilter>({});
-  const [selectedDifficulties, setSelectedDifficulties] = useState<typeof DIFFICULTIES>([]);
+  const [selectedDifficulties, setSelectedDifficulties] = useState<(typeof DIFFICULTIES)[number][]>([]);
   const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
 
   useEffect(() => {
@@ -26,7 +26,14 @@ export default function CoursesPage() {
     }
   }, [user, router]);
 
-  const handleDifficultyToggle = (difficulty: typeof DIFFICULTIES[number]) => {
+  // Redirect to books page
+  useEffect(() => {
+    if (user) {
+      router.replace('/books');
+    }
+  }, [user, router]);
+
+  const handleDifficultyToggle = (difficulty: (typeof DIFFICULTIES)[number]) => {
     setSelectedDifficulties((prev) => {
       const newSelected = prev.includes(difficulty)
         ? prev.filter((d) => d !== difficulty)
@@ -34,7 +41,7 @@ export default function CoursesPage() {
 
       setFilter((prev) => ({
         ...prev,
-        difficulty: newSelected.length > 0 ? newSelected : undefined,
+        difficulty: newSelected.length > 0 ? newSelected as any : undefined,
       }));
 
       return newSelected;

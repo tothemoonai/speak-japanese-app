@@ -1,5 +1,6 @@
 export interface Course {
   id: number;
+  book_id: number;
   course_number: number;
   title_cn: string;
   title_jp: string;
@@ -23,6 +24,7 @@ export interface CourseWithProgress extends Course {
 }
 
 export interface CourseFilter {
+  book_id?: number;
   difficulty?: ('N5' | 'N4' | 'N3')[];
   theme?: string[];
   status?: ('not_started' | 'in_progress' | 'completed')[];

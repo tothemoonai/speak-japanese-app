@@ -17,7 +17,7 @@ import { getUserLevel } from '@/lib/utils/user';
 import { ApiKeySettings } from '@/components/settings/ApiKeySettings';
 import { FontSizeSettings } from '@/components/settings/FontSizeSettings';
 import { ColorSchemeSettings } from '@/components/settings/ColorSchemeSettings';
-import { VERSION_DISPLAY } from '@/../../VERSION';
+import { VERSION_DISPLAY } from '@/VERSION';
 
 export default function SettingsPage() {
   const router = useRouter();

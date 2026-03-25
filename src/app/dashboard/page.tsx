@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { CourseList } from '@/components/course/CourseList';
+import { BookList } from '@/components/book/BookList';
 import { Badge } from '@/components/ui/badge';
 import {
   BookOpen,
@@ -180,10 +180,10 @@ export default function DashboardPage() {
                   首页
                 </Button>
               </Link>
-              <Link href="/courses">
+              <Link href="/books">
                 <Button variant="ghost" size="sm" className="text-sm">
                   <BookOpen className="h-4 w-4 mr-1" />
-                  课程
+                  课本
                 </Button>
               </Link>
               <Link href="/reports">
@@ -312,7 +312,7 @@ export default function DashboardPage() {
 
         {/* Quick Actions - 紧凑卡片 */}
         <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-6 sm:mb-8">
-          <Link href="/courses" className="group">
+          <Link href="/books" className="group">
             <Card className="card-enhanced h-full">
               <CardContent className="p-1.5 sm:p-2">
                 <div className="flex items-center gap-1.5 sm:gap-2">
@@ -332,7 +332,7 @@ export default function DashboardPage() {
             </Card>
           </Link>
 
-          <Link href="/courses" className="group">
+          <Link href="/books" className="group">
             <Card className="card-enhanced h-full">
               <CardContent className="p-1.5 sm:p-2">
                 <div className="flex items-center gap-1.5 sm:gap-2">
@@ -374,16 +374,16 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <Sparkles className="h-6 w-6 text-sakura" />
-              <h3 className="text-2xl font-bold">课程列表</h3>
+              <h3 className="text-2xl font-bold">课本列表</h3>
             </div>
-            <Link href="/courses">
+            <Link href="/books">
               <Button variant="outline" size="sm" className="group">
                 查看全部
                 <ArrowUpRight className="h-4 w-4 ml-1 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </Button>
             </Link>
           </div>
-          <CourseList userId={user.id} />
+          <BookList userId={user.id} />
         </div>
       </main>
 

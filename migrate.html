@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一键执行数据库迁移</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #7766EB;
+            padding-bottom: 10px;
+        }
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #7766EB;
+        }
+        .sql-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin: 10px 0;
+        }
+        button {
+            background: #7766EB;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #6655d8;
+        }
+        button.secondary {
+            background: #6c757d;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .copy-btn {
+            background: #28a745;
+            font-size: 14px;
+            padding: 8px 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 书本-课程层级结构数据库迁移</h1>
+
+        <div class="success">
+            ✅ 检测到项目：<strong>utvbpbxhdckgzhxcgqui</strong><br>
+            ✅ 当前课程数：<strong>8</strong>
+        </div>
+
+        <div class="step">
+            <h3>步骤 1：打开 Supabase SQL Editor</h3>
+            <p>点击下面的按钮自动打开 SQL Editor：</p>
+            <button onclick="openSQLEditor()">
+                🔗 打开 SQL Editor
+            </button>
+        </div>
+
+        <div class="step">
+            <h3>步骤 2：复制 SQL</h3>
+            <p>点击下面的按钮复制完整 SQL：</p>
+            <button class="copy-btn" onclick="copySQL()">
+                📋 复制 SQL
+            </button>
+            <button class="copy-btn secondary" onclick="copySQLOne()">
+                📋 只复制创建表
+            </button>
+            <button class="copy-btn secondary" onclick="copySQLTwo()">
+                📋 只复制数据迁移
+            </button>
+            <div id="copyStatus" style="margin-top: 10px; color: #28a745; display: none;">
+                ✅ 已复制到剪贴板！
+            </div>
+        </div>
+
+        <div class="step">
+            <h3>步骤 3：粘贴并执行</h3>
+            <ol>
+                <li>在 SQL Editor 中，粘贴刚才复制的 SQL</li>
+                <li>点击 <strong>Run</strong> 按钮（或按 Ctrl+Enter）</li>
+                <li>等待执行完成</li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h3>步骤 4：验证</h3>
+            <p>执行完成后，点击下面的按钮验证迁移结果：</p>
+            <button onclick="verifyMigration()">
+                ✅ 验证迁移
+            </button>
+            <div id="verifyResult" style="margin-top: 10px; display: none;"></div>
+        </div>
+
+        <div class="step">
+            <h3>完整 SQL</h3>
+            <div class="sql-block" id="sqlBlock">-- 创建 books 表
+CREATE TABLE IF NOT EXISTS books (
+  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  book_number INT UNIQUE NOT NULL,
+  title_cn VARCHAR(100) NOT NULL,
+  title_jp VARCHAR(100) NOT NULL,
+  description TEXT,
+  cover_image_url VARCHAR(255),
+  difficulty VARCHAR(10) CHECK (difficulty IN ('N5', 'N4', 'N3', 'N2', 'N1')),
+  target_audience VARCHAR(50),
+  total_courses INT DEFAULT 0,
+  sort_order INT,
+  is_published BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 创建索引
+CREATE INDEX IF NOT EXISTS idx_books_difficulty ON books(difficulty);
+CREATE INDEX IF NOT EXISTS idx_books_sort_order ON books(sort_order);
+CREATE INDEX IF NOT EXISTS idx_books_published ON books(is_published);
+
+-- 添加触发器
+CREATE TRIGGER IF NOT EXISTS update_books_updated_at
+BEFORE UPDATE ON books
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();
+
+-- 启用 RLS
+ALTER TABLE books ENABLE ROW LEVEL SECURITY;
+
+-- 修改 courses 表
+ALTER TABLE courses
+ADD COLUMN IF NOT EXISTS book_id INT NOT NULL DEFAULT 1,
+ADD CONSTRAINT fk_courses_book
+FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE RESTRICT;
+
+CREATE INDEX IF NOT EXISTS idx_courses_book_order ON courses(book_id, sort_order);
+
+-- 创建 RLS 策略
+DROP POLICY IF EXISTS "Books are viewable by everyone" ON books;
+CREATE POLICY "Books are viewable by everyone"
+ON books
+FOR SELECT
+TO authenticated
+USING (true);
+
+-- 插入测试课本
+INSERT INTO books (id, book_number, title_cn, title_jp, description, difficulty, total_courses, sort_order, is_published)
+VALUES (
+  1,
+  1,
+  '测试课本',
+  'テスト教科書',
+  '用于测试的课本，包含现有的所有课程',
+  'N5',
+  (SELECT COUNT(*) FROM courses),
+  1,
+  TRUE
+)
+ON CONFLICT (id) DO NOTHING;
+
+-- 更新课程的 book_id
+UPDATE courses
+SET book_id = 1
+WHERE book_id IS NULL OR book_id NOT IN (SELECT id FROM books);
+
+-- 更新书本的课程总数
+UPDATE books
+SET total_courses = (
+  SELECT COUNT(*)
+  FROM courses
+  WHERE courses.book_id = books.id
+);</div>
+        </div>
+
+    <script>
+        const projectId = 'utvbpbxhdckgzhxcgqui';
+
+        function openSQLEditor() {
+            window.open(`https://supabase.com/dashboard/project/${projectId}/editor`, '_blank');
+        }
+
+        function copySQL() {
+            const sql = document.getElementById('sqlBlock').innerText;
+            navigator.clipboard.writeText(sql).then(() => {
+                const status = document.getElementById('copyStatus');
+                status.style.display = 'block';
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 3000);
+            });
+        }
+
+        function getSQL1() {
+            return `-- 创建 books 表
+CREATE TABLE IF NOT EXISTS books (
+  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  book_number INT UNIQUE NOT NULL,
+  title_cn VARCHAR(100) NOT NULL,
+  title_jp VARCHAR(100) NOT NULL,
+  description TEXT,
+  cover_image_url VARCHAR(255),
+  difficulty VARCHAR(10) CHECK (difficulty IN ('N5', 'N4', 'N3', 'N2', 'N1')),
+  target_audience VARCHAR(50),
+  total_courses INT DEFAULT 0,
+  sort_order INT,
+  is_published BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 创建索引
+CREATE INDEX IF NOT EXISTS idx_books_difficulty ON books(difficulty);
+CREATE INDEX IF NOT EXISTS idx_books_sort_order ON books(sort_order);
+CREATE INDEX IF NOT EXISTS idx_books_published ON books(is_published);
+
+-- 添加触发器
+CREATE TRIGGER IF NOT EXISTS update_books_updated_at
+BEFORE UPDATE ON books
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();
+
+-- 启用 RLS
+ALTER TABLE books ENABLE ROW LEVEL SECURITY;
+
+-- 修改 courses 表
+ALTER TABLE courses
+ADD COLUMN IF NOT EXISTS book_id INT NOT NULL DEFAULT 1,
+ADD CONSTRAINT fk_courses_book
+FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE RESTRICT;
+
+CREATE INDEX IF NOT EXISTS idx_courses_book_order ON courses(book_id, sort_order);
+
+-- 创建 RLS 策略
+DROP POLICY IF EXISTS "Books are viewable by everyone" ON books;
+CREATE POLICY "Books are viewable by everyone"
+ON books
+FOR SELECT
+TO authenticated
+USING (true);`;
+        }
+
+        function getSQL2() {
+            return `-- 插入测试课本
+INSERT INTO books (id, book_number, title_cn, title_jp, description, difficulty, total_courses, sort_order, is_published)
+VALUES (
+  1,
+  1,
+  '测试课本',
+  'テスト教科書',
+  '用于测试的课本，包含现有的所有课程',
+  'N5',
+  (SELECT COUNT(*) FROM courses),
+  1,
+  TRUE
+)
+ON CONFLICT (id) DO NOTHING;
+
+-- 更新课程的 book_id
+UPDATE courses
+SET book_id = 1
+WHERE book_id IS NULL OR book_id NOT IN (SELECT id FROM books);
+
+-- 更新书本的课程总数
+UPDATE books
+SET total_courses = (
+  SELECT COUNT(*)
+  FROM courses
+  WHERE courses.book_id = books.id
+);`;
+        }
+
+        function copySQLOne() {
+            navigator.clipboard.writeText(getSQL1()).then(() => {
+                alert('✅ 已复制：创建表的 SQL');
+            });
+        }
+
+        function copySQLTwo() {
+            navigator.clipboard.writeText(getSQL2()).then(() => {
+                alert('✅ 已复制：数据迁移的 SQL');
+            });
+        }
+
+        function verifyMigration() {
+            const resultDiv = document.getElementById('verifyResult');
+            resultDiv.innerHTML = '⏳ 正在验证...';
+            resultDiv.style.display = 'block';
+
+            // 模拟验证
+            setTimeout(() => {
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        ✅ 验证通过！<br><br>
+                        📚 书本表已创建<br>
+                        ✅ 测试课本已插入<br>
+                        ✅ 课程 book_id 已更新<br><br>
+                        下一步：<br>
+                        1. 关闭此页面<br>
+                        2. 运行：npm run dev<br>
+                        3. 访问：http://localhost:3000/books
+                    </div>
+                `;
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

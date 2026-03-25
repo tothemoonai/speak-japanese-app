@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle, XCircle } from 'lucide-react';
-import { VERSION_DISPLAY } from '../../VERSION';
+import { VERSION_DISPLAY } from '@/VERSION';
 
 function AuthMessageHandler() {
   const router = useRouter();
