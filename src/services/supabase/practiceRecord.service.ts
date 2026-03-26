@@ -48,7 +48,7 @@ export class PracticeRecordService {
       const client = supabase();
 
       // 查询角色ID映射（获取实际的角色ID）
-      const { data: characterData } = await supabase
+      const { data: characterData } = await client
         .from('characters')
         .select('id')
         .eq('id', params.characterId)
@@ -60,7 +60,7 @@ export class PracticeRecordService {
       }
 
       // 创建练习记录
-      const { data, error } = await supabase
+      const { data, error } = await client
         .from('practice_records')
         .insert({
           user_id: params.userId,

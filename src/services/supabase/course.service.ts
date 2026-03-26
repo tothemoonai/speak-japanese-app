@@ -116,19 +116,8 @@ export class CourseService {
       return { data: null, error: courseError };
     }
 
-    // Fetch book_number from books table separately
-    let bookNumber = course.book_id; // Default to book_id if book not found
-    if (course.book_id) {
-      const { data: book } = await client
-        .from('books')
-        .select('book_number')
-        .eq('id', course.book_id)
-        .single();
-
-      if (book) {
-        bookNumber = book.book_number;
-      }
-    }
+    // book_id stores book_number directly
+    const bookNumber = course.book_id;
 
     // Fetch characters for this course
     // First try course_characters junction table
