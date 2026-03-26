@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -32,11 +32,8 @@ export function BookCard({ book }: BookCardProps) {
               )}
             </div>
             <CardTitle className="text-xl">
-              {book.title_cn}
-            </CardTitle>
-            <CardDescription className="mt-1 text-base">
               {book.title_jp}
-            </CardDescription>
+            </CardTitle>
           </div>
         </div>
         {book.description && (
@@ -47,14 +44,22 @@ export function BookCard({ book }: BookCardProps) {
       </CardHeader>
 
       <CardContent className="flex-1">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-          <BookOpen className="h-4 w-4" />
-          <span>课程：{book.total_courses} 课</span>
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <BookOpen className="h-4 w-4" />
+            <span>课程：{book.total_courses} 课</span>
+          </div>
+          <Link href={`/books/${book.book_number}`} className="flex-shrink-0">
+            <Button size="sm" className="text-xs px-3">
+              {book.progress === undefined || book.progress === 0 ? '开始学习' : '继续学习'}
+            </Button>
+          </Link>
         </div>
 
         {book.progress !== undefined && book.progress > 0 && (
-          <div className="space-y-3">
-            <div>
+          <div className="flex items-start gap-3">
+            {/* 左侧：学习进度 */}
+            <div className="flex-1">
               <div className="flex items-center justify-between text-sm mb-1">
                 <span className="text-muted-foreground">学习进度</span>
                 <span className="font-medium">{book.progress}%</span>
@@ -62,16 +67,17 @@ export function BookCard({ book }: BookCardProps) {
               <Progress value={book.progress} className="h-2" />
             </div>
 
-            <div className="grid grid-cols-2 gap-3 text-sm">
+            {/* 右侧：统计信息 */}
+            <div className="flex flex-col gap-1 text-xs text-muted-foreground">
               {book.completed_courses !== undefined && book.completed_courses > 0 && (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <TrendingUp className="h-4 w-4" />
+                <div className="flex items-center gap-1">
+                  <TrendingUp className="h-3 w-3" />
                   <span>已完成 {book.completed_courses} 课</span>
                 </div>
               )}
               {book.total_practices !== undefined && book.total_practices > 0 && (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Clock className="h-4 w-4" />
+                <div className="flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
                   <span>练习 {book.total_practices} 次</span>
                 </div>
               )}
@@ -79,14 +85,6 @@ export function BookCard({ book }: BookCardProps) {
           </div>
         )}
       </CardContent>
-
-      <CardFooter>
-        <Link href={`/books/${book.book_number}`} className="w-full">
-          <Button className="w-full">
-            {book.progress === undefined || book.progress === 0 ? '开始学习' : '继续学习'}
-          </Button>
-        </Link>
-      </CardFooter>
     </Card>
   );
 }

@@ -231,78 +231,78 @@ export default function DashboardPage() {
 
         {/* Stats Cards - 增强版 */}
         <Card className="mb-2 sm:mb-6 card-gradient-border animate-fade-up delay-100">
-          <CardContent className="p-1 sm:p-3">
-            <div className="grid grid-cols-4 gap-1 sm:gap-2 md:gap-3">
+          <CardContent className="p-0.5">
+            <div className="grid grid-cols-4 gap-0.5">
               {/* 总练习次数 */}
-              <div className="stat-card stat-card-sakura flex flex-col items-center justify-center gap-0.5 p-1 sm:p-2 rounded-lg">
-                <Mic className="h-3 w-3 sm:h-4 sm:w-4 text-sakura flex-shrink-0" />
+              <div className="stat-card stat-card-sakura flex flex-col items-center justify-center gap-0 p-0.5 rounded">
+                <Mic className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-sakura flex-shrink-0 mt-1" />
                 {loading ? (
-                  <div className="text-sm font-bold text-muted-foreground">-</div>
+                  <div className="text-xs font-bold text-muted-foreground">-</div>
                 ) : (
                   <div className="flex items-baseline gap-0">
-                    <span className="text-sm sm:text-lg font-bold text-sakura-dark dark:text-sakura-light">
+                    <span className="text-xs sm:text-sm font-bold text-sakura-dark dark:text-sakura-light">
                       {userStats.total_practices}
                     </span>
-                    <span className="text-[10px] sm:text-xs text-muted-foreground">次</span>
+                    <span className="text-[9px] sm:text-[10px] text-muted-foreground">次</span>
                   </div>
                 )}
-                <span className="text-[10px] sm:text-xs text-muted-foreground">
+                <span className="text-[9px] sm:text-[10px] text-muted-foreground">
                   总练习
                 </span>
               </div>
 
               {/* 平均分数 */}
-              <div className="stat-card stat-card-blue flex flex-col items-center justify-center gap-0.5 p-1 sm:p-2 rounded-lg">
-                <Flame className="h-3 w-3 sm:h-4 sm:w-4 text-japan-blue flex-shrink-0" />
+              <div className="stat-card stat-card-blue flex flex-col items-center justify-center gap-0 p-0.5 rounded">
+                <Flame className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-japan-blue flex-shrink-0 mt-1" />
                 {loading ? (
-                  <div className="text-sm font-bold text-muted-foreground">-</div>
+                  <div className="text-xs font-bold text-muted-foreground">-</div>
                 ) : (
                   <div className="flex items-baseline gap-0">
-                    <span className="text-sm sm:text-lg font-bold text-japan-blue-dark dark:text-japan-blue-light">
+                    <span className="text-xs sm:text-sm font-bold text-japan-blue-dark dark:text-japan-blue-light">
                       {userStats.average_score}
                     </span>
-                    <span className="text-[10px] sm:text-xs text-muted-foreground">分</span>
+                    <span className="text-[9px] sm:text-[10px] text-muted-foreground">分</span>
                   </div>
                 )}
-                <span className="text-[10px] sm:text-xs text-muted-foreground">
+                <span className="text-[9px] sm:text-[10px] text-muted-foreground">
                   平均分
                 </span>
               </div>
 
               {/* 已完成课程 */}
-              <div className="stat-card stat-card-green flex flex-col items-center justify-center gap-0.5 p-1 sm:p-2 rounded-lg">
-                <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 text-bamboo flex-shrink-0" />
+              <div className="stat-card stat-card-green flex flex-col items-center justify-center gap-0 p-0.5 rounded">
+                <BookOpen className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-bamboo flex-shrink-0 mt-1" />
                 {loading ? (
-                  <div className="text-sm font-bold text-muted-foreground">-</div>
+                  <div className="text-xs font-bold text-muted-foreground">-</div>
                 ) : (
                   <div className="flex items-baseline gap-0">
-                    <span className="text-sm sm:text-lg font-bold text-bamboo">
+                    <span className="text-xs sm:text-sm font-bold text-bamboo">
                       {userStats.courses_completed}
                     </span>
-                    <span className="text-[10px] sm:text-xs text-muted-foreground">
+                    <span className="text-[9px] sm:text-[10px] text-muted-foreground">
                       /{totalCourses}
                     </span>
                   </div>
                 )}
-                <span className="text-[10px] sm:text-xs text-muted-foreground">
+                <span className="text-[9px] sm:text-[10px] text-muted-foreground">
                   已完成
                 </span>
               </div>
 
               {/* 获得成就 */}
-              <div className="stat-card stat-card-orange flex flex-col items-center justify-center gap-0.5 p-1 sm:p-2 rounded-lg">
-                <Trophy className="h-3 w-3 sm:h-4 sm:w-4 text-maple flex-shrink-0" />
+              <div className="stat-card stat-card-orange flex flex-col items-center justify-center gap-0 p-0.5 rounded">
+                <Trophy className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-maple flex-shrink-0 mt-1" />
                 {loading ? (
-                  <div className="text-sm font-bold text-muted-foreground">-</div>
+                  <div className="text-xs font-bold text-muted-foreground">-</div>
                 ) : (
                   <div className="flex items-baseline gap-0">
-                    <span className="text-sm sm:text-lg font-bold text-maple">
+                    <span className="text-xs sm:text-sm font-bold text-maple">
                       {userStats.achievements_count}
                     </span>
-                    <span className="text-[10px] sm:text-xs text-muted-foreground">个</span>
+                    <span className="text-[9px] sm:text-[10px] text-muted-foreground">个</span>
                   </div>
                 )}
-                <span className="text-[10px] sm:text-xs text-muted-foreground">
+                <span className="text-[9px] sm:text-[10px] text-muted-foreground">
                   成就
                 </span>
               </div>
@@ -311,19 +311,19 @@ export default function DashboardPage() {
         </Card>
 
         {/* Quick Actions - 紧凑卡片 */}
-        <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3 sm:gap-2 mb-3 sm:mb-8">
+        <div className="grid grid-cols-3 gap-1 mb-3 sm:mb-8">
           <Link href="/books" className="group col-span-1">
             <Card className="card-enhanced h-full">
-              <CardContent className="p-1.5">
-                <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-center sm:text-left">
+              <CardContent className="p-1">
+                <div className="flex items-center gap-1">
                   {/* 图标 */}
-                  <div className="p-1 rounded-lg bg-gradient-sakura flex-shrink-0">
-                    <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                  <div className="p-0.5 rounded bg-gradient-sakura flex-shrink-0">
+                    <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
                   </div>
                   {/* 文字内容 */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-[11px] sm:text-sm font-bold mb-0 truncate leading-tight">继续学习</h3>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
+                    <h3 className="text-[10px] sm:text-xs font-bold mb-0 truncate leading-tight">继续学习</h3>
+                    <p className="text-[9px] sm:text-[10px] text-muted-foreground truncate">
                       {totalCourses}门课程
                     </p>
                   </div>
@@ -334,14 +334,14 @@ export default function DashboardPage() {
 
           <Link href="/books" className="group col-span-1">
             <Card className="card-enhanced h-full">
-              <CardContent className="p-1.5">
-                <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-center sm:text-left">
-                  <div className="p-1 rounded-lg bg-gradient-japan-blue flex-shrink-0">
-                    <Target className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+              <CardContent className="p-1">
+                <div className="flex items-center gap-1">
+                  <div className="p-0.5 rounded bg-gradient-japan-blue flex-shrink-0">
+                    <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-[11px] sm:text-sm font-bold mb-0 truncate leading-tight">每日目标</h3>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
+                    <h3 className="text-[10px] sm:text-xs font-bold mb-0 truncate leading-tight">每日目标</h3>
+                    <p className="text-[9px] sm:text-[10px] text-muted-foreground truncate">
                       今日{userStats.today_practices}/3次
                     </p>
                   </div>
@@ -350,16 +350,16 @@ export default function DashboardPage() {
             </Card>
           </Link>
 
-          <Link href="/reports" className="group col-span-2 sm:col-span-1">
+          <Link href="/reports" className="group col-span-1">
             <Card className="card-enhanced h-full">
-              <CardContent className="p-1.5">
-                <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-center sm:text-left">
-                  <div className="p-1 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex-shrink-0">
-                    <BarChart className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+              <CardContent className="p-1">
+                <div className="flex items-center gap-1">
+                  <div className="p-0.5 rounded bg-gradient-to-br from-orange-400 to-orange-600 flex-shrink-0">
+                    <BarChart className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-[11px] sm:text-sm font-bold mb-0 truncate leading-tight">学习报告</h3>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
+                    <h3 className="text-[10px] sm:text-xs font-bold mb-0 truncate leading-tight">学习报告</h3>
+                    <p className="text-[9px] sm:text-[10px] text-muted-foreground truncate">
                       学习成果
                     </p>
                   </div>
