@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import type { CourseWithProgress, Character, Sentence } from '@/types';
-import { BookOpen, Users, MessageSquare, ArrowLeft, Play } from 'lucide-react';
+import { BookOpen, Users, MessageSquare, ArrowLeft, Play, Volume2, VolumeX, Eye, EyeOff } from 'lucide-react';
+import { useTTS } from '@/hooks/useTTS';
 
 interface CourseDetailProps {
   course: CourseWithProgress & { characters?: Character[]; sentences?: Sentence[] };
@@ -28,6 +29,11 @@ const difficultyLabels = {
 
 export function CourseDetail({ course, onPractice }: CourseDetailProps) {
   const [selectedCharacter, setSelectedCharacter] = useState<number | null>(null);
+  const [showChinese, setShowChinese] = useState(true);
+  const [showJapanese, setShowJapanese] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const manuallyStoppedRef = useRef(false);
+  const { controls } = useTTS();
 
   const handlePractice = (characterId: number) => {
     setSelectedCharacter(characterId);
@@ -35,6 +41,85 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
       onPractice(characterId);
     }
   };
+
+  const handlePlayAll = () => {
+    if (!course.sentences || course.sentences.length === 0) return;
+
+    // 如果正在播放，则停止
+    if (isPlaying) {
+      manuallyStoppedRef.current = true;
+      controls.cancel();
+      setIsPlaying(false);
+      return;
+    }
+
+    // 顺序播放所有日文句子
+    const sentences = course.sentences;
+    let index = 0;
+    manuallyStoppedRef.current = false; // 重置停止标志
+
+    const playNext = () => {
+      // 如果已手动停止，不继续播放
+      if (manuallyStoppedRef.current) {
+        setIsPlaying(false);
+        return;
+      }
+
+      if (index >= sentences.length) {
+        // 播放完成
+        setIsPlaying(false);
+        return;
+      }
+
+      const sentence = sentences[index];
+      index++;
+
+      // 使用原生 SpeechSynthesis API 直接播放，以便控制 onend 事件
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(sentence.text_jp);
+        utterance.lang = 'ja-JP';
+
+        // 设置日语语音
+        const voices = window.speechSynthesis.getVoices();
+        const japaneseVoice = voices.find(voice => voice.lang.startsWith('ja'));
+        if (japaneseVoice) {
+          utterance.voice = japaneseVoice;
+        }
+
+        utterance.pitch = 1.0;
+        utterance.rate = 0.9;
+
+        utterance.onend = () => {
+          // 当前句子播放完成，播放下一句
+          playNext();
+        };
+
+        utterance.onerror = () => {
+          // 出错时也继续播放下一句
+          playNext();
+        };
+
+        window.speechSynthesis.speak(utterance);
+      }
+    };
+
+    // 先停止当前播放
+    controls.cancel();
+    setIsPlaying(true);
+
+    // 开始播放
+    playNext();
+  };
+
+  // 组件卸载时停止播放
+  useEffect(() => {
+    return () => {
+      manuallyStoppedRef.current = true;
+      if (isPlaying) {
+        controls.cancel();
+      }
+    };
+  }, [isPlaying, controls]);
 
   return (
     <div
@@ -121,6 +206,54 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
               {course.best_score !== undefined && course.best_score > 0 && (
                 <span className="text-muted-foreground">最高分 {course.best_score}</span>
               )}
+
+              {/* 分隔线 */}
+              <div className="w-px h-4 bg-border" />
+
+              {/* 中文切换按钮 */}
+              <Button
+                variant={showChinese ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowChinese(!showChinese)}
+                className="h-7 text-xs"
+              >
+                {showChinese ? <Eye className="h-3 w-3 mr-1" /> : <EyeOff className="h-3 w-3 mr-1" />}
+                中文
+              </Button>
+
+              {/* 日文切换按钮 */}
+              <Button
+                variant={showJapanese ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowJapanese(!showJapanese)}
+                className="h-7 text-xs"
+              >
+                {showJapanese ? <Eye className="h-3 w-3 mr-1" /> : <EyeOff className="h-3 w-3 mr-1" />}
+                日文
+              </Button>
+
+              {/* 播放按钮 */}
+              {course.sentences && course.sentences.length > 0 && (
+                <Button
+                  variant={isPlaying ? "destructive" : "outline"}
+                  size="sm"
+                  onClick={handlePlayAll}
+                  className="h-7 text-xs"
+                  disabled={!showJapanese}
+                >
+                  {isPlaying ? (
+                    <>
+                      <VolumeX className="h-3 w-3 mr-1" />
+                      停止
+                    </>
+                  ) : (
+                    <>
+                      <Volume2 className="h-3 w-3 mr-1" />
+                      播放
+                    </>
+                  )}
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -182,8 +315,15 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
                         {character?.name_jp || '角色'}
                       </div>
                       <div className="flex-1 space-y-1">
-                        <p className="font-medium">{sentence.text_jp}</p>
-                        <p className="text-sm text-muted-foreground">{sentence.text_cn}</p>
+                        {showJapanese && (
+                          <p className="font-medium">{sentence.text_jp}</p>
+                        )}
+                        {showChinese && (
+                          <p className="text-sm text-muted-foreground">{sentence.text_cn}</p>
+                        )}
+                        {!showJapanese && !showChinese && (
+                          <p className="text-sm text-muted-foreground italic">文本已隐藏</p>
+                        )}
                       </div>
                     </div>
                   </div>
