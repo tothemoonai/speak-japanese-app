@@ -56,34 +56,40 @@ export function BookCard({ book }: BookCardProps) {
           </Link>
         </div>
 
-        {book.progress !== undefined && book.progress > 0 && (
-          <div className="flex items-start gap-3">
-            {/* 左侧：学习进度 */}
-            <div className="flex-1">
-              <div className="flex items-center justify-between text-sm mb-1">
-                <span className="text-muted-foreground">学习进度</span>
-                <span className="font-medium">{book.progress}%</span>
-              </div>
-              <Progress value={book.progress} className="h-2" />
+        {/* 学习进度 - 始终显示 */}
+        <div className="flex items-start gap-3">
+          {/* 左侧：学习进度 */}
+          <div className="flex-1">
+            <div className="flex items-center justify-between text-sm mb-1">
+              <span className="text-muted-foreground">学习进度</span>
+              <span className="font-medium">
+                {book.progress !== undefined ? book.progress : 0}%
+              </span>
             </div>
-
-            {/* 右侧：统计信息 */}
-            <div className="flex flex-col gap-1 text-xs text-muted-foreground">
-              {book.completed_courses !== undefined && book.completed_courses > 0 && (
-                <div className="flex items-center gap-1">
-                  <TrendingUp className="h-3 w-3" />
-                  <span>已完成 {book.completed_courses} 课</span>
-                </div>
-              )}
-              {book.total_practices !== undefined && book.total_practices > 0 && (
-                <div className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  <span>练习 {book.total_practices} 次</span>
-                </div>
-              )}
-            </div>
+            <Progress value={book.progress || 0} className="h-2" />
           </div>
-        )}
+
+          {/* 右侧：统计信息 */}
+          <div className="flex flex-col gap-1 text-xs text-muted-foreground">
+            {book.completed_courses !== undefined && book.completed_courses > 0 ? (
+              <div className="flex items-center gap-1">
+                <TrendingUp className="h-3 w-3" />
+                <span>已完成 {book.completed_courses} 课</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1">
+                <TrendingUp className="h-3 w-3" />
+                <span>未开始</span>
+              </div>
+            )}
+            {book.total_practices !== undefined && book.total_practices > 0 && (
+              <div className="flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                <span>练习 {book.total_practices} 次</span>
+              </div>
+            )}
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
