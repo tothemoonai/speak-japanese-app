@@ -64,14 +64,20 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
 
     const playNext = () => {
       const playlist = playlistRef.current;
+      console.log(`🔍 playNext被调用 - playlist存在: ${!!playlist}, 手动停止: ${manuallyStoppedRef.current}`);
+
       if (!playlist || manuallyStoppedRef.current) {
+        console.log(`⛔ 停止播放 - playlist: ${!!playlist}, 手动停止: ${manuallyStoppedRef.current}`);
         setIsPlaying(false);
         playlistRef.current = null;
         return;
       }
 
+      console.log(`📊 当前索引: ${playlist.index}, 总句子数: ${playlist.sentences.length}`);
+
       if (playlist.index >= playlist.sentences.length) {
         // 播放完成
+        console.log(`✅ 所有句子播放完成`);
         setIsPlaying(false);
         playlistRef.current = null;
         return;
@@ -80,13 +86,19 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
       const sentence = playlist.sentences[playlist.index];
       playlist.index++; // 先增加索引
 
+      console.log(`🎤 准备播放第${playlist.index}句: ${sentence.text_jp.substring(0, 20)}...`);
+
       // 优先使用 Cordova TTS（在 Android 上更可靠）
       if (window.TTS && typeof window.TTS.speak === 'function') {
         window.TTS.speak(sentence.text_jp, () => {
-          console.log(`✅ 播放完成 ${playlist.index}/${playlist.sentences.length}`);
+          console.log(`✅ TTS回调触发 - 播放完成 ${playlist.index}/${playlist.sentences.length}`);
+          console.log(`🔍 回调中检查 - playlistRef: ${!!playlistRef.current}, 手动停止: ${manuallyStoppedRef.current}`);
           // 播放完成，播放下一句
           if (playlistRef.current && !manuallyStoppedRef.current) {
+            console.log(`▶️ 继续播放下一句`);
             playNext();
+          } else {
+            console.log(`⛔ 回调中停止播放`);
           }
         });
       } else if ('speechSynthesis' in window) {
