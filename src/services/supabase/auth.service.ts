@@ -136,11 +136,14 @@ export class AuthService {
 
   async getCurrentUser() {
     const client = this.getClient();
-    const {
-      data: { user },
-    } = await client.auth.getUser();
+    // 使用 getSession 而不是 getUser，因为它会自动刷新 token
+    const { data: { session }, error } = await client.auth.getSession();
 
-    return user ? await this.enrichUserFromPublic(user) : null;
+    if (error || !session?.user) {
+      return null;
+    }
+
+    return await this.enrichUserFromPublic(session.user);
   }
 
   /**

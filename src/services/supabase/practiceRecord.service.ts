@@ -3,7 +3,7 @@
  * 处理练习记录和结果的数据库存储
  */
 
-import { createClient } from '@/lib/supabase/client';
+import { supabase } from '@/lib/supabase/client';
 import type { Database } from '@/types/supabase';
 
 export type PracticeRecord = Database['public']['Tables']['practice_records']['Row'];
@@ -45,7 +45,7 @@ export class PracticeRecordService {
    */
   async createPracticeRecord(params: SavePracticeParams): Promise<number | null> {
     try {
-      const supabase = createClient();
+      const client = supabase();
 
       // 查询角色ID映射（获取实际的角色ID）
       const { data: characterData } = await supabase
@@ -93,9 +93,9 @@ export class PracticeRecordService {
     totalScore: number
   ): Promise<boolean> {
     try {
-      const supabase = createClient();
+      const client = supabase();
 
-      const { error } = await supabase
+      const { error } = await client
         .from('practice_records')
         .update({
           completed_at: new Date().toISOString(),
@@ -121,9 +121,9 @@ export class PracticeRecordService {
    */
   async savePracticeResult(params: SaveResultParams): Promise<boolean> {
     try {
-      const supabase = createClient();
+      const client = supabase();
 
-      const { error } = await supabase
+      const { error } = await client
         .from('practice_results')
         .insert({
           practice_id: params.practiceId,

@@ -23,7 +23,7 @@ export class BookService {
     userId: string
   ): Promise<BookWithProgress[]> {
     const client = this.getClient();
-    const bookIds = books.map((book) => book.id);
+    const bookIds = books.map((book) => book.id);  // Use id (primary key)
 
     // Fetch practice records for user
     const { data: practices } = await client
@@ -35,7 +35,7 @@ export class BookService {
     const { data: courses } = await client
       .from('courses')
       .select('id, book_id')
-      .in('book_id', bookIds);
+      .in('book_id', bookIds);  // Use id to query courses
 
     if (!courses) {
       return books.map((book) => ({
@@ -48,7 +48,7 @@ export class BookService {
 
     // Calculate progress for each book
     return books.map((book) => {
-      const bookCourses = courses.filter((c) => c.book_id === book.id);
+      const bookCourses = courses.filter((c) => c.book_id === book.id);  // Use id
       const bookCourseIds = bookCourses.map((c) => c.id);
 
       const bookPractices = practices?.filter((p) =>
@@ -112,9 +112,9 @@ export class BookService {
   }
 
   /**
-   * Get book by ID with optional user progress
+   * Get book by book_number
    */
-  async getBookById(bookId: number, userId?: string): Promise<{
+  async getBookById(bookNumber: number, userId?: string): Promise<{
     data: BookWithProgress | null;
     error: PostgrestError | null;
   }> {
@@ -123,7 +123,7 @@ export class BookService {
     const { data: book, error } = await client
       .from('books')
       .select('*')
-      .eq('id', bookId)
+      .eq('book_number', bookNumber)
       .eq('is_published', true)
       .single();
 

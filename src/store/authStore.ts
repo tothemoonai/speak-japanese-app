@@ -17,7 +17,7 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       isAuthenticated: false,
       isLoading: false,
@@ -25,14 +25,25 @@ export const useAuthStore = create<AuthState>()(
       initialize: async () => {
         set({ isLoading: true });
         try {
-          // 从 Supabase 恢复 session
+          // 从 Supabase 恢复 session（会自动刷新 token）
           const user = await authService.getCurrentUser();
+
+          // 如果从 localStorage 恢复了用户信息，但 Supabase session 已过期
+          // 则清除本地存储的用户信息
+          if (!user && get().isAuthenticated) {
+            set({
+              user: null,
+              isAuthenticated: false,
+            });
+          }
+
           set({
             user,
             isAuthenticated: !!user,
             isLoading: false,
           });
         } catch (error) {
+          console.error('Failed to initialize auth:', error);
           set({
             user: null,
             isAuthenticated: false,
@@ -96,7 +107,7 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      setUser: (user: User | null) => {
+      setUser: (user: ExtendedUser | null) => {
         set({
           user,
           isAuthenticated: !!user,
@@ -106,9 +117,12 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'auth-storage', // localStorage key
       partialize: (state) => ({
+        // 只持久化用户信息和认证状态，不持久化 isLoading
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
+      // 添加版本控制，如果数据结构改变可以更新版本号
+      version: 1,
     }
   )
 );
