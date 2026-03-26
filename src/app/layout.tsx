@@ -37,9 +37,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'IT日语 - 新概念日本语',
+  title: 'IT日语',
   description: '通过AI技术，帮助你进行沉浸式的IT日语练习',
-  keywords: ['日语', '口语练习', '新概念日本语', 'AI学习'],
+  keywords: ['日语', '口语练习', 'IT日语', 'AI学习'],
 };
 
 export default function RootLayout({
