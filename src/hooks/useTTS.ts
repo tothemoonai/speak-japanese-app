@@ -41,8 +41,8 @@ export function useTTS() {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
-      // 清理原生TTS
-      if (Capacitor.isNativePlatform() && window.TTS) {
+      // 清理原生TTS - 确保stop方法存在才调用
+      if (Capacitor.isNativePlatform() && window.TTS && typeof window.TTS.stop === 'function') {
         window.TTS.stop();
       }
     };
@@ -188,7 +188,7 @@ export function useTTS() {
   }, [state.isPlaying, state.isPaused]);
 
   const cancel = useCallback(() => {
-    if (Capacitor.isNativePlatform() && window.TTS) {
+    if (Capacitor.isNativePlatform() && window.TTS && typeof window.TTS.stop === 'function') {
       window.TTS.stop();
       setState({
         isPlaying: false,
