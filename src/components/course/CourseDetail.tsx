@@ -33,7 +33,7 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
   const [showJapanese, setShowJapanese] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const manuallyStoppedRef = useRef(false);
-  const { controls } = useTTS();
+  const { controls, state: ttsState } = useTTS();
 
   const handlePractice = (characterId: number) => {
     setSelectedCharacter(characterId);
@@ -74,32 +74,31 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
       const sentence = sentences[index];
       index++;
 
-      // 使用原生 SpeechSynthesis API 直接播放，以便控制 onend 事件
-      if ('speechSynthesis' in window) {
+      // 优先使用 Cordova TTS（在 Android 上更可靠）
+      if (window.TTS && typeof window.TTS.speak === 'function') {
+        window.TTS.speak(sentence.text_jp, () => {
+          // 播放完成，播放下一句
+          playNext();
+        });
+      } else if ('speechSynthesis' in window) {
+        // 回退到 Web Speech API
         const utterance = new SpeechSynthesisUtterance(sentence.text_jp);
         utterance.lang = 'ja-JP';
-
-        // 设置日语语音
-        const voices = window.speechSynthesis.getVoices();
-        const japaneseVoice = voices.find(voice => voice.lang.startsWith('ja'));
-        if (japaneseVoice) {
-          utterance.voice = japaneseVoice;
-        }
-
         utterance.pitch = 1.0;
         utterance.rate = 0.9;
 
         utterance.onend = () => {
-          // 当前句子播放完成，播放下一句
           playNext();
         };
 
         utterance.onerror = () => {
-          // 出错时也继续播放下一句
           playNext();
         };
 
         window.speechSynthesis.speak(utterance);
+      } else {
+        // 都不可用，停止播放
+        setIsPlaying(false);
       }
     };
 
