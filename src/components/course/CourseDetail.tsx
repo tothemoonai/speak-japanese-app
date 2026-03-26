@@ -139,12 +139,14 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
   // 组件卸载时停止播放
   useEffect(() => {
     return () => {
-      manuallyStoppedRef.current = true;
-      if (isPlaying) {
+      // 只在组件真正卸载时清理，不要在 isPlaying 变化时触发
+      if (playlistRef.current) {
+        manuallyStoppedRef.current = true;
+        playlistRef.current = null;
         controls.cancel();
       }
     };
-  }, [isPlaying, controls]);
+  }, [controls]);
 
   return (
     <div
