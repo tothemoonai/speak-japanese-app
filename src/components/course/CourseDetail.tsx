@@ -33,6 +33,7 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
   const [showJapanese, setShowJapanese] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const manuallyStoppedRef = useRef(false);
+  const playlistRef = useRef<{ sentences: any[]; index: number } | null>(null);
   const { controls, state: ttsState } = useTTS();
 
   const handlePractice = (characterId: number) => {
@@ -48,37 +49,45 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
     // 如果正在播放，则停止
     if (isPlaying) {
       manuallyStoppedRef.current = true;
+      playlistRef.current = null;
       controls.cancel();
       setIsPlaying(false);
       return;
     }
 
-    // 顺序播放所有日文句子
-    const sentences = course.sentences;
-    let index = 0;
-    manuallyStoppedRef.current = false; // 重置停止标志
+    // 初始化播放列表
+    playlistRef.current = {
+      sentences: course.sentences,
+      index: 0
+    };
+    manuallyStoppedRef.current = false;
 
     const playNext = () => {
-      // 如果已手动停止，不继续播放
-      if (manuallyStoppedRef.current) {
+      const playlist = playlistRef.current;
+      if (!playlist || manuallyStoppedRef.current) {
         setIsPlaying(false);
+        playlistRef.current = null;
         return;
       }
 
-      if (index >= sentences.length) {
+      if (playlist.index >= playlist.sentences.length) {
         // 播放完成
         setIsPlaying(false);
+        playlistRef.current = null;
         return;
       }
 
-      const sentence = sentences[index];
-      index++;
+      const sentence = playlist.sentences[playlist.index];
+      playlist.index++; // 先增加索引
 
       // 优先使用 Cordova TTS（在 Android 上更可靠）
       if (window.TTS && typeof window.TTS.speak === 'function') {
         window.TTS.speak(sentence.text_jp, () => {
+          console.log(`✅ 播放完成 ${playlist.index}/${playlist.sentences.length}`);
           // 播放完成，播放下一句
-          playNext();
+          if (playlistRef.current && !manuallyStoppedRef.current) {
+            playNext();
+          }
         });
       } else if ('speechSynthesis' in window) {
         // 回退到 Web Speech API
@@ -88,17 +97,21 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
         utterance.rate = 0.9;
 
         utterance.onend = () => {
+          console.log(`✅ Web Speech播放完成 ${playlist.index}/${playlist.sentences.length}`);
           playNext();
         };
 
-        utterance.onerror = () => {
+        utterance.onerror = (error) => {
+          console.error(`❌ Web Speech错误:`, error);
           playNext();
         };
 
         window.speechSynthesis.speak(utterance);
       } else {
         // 都不可用，停止播放
+        console.error('❌ TTS不可用');
         setIsPlaying(false);
+        playlistRef.current = null;
       }
     };
 
@@ -107,6 +120,7 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
     setIsPlaying(true);
 
     // 开始播放
+    console.log(`🎵 开始播放 ${course.sentences.length} 个句子`);
     playNext();
   };
 
