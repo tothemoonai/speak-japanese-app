@@ -131,7 +131,7 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
     >
       {/* Header */}
       <div>
-        <Link href={`/books/${course.book_number}`}>
+        <Link href="/courses">
           <Button variant="ghost" className="mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
             返回课程列表
