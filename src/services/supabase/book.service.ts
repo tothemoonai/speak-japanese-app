@@ -23,7 +23,7 @@ export class BookService {
     userId: string
   ): Promise<BookWithProgress[]> {
     const client = this.getClient();
-    const bookIds = books.map((book) => book.id);  // Use id (primary key)
+    const bookNumbers = books.map((book) => book.book_number);  // Use book_number (business field)
 
     // Fetch practice records for user
     const { data: practices } = await client
@@ -35,7 +35,7 @@ export class BookService {
     const { data: courses } = await client
       .from('courses')
       .select('id, book_id')
-      .in('book_id', bookIds);  // Use id to query courses
+      .in('book_id', bookNumbers);  // Use book_number to query courses
 
     if (!courses) {
       return books.map((book) => ({
@@ -48,7 +48,7 @@ export class BookService {
 
     // Calculate progress for each book
     return books.map((book) => {
-      const bookCourses = courses.filter((c) => c.book_id === book.id);  // Use id
+      const bookCourses = courses.filter((c) => c.book_id === book.book_number);  // Use book_number
       const bookCourseIds = bookCourses.map((c) => c.id);
 
       const bookPractices = practices?.filter((p) =>
