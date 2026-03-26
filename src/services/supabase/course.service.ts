@@ -36,8 +36,14 @@ export class CourseService {
       return { data: null, error };
     }
 
+    // Extract book_number from book_id field (they are the same)
+    const coursesWithBookNumber = data.map((course) => ({
+      ...course,
+      book_number: course.book_id,  // book_id stores book_number
+    }));
+
     // If userId provided, fetch user progress for each course
-    let coursesWithProgress: CourseWithProgress[] = data;
+    let coursesWithProgress: CourseWithProgress[] = coursesWithBookNumber;
 
     if (userId && data) {
       const courseIds = data.map((course) => course.id);
@@ -51,7 +57,7 @@ export class CourseService {
         .order('completed_at', { ascending: false });
 
       // Map progress to courses
-      coursesWithProgress = data.map((course) => {
+      coursesWithProgress = coursesWithBookNumber.map((course) => {
         const coursePractices = practices?.filter((p) => p.course_id === course.id) || [];
         const practiceCount = coursePractices.length;
         const bestScore = coursePractices.length > 0
@@ -99,7 +105,7 @@ export class CourseService {
   }> {
     const client = this.getClient();
 
-    // Fetch course
+    // Fetch course with book_number (simplified query without JOIN)
     const { data: course, error: courseError } = await client
       .from('courses')
       .select('*')
@@ -110,18 +116,50 @@ export class CourseService {
       return { data: null, error: courseError };
     }
 
-    // Fetch characters for this course
-    const { data: characters } = await client
-      .from('characters')
-      .select('*')
-      .eq('course_id', courseId)
-      .order('id', { ascending: true });
+    // Fetch book_number from books table separately
+    let bookNumber = course.book_id; // Default to book_id if book not found
+    if (course.book_id) {
+      const { data: book } = await client
+        .from('books')
+        .select('book_number')
+        .eq('id', course.book_id)
+        .single();
 
-    // Fetch sentences for this course
+      if (book) {
+        bookNumber = book.book_number;
+      }
+    }
+
+    // Fetch characters for this course
+    // First try course_characters junction table
+    const { data: courseCharacters } = await client
+      .from('course_characters')
+      .select('character_id, character_order, is_primary, characters(*)')
+      .eq('course_id', course.id)
+      .order('character_order');
+
+    let characters: Character[] = [];
+
+    if (courseCharacters && courseCharacters.length > 0) {
+      // Use junction table data
+      characters = courseCharacters.map(cc => ({
+        ...cc.characters,
+        id: cc.character_id,
+        course_id: course.id,
+        character_order: cc.character_order,
+        is_primary: cc.is_primary
+      }));
+    } else {
+      // No characters found for this course
+      characters = [];
+    }
+
+    // Fetch sentences for this course using course_number (not id!)
     const { data: sentences } = await client
       .from('sentences')
       .select('*')
-      .eq('course_id', courseId)
+      .eq('book_id', course.book_id)
+      .eq('course_id', course.course_number)
       .order('sentence_order', { ascending: true });
 
     // Fetch user progress if userId provided
@@ -157,6 +195,7 @@ export class CourseService {
     return {
       data: {
         ...course,
+        book_number: bookNumber,
         progress,
         status,
         best_score: bestScore,
@@ -230,6 +269,7 @@ export class CourseService {
 
         return {
           ...course,
+          book_number: course.book_id,  // book_id stores book_number
           progress,
           status,
           last_practiced_at: lastPracticed,
@@ -252,7 +292,7 @@ export class CourseService {
     const client = this.getClient();
     let query = client.from('courses').select('*');
 
-    // Apply book_id filter
+    // Apply book_id filter (note: book_id stores book_number)
     if (filter.book_id) {
       query = query.eq('book_id', filter.book_id);
     }
@@ -280,6 +320,12 @@ export class CourseService {
       return { data: null, error };
     }
 
+    // Extract book_number from book_id field (they are the same)
+    const coursesWithBookNumber = data.map((course) => ({
+      ...course,
+      book_number: course.book_id,  // book_id stores book_number
+    }));
+
     // Apply status filter and add user progress
     let coursesWithProgress: CourseWithProgress[] = [];
 
@@ -292,7 +338,7 @@ export class CourseService {
         .eq('user_id', userId)
         .in('course_id', courseIds);
 
-      coursesWithProgress = data
+      coursesWithProgress = coursesWithBookNumber
         .map((course) => {
           const coursePractices = practices?.filter((p) => p.course_id === course.id) || [];
           const practiceCount = coursePractices.length;
@@ -331,9 +377,9 @@ export class CourseService {
           }
           return true;
         });
-    } else if (data) {
+    } else if (coursesWithBookNumber) {
       // No user provided, return courses without progress
-      coursesWithProgress = data;
+      coursesWithProgress = coursesWithBookNumber;
     }
 
     return { data: coursesWithProgress, error: null };
@@ -341,33 +387,78 @@ export class CourseService {
 
   /**
    * Get course characters
+   * Note: courseId parameter is courses.id (primary key)
+   * Characters are fetched from course_characters junction table
    */
   async getCourseCharacters(courseId: number): Promise<{
     data: Character[] | null;
     error: PostgrestError | null;
   }> {
     const client = this.getClient();
-    const { data, error } = await client
-      .from('characters')
-      .select('*')
-      .eq('course_id', courseId)
-      .order('id', { ascending: true });
 
-    return { data, error };
+    // First get the course to find book_id and course_number
+    const { data: course } = await client
+      .from('courses')
+      .select('book_id, course_number')
+      .eq('id', courseId)
+      .single();
+
+    if (!course) {
+      return { data: null, error: { message: 'Course not found', code: '404' } as PostgrestError };
+    }
+
+    // Try course_characters junction table first
+    const { data: courseCharacters, error: junctionError } = await client
+      .from('course_characters')
+      .select('character_id, character_order, is_primary, characters(*)')
+      .eq('book_id', course.book_id)  // Add book_id filter
+      .eq('course_id', course.course_number)
+      .order('character_order');
+
+    if (courseCharacters && courseCharacters.length > 0) {
+      // Use junction table data
+      const characters = courseCharacters.map(cc => ({
+        ...cc.characters,
+        id: cc.character_id,
+        course_id: courseId,
+        character_order: cc.character_order,
+        is_primary: cc.is_primary
+      }));
+      return { data: characters, error: null };
+    }
+
+    // No characters found for this course
+    return { data: [], error: null };
   }
 
   /**
    * Get course sentences
+   * Note: courseId parameter is courses.id (primary key)
+   * But sentences table uses course_number (business field) for course_id
    */
   async getCourseSentences(courseId: number): Promise<{
     data: Sentence[] | null;
     error: PostgrestError | null;
   }> {
     const client = this.getClient();
+
+    // First get the course to find book_id and course_number
+    const { data: course } = await client
+      .from('courses')
+      .select('book_id, course_number')
+      .eq('id', courseId)
+      .single();
+
+    if (!course) {
+      return { data: null, error: { message: 'Course not found', code: '404' } as PostgrestError };
+    }
+
+    // Query sentences using book_id and course_number (not courses.id!)
     const { data, error } = await client
       .from('sentences')
       .select('*')
-      .eq('course_id', courseId)
+      .eq('book_id', course.book_id)
+      .eq('course_id', course.course_number)
       .order('sentence_order', { ascending: true });
 
     return { data, error };
