@@ -43,6 +43,7 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
     }
   };
 
+
   const handlePlayAll = () => {
     if (!course.sentences || course.sentences.length === 0) return;
 
@@ -62,91 +63,101 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
     };
     manuallyStoppedRef.current = false;
 
-    const playNext = () => {
-      const playlist = playlistRef.current;
-      console.log(`🔍 playNext被调用 - playlist存在: ${!!playlist}, 手动停止: ${manuallyStoppedRef.current}`);
-
-      if (!playlist || manuallyStoppedRef.current) {
-        console.log(`⛔ 停止播放 - playlist: ${!!playlist}, 手动停止: ${manuallyStoppedRef.current}`);
-        setIsPlaying(false);
-        playlistRef.current = null;
-        return;
-      }
-
-      console.log(`📊 当前索引: ${playlist.index}, 总句子数: ${playlist.sentences.length}`);
-
-      if (playlist.index >= playlist.sentences.length) {
-        // 播放完成
-        console.log(`✅ 所有句子播放完成`);
-        setIsPlaying(false);
-        playlistRef.current = null;
-        return;
-      }
-
-      const sentence = playlist.sentences[playlist.index];
-      playlist.index++; // 先增加索引
-
-      console.log(`🎤 准备播放第${playlist.index}句: ${sentence.text_jp.substring(0, 20)}...`);
-
-      // 优先使用 Cordova TTS（在 Android 上更可靠）
-      if (window.TTS && typeof window.TTS.speak === 'function') {
-        window.TTS.speak(sentence.text_jp, () => {
-          console.log(`✅ TTS回调触发 - 播放完成 ${playlist.index}/${playlist.sentences.length}`);
-          console.log(`🔍 回调中检查 - playlistRef: ${!!playlistRef.current}, 手动停止: ${manuallyStoppedRef.current}`);
-          // 播放完成，播放下一句
-          if (playlistRef.current && !manuallyStoppedRef.current) {
-            console.log(`▶️ 继续播放下一句`);
-            playNext();
-          } else {
-            console.log(`⛔ 回调中停止播放`);
-          }
-        });
-      } else if ('speechSynthesis' in window) {
-        // 回退到 Web Speech API
-        const utterance = new SpeechSynthesisUtterance(sentence.text_jp);
-        utterance.lang = 'ja-JP';
-        utterance.pitch = 1.0;
-        utterance.rate = 0.9;
-
-        utterance.onend = () => {
-          console.log(`✅ Web Speech播放完成 ${playlist.index}/${playlist.sentences.length}`);
-          playNext();
-        };
-
-        utterance.onerror = (error) => {
-          console.error(`❌ Web Speech错误:`, error);
-          playNext();
-        };
-
-        window.speechSynthesis.speak(utterance);
-      } else {
-        // 都不可用，停止播放
-        console.error('❌ TTS不可用');
-        setIsPlaying(false);
-        playlistRef.current = null;
-      }
-    };
-
     // 先停止当前播放
     controls.cancel();
-    setIsPlaying(true);
 
-    // 开始播放
-    console.log(`🎵 开始播放 ${course.sentences.length} 个句子`);
-    playNext();
+    // 使用 setTimeout 确保 cancel 完成后再开始播放
+    setTimeout(() => {
+      if (!playlistRef.current || manuallyStoppedRef.current) {
+        return;
+      }
+
+      setIsPlaying(true);
+
+      // 在 handlePlayAll 内部定义 playNext，避免外部干扰
+      const playNext = () => {
+        const playlist = playlistRef.current;
+        console.log(`🔍 playNext被调用 - playlist存在: ${!!playlist}, 手动停止: ${manuallyStoppedRef.current}`);
+
+        if (!playlist || manuallyStoppedRef.current) {
+          console.log(`⛔ 停止播放 - playlist: ${!!playlist}, 手动停止: ${manuallyStoppedRef.current}`);
+          setIsPlaying(false);
+          playlistRef.current = null;
+          return;
+        }
+
+        console.log(`📊 当前索引: ${playlist.index}, 总句子数: ${playlist.sentences.length}`);
+
+        if (playlist.index >= playlist.sentences.length) {
+          // 播放完成
+          console.log(`✅ 所有句子播放完成`);
+          setIsPlaying(false);
+          playlistRef.current = null;
+          return;
+        }
+
+        const sentence = playlist.sentences[playlist.index];
+        playlist.index++; // 先增加索引
+
+        console.log(`🎤 准备播放第${playlist.index}句: ${sentence.text_jp.substring(0, 20)}...`);
+
+        // 优先使用 Cordova TTS（在 Android 上更可靠）
+        if (window.TTS && typeof window.TTS.speak === 'function') {
+          window.TTS.speak(sentence.text_jp, () => {
+            console.log(`✅ TTS回调触发 - 播放完成 ${playlist.index}/${playlist.sentences.length}`);
+            console.log(`🔍 回调中检查 - playlistRef: ${!!playlistRef.current}, 手动停止: ${manuallyStoppedRef.current}`);
+            // 播放完成，播放下一句
+            if (playlistRef.current && !manuallyStoppedRef.current) {
+              console.log(`▶️ 继续播放下一句`);
+              // 使用 setTimeout 确保 TTS 引擎准备好
+              setTimeout(() => {
+                playNext();
+              }, 50);
+            } else {
+              console.log(`⛔ 回调中停止播放`);
+            }
+          });
+        } else if ('speechSynthesis' in window) {
+          // 回退到 Web Speech API
+          const utterance = new SpeechSynthesisUtterance(sentence.text_jp);
+          utterance.lang = 'ja-JP';
+          utterance.pitch = 1.0;
+          utterance.rate = 0.9;
+
+          utterance.onend = () => {
+            console.log(`✅ Web Speech播放完成 ${playlist.index}/${playlist.sentences.length}`);
+            playNext();
+          };
+
+          utterance.onerror = (error) => {
+            console.error(`❌ Web Speech错误:`, error);
+            playNext();
+          };
+
+          window.speechSynthesis.speak(utterance);
+        } else {
+          // 都不可用，停止播放
+          console.error('❌ TTS不可用');
+          setIsPlaying(false);
+          playlistRef.current = null;
+        }
+      };
+
+      // 开始播放
+      console.log(`🎵 开始播放 ${course.sentences.length} 个句子`);
+      playNext();
+    }, 100);
   };
 
   // 组件卸载时停止播放
   useEffect(() => {
     return () => {
-      // 只在组件真正卸载时清理，不要在 isPlaying 变化时触发
-      if (playlistRef.current) {
-        manuallyStoppedRef.current = true;
-        playlistRef.current = null;
-        controls.cancel();
-      }
+      // 组件卸载时清理
+      manuallyStoppedRef.current = true;
+      playlistRef.current = null;
+      controls.cancel();
     };
-  }, [controls]);
+  }, []); // 空依赖数组，只在组件卸载时执行
 
   return (
     <div
