@@ -188,76 +188,76 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
         </div>
       </div>
 
-      {/* Progress Card */}
-      {course.status && course.status !== 'not_started' && (
-        <Card>
-          <CardContent className="py-4">
-            <div className="flex flex-wrap items-center gap-4 text-sm">
-              {course.progress !== undefined && course.progress > 0 && (
-                <>
-                  <span className="text-muted-foreground">学习进度</span>
-                  <span className="font-medium">{course.progress}%</span>
-                  <Progress value={course.progress} className="h-2 w-24" />
-                </>
-              )}
-              {course.practice_count !== undefined && course.practice_count > 0 && (
-                <span className="text-muted-foreground">练习 {course.practice_count} 次</span>
-              )}
-              {course.best_score !== undefined && course.best_score > 0 && (
-                <span className="text-muted-foreground">最高分 {course.best_score}</span>
-              )}
+      {/* Progress Card - 始终显示 */}
+      <Card>
+        <CardContent className="py-4">
+          <div className="flex flex-wrap items-center gap-4 text-sm">
+            {course.progress !== undefined && course.progress > 0 ? (
+              <>
+                <span className="text-muted-foreground">学习进度</span>
+                <span className="font-medium">{course.progress}%</span>
+                <Progress value={course.progress} className="h-2 w-24" />
+              </>
+            ) : (
+              <span className="text-muted-foreground">未开始学习</span>
+            )}
+            {course.practice_count !== undefined && course.practice_count > 0 && (
+              <span className="text-muted-foreground">练习 {course.practice_count} 次</span>
+            )}
+            {course.best_score !== undefined && course.best_score > 0 && (
+              <span className="text-muted-foreground">最高分 {course.best_score}</span>
+            )}
 
-              {/* 分隔线 */}
-              <div className="w-px h-4 bg-border" />
+            {/* 分隔线 */}
+            <div className="w-px h-4 bg-border" />
 
-              {/* 中文切换按钮 */}
+            {/* 中文切换按钮 */}
+            <Button
+              variant={showChinese ? "default" : "outline"}
+              size="sm"
+              onClick={() => setShowChinese(!showChinese)}
+              className="h-7 text-xs"
+            >
+              {showChinese ? <Eye className="h-3 w-3 mr-1" /> : <EyeOff className="h-3 w-3 mr-1" />}
+              中文
+            </Button>
+
+            {/* 日文切换按钮 */}
+            <Button
+              variant={showJapanese ? "default" : "outline"}
+              size="sm"
+              onClick={() => setShowJapanese(!showJapanese)}
+              className="h-7 text-xs"
+            >
+              {showJapanese ? <Eye className="h-3 w-3 mr-1" /> : <EyeOff className="h-3 w-3 mr-1" />}
+              日文
+            </Button>
+
+            {/* 播放按钮 */}
+            {course.sentences && course.sentences.length > 0 && (
               <Button
-                variant={showChinese ? "default" : "outline"}
+                variant={isPlaying ? "destructive" : "outline"}
                 size="sm"
-                onClick={() => setShowChinese(!showChinese)}
+                onClick={handlePlayAll}
                 className="h-7 text-xs"
+                disabled={!showJapanese}
               >
-                {showChinese ? <Eye className="h-3 w-3 mr-1" /> : <EyeOff className="h-3 w-3 mr-1" />}
-                中文
+                {isPlaying ? (
+                  <>
+                    <VolumeX className="h-3 w-3 mr-1" />
+                    停止
+                  </>
+                ) : (
+                  <>
+                    <Volume2 className="h-3 w-3 mr-1" />
+                    播放
+                  </>
+                )}
               </Button>
-
-              {/* 日文切换按钮 */}
-              <Button
-                variant={showJapanese ? "default" : "outline"}
-                size="sm"
-                onClick={() => setShowJapanese(!showJapanese)}
-                className="h-7 text-xs"
-              >
-                {showJapanese ? <Eye className="h-3 w-3 mr-1" /> : <EyeOff className="h-3 w-3 mr-1" />}
-                日文
-              </Button>
-
-              {/* 播放按钮 */}
-              {course.sentences && course.sentences.length > 0 && (
-                <Button
-                  variant={isPlaying ? "destructive" : "outline"}
-                  size="sm"
-                  onClick={handlePlayAll}
-                  className="h-7 text-xs"
-                  disabled={!showJapanese}
-                >
-                  {isPlaying ? (
-                    <>
-                      <VolumeX className="h-3 w-3 mr-1" />
-                      停止
-                    </>
-                  ) : (
-                    <>
-                      <Volume2 className="h-3 w-3 mr-1" />
-                      播放
-                    </>
-                  )}
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Characters Section */}
       {course.characters && course.characters.length > 0 && (
