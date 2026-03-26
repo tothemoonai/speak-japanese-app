@@ -45,27 +45,24 @@ export function CourseCard({ course }: CourseCardProps) {
               )}
             </div>
             <CardTitle className="text-xl">
-              {course.course_number}. {course.title_cn}
+              第{course.course_number}课：{course.title_cn} {course.title_jp}
             </CardTitle>
-            <CardDescription className="mt-1 text-base">
-              {course.title_jp}
-            </CardDescription>
           </div>
         </div>
-        {course.description && (
-          <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-            {course.description}
-          </p>
-        )}
       </CardHeader>
 
       <CardContent className="flex-1">
-        {course.theme && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-            <BookOpen className="h-4 w-4" />
-            <span>主题：{course.theme}</span>
-          </div>
-        )}
+        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+          {course.theme && (
+            <div className="flex items-center gap-2">
+              <BookOpen className="h-4 w-4" />
+              <span>主题：{course.theme}</span>
+            </div>
+          )}
+          {course.total_sentences !== undefined && course.total_sentences > 0 && (
+            <span>对话：{course.total_sentences} 句</span>
+          )}
+        </div>
 
         {course.status && course.status !== 'not_started' && (
           <div className="space-y-3">
@@ -93,15 +90,6 @@ export function CourseCard({ course }: CourseCardProps) {
                 </div>
               )}
             </div>
-          </div>
-        )}
-
-        {course.total_sentences !== undefined && course.total_sentences > 0 && (
-          <div className="flex items-center gap-4 text-sm text-muted-foreground mt-3">
-            <span>对话：{course.total_sentences} 句</span>
-            {course.vocab_count !== undefined && course.vocab_count > 0 && (
-              <span>词汇：{course.vocab_count}</span>
-            )}
           </div>
         )}
       </CardContent>

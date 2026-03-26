@@ -22,46 +22,13 @@ interface PracticeAreaProps {
   sentences: Sentence[];
 }
 
-/**
- * 角色映射表
- * 将实际的角色ID映射到句子中使用的character_id (1或2)
- * 根据角色性质决定使用哪个character_id
- */
-const CHARACTER_ID_MAP: Record<number, 1 | 2> = {
-  // 男性角色 → character_id = 1 (田中先生)
-  1: 1,  // 田中先生
-  3: 1,  // 店员 - 通常男性
-  6: 1,  // 警察 - 通常男性
-  8: 1,  // 厨师 - 通常男性
-  9: 1,  // 经理 - 通常男性
-  15: 1, // 社长 - 通常男性
-
-  // 女性角色 → character_id = 2 (山田小姐)
-  2: 2,  // 山田小姐
-  4: 2,  // 顾客 - 通常女性
-  7: 2,  // 服务员 - 通常女性
-  10: 2, // 同事 - 通常女性
-  11: 2, // 导游 - 通常女性
-  12: 2, // 游客 - 通常女性
-  14: 2, // 学生 - 通常女性
-  16: 2, // 秘书 - 通常女性
-
-  // 中性角色 - 默认分配
-  5: 1,  // 路人 → 使用男性角色
-  13: 2, // 老师 → 使用女性角色
-};
-
 export function PracticeArea({ course, character, sentences }: PracticeAreaProps) {
   const router = useRouter();
   const { user } = useAuthStore();
 
-  // 根据选择的角色过滤句子，使用映射表
+  // 根据选择的角色过滤句子（直接使用character_id匹配）
   const filteredSentences = character
-    ? sentences.filter(s => {
-        // 获取映射后的 character_id
-        const mappedCharId = CHARACTER_ID_MAP[character.id] ?? 1;
-        return s.character_id === mappedCharId;
-      })
+    ? sentences.filter(s => s.character_id === character.id)
     : sentences;
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -318,7 +285,7 @@ export function PracticeArea({ course, character, sentences }: PracticeAreaProps
           <p className="text-lg font-medium mb-2">暂无练习句子</p>
           <p className="text-sm text-muted-foreground mb-4">
             {character
-              ? `该角色（${character.name_cn}）暂时没有可练习的句子`
+              ? `${character.name_jp} 暂时没有可练习的句子`
               : '该课程暂时没有可练习的句子'
             }
           </p>
@@ -339,17 +306,11 @@ export function PracticeArea({ course, character, sentences }: PracticeAreaProps
             {/* Character Info */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-xs sm:text-sm text-muted-foreground">
-                  {character ? (
-                    <>
-                      角色：{character.name_cn} ({character.name_jp})
-                    </>
-                  ) : (
-                    '全部角色'
-                  )}
+                <span className="text-sm font-medium">
+                  {character?.name_jp || '全部角色'}
                 </span>
                 <Badge variant="outline" className="text-xs">
-                  {filteredSentences.length} 个句子
+                  {filteredSentences.length}
                 </Badge>
               </div>
               <Button
@@ -411,16 +372,13 @@ export function PracticeArea({ course, character, sentences }: PracticeAreaProps
           <CardTitle>当前句子</CardTitle>
           <CardDescription>
             请说出以下日语句子
-            {character && ` - ${character.name_cn}的台词`}
+            {character && ` - ${character.name_jp}`}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 sm:space-y-4">
           <div className="text-center space-y-1 sm:space-y-2">
             <p className="text-xl sm:text-2xl lg:text-3xl font-bold">{currentSentence.text_jp}</p>
             <p className="text-base sm:text-lg text-muted-foreground">{currentSentence.text_cn}</p>
-            {currentSentence.text_furigana && (
-              <p className="text-xs sm:text-sm text-muted-foreground">{currentSentence.text_furigana}</p>
-            )}
           </div>
 
           {/* TTS Player */}

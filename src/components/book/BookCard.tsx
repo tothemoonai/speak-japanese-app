@@ -81,7 +81,7 @@ export function BookCard({ book }: BookCardProps) {
       </CardContent>
 
       <CardFooter>
-        <Link href={`/books/${book.id}`} className="w-full">
+        <Link href={`/books/${book.book_number}`} className="w-full">
           <Button className="w-full">
             {book.progress === undefined || book.progress === 0 ? '开始学习' : '继续学习'}
           </Button>

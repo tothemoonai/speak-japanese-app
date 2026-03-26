@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import { getUserLevel } from '@/lib/utils/user';
 import { userProgressService } from '@/services/supabase/userProgress.service';
-import { createClient } from '@/lib/supabase/client';
+import { supabase } from '@/lib/supabase/client';
 import { Footer } from '@/components/layout/Footer';
 
 export const dynamic = 'force-dynamic';
@@ -85,7 +85,7 @@ export default function DashboardPage() {
       // 获取成就数量（如果表不存在，返回0）
       let achievementsCount = 0;
       try {
-        const supabaseClient = createClient();
+        const supabaseClient = supabase();
         const { data: achievements, error: achievementsError } = await supabaseClient
           .from('user_achievements')
           .select('id')
@@ -102,7 +102,7 @@ export default function DashboardPage() {
       // 获取今日练习次数
       let todayPractices = 0;
       try {
-        const supabaseClient = createClient();
+        const supabaseClient = supabase();
         const today = new Date();
         today.setHours(0, 0, 0, 0); // 设置为今天的00:00:00
 

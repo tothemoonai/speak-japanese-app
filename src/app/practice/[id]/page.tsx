@@ -139,8 +139,7 @@ function PracticePageContent() {
 
         {/* Course Title */}
         <div className="mb-6">
-          <h2 className="text-3xl font-bold mb-2">{course.title_cn}</h2>
-          <p className="text-xl text-muted-foreground mb-4">{course.title_jp}</p>
+          <h2 className="text-3xl font-bold mb-2">第{course.course_number}课：{course.title_cn} {course.title_jp}</h2>
 
           {/* Character Selector */}
           {course.characters && course.characters.length > 1 && (
@@ -156,7 +155,7 @@ function PracticePageContent() {
                       : 'bg-muted text-muted-foreground hover:bg-muted/80'
                   }`}
                 >
-                  {char.name_cn} ({char.name_jp})
+                  {char.name_jp}
                 </button>
               ))}
             </div>

@@ -52,6 +52,7 @@ export default function RootLayout({
       lang="zh-CN"
       suppressHydrationWarning
       className={`${notoSansJP.variable} ${outfit.variable} ${jetbrainsMono.variable}`}
+      data-scroll-behavior="smooth"
     >
       <body
         className="

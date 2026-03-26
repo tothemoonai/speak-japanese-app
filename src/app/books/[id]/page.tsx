@@ -162,7 +162,7 @@ export default function BookDetailPage() {
           <h3 className="text-xl sm:text-2xl font-bold mb-4">课程列表</h3>
         </div>
         <CourseList
-          filter={{ book_id: bookId }}
+          filter={{ book_id: book.book_number }}
           userId={user.id}
         />
       </div>

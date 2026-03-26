@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import type { CourseWithProgress, Character, Sentence } from '@/types';
-import { BookOpen, Clock, TrendingUp, Users, MessageSquare, ArrowLeft, Play } from 'lucide-react';
+import { BookOpen, Users, MessageSquare, ArrowLeft, Play } from 'lucide-react';
 
 interface CourseDetailProps {
   course: CourseWithProgress & { characters?: Character[]; sentences?: Sentence[] };
@@ -24,12 +24,6 @@ const difficultyLabels = {
   N5: '初级',
   N4: '中级',
   N3: '高级',
-};
-
-const genderLabels = {
-  male: '男',
-  female: '女',
-  other: '其他',
 };
 
 export function CourseDetail({ course, onPractice }: CourseDetailProps) {
@@ -52,7 +46,7 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
     >
       {/* Header */}
       <div>
-        <Link href="/courses">
+        <Link href={`/books/${course.book_number}`}>
           <Button variant="ghost" className="mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
             返回课程列表
@@ -65,7 +59,6 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
               <Badge className={difficultyColors[course.difficulty]}>
                 {difficultyLabels[course.difficulty]}
               </Badge>
-              <Badge variant="outline">第 {course.course_number} 课</Badge>
               {course.status && (
                 <Badge variant="outline">
                   {course.status === 'not_started' && '未开始'}
@@ -76,15 +69,8 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
             </div>
 
             <h1 className="text-3xl font-bold mb-2">
-              {course.title_cn}
+              第{course.course_number}课：{course.title_cn} {course.title_jp}
             </h1>
-            <p className="text-xl text-muted-foreground mb-4">
-              {course.title_jp}
-            </p>
-
-            {course.description && (
-              <p className="text-muted-foreground mb-4">{course.description}</p>
-            )}
 
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
               {course.theme && (
@@ -120,49 +106,20 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
       {/* Progress Card */}
       {course.status && course.status !== 'not_started' && (
         <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">学习进度</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {course.progress !== undefined && course.progress > 0 && (
-              <div className="mb-4">
-                <div className="flex items-center justify-between text-sm mb-2">
-                  <span className="text-muted-foreground">完成度</span>
-                  <span className="font-medium text-lg">{course.progress}%</span>
-                </div>
-                <Progress value={course.progress} className="h-3" />
-              </div>
-            )}
-
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+          <CardContent className="py-4">
+            <div className="flex flex-wrap items-center gap-4 text-sm">
+              {course.progress !== undefined && course.progress > 0 && (
+                <>
+                  <span className="text-muted-foreground">学习进度</span>
+                  <span className="font-medium">{course.progress}%</span>
+                  <Progress value={course.progress} className="h-2 w-24" />
+                </>
+              )}
               {course.practice_count !== undefined && course.practice_count > 0 && (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Clock className="h-5 w-5" />
-                  <div>
-                    <p className="font-medium text-foreground">{course.practice_count}</p>
-                    <p>练习次数</p>
-                  </div>
-                </div>
+                <span className="text-muted-foreground">练习 {course.practice_count} 次</span>
               )}
               {course.best_score !== undefined && course.best_score > 0 && (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <TrendingUp className="h-5 w-5" />
-                  <div>
-                    <p className="font-medium text-foreground">{course.best_score}</p>
-                    <p>最高分</p>
-                  </div>
-                </div>
-              )}
-              {course.last_practiced_at && (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Clock className="h-5 w-5" />
-                  <div>
-                    <p className="font-medium text-foreground">
-                      {new Date(course.last_practiced_at).toLocaleDateString()}
-                    </p>
-                    <p>最后练习</p>
-                  </div>
-                </div>
+                <span className="text-muted-foreground">最高分 {course.best_score}</span>
               )}
             </div>
           </CardContent>
@@ -172,55 +129,29 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
       {/* Characters Section */}
       {course.characters && course.characters.length > 0 && (
         <Card>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              对话角色
-            </CardTitle>
-            <CardDescription>
-              选择一个角色开始对话练习
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {course.characters.map((character) => (
-                <Card key={character.id} className="hover:shadow-md transition-shadow">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-base">
-                      {character.name_cn}
-                    </CardTitle>
-                    <CardDescription>
-                      {character.name_jp}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {character.description && (
-                      <p className="text-sm text-muted-foreground mb-3">
-                        {character.description}
-                      </p>
-                    )}
-                    <div className="flex items-center justify-between">
-                      {character.gender && (
-                        <Badge variant="outline" className="text-xs">
-                          {genderLabels[character.gender]}
-                        </Badge>
-                      )}
-                      {character.difficulty_level && (
-                        <Badge variant="outline" className="text-xs">
-                          {character.difficulty_level === 'easy' && '简单'}
-                          {character.difficulty_level === 'medium' && '中等'}
-                          {character.difficulty_level === 'hard' && '困难'}
-                        </Badge>
-                      )}
-                    </div>
-                    <Link href={`/practice/${course.id}?character=${character.id}`} className="mt-3 block">
-                      <Button size="sm" className="w-full">
-                        选择此角色
-                      </Button>
-                    </Link>
-                  </CardContent>
-                </Card>
-              ))}
+          <CardContent className="py-4">
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-2 text-lg font-semibold">
+                <Users className="h-5 w-5" />
+                <span>对话角色</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {course.characters.map((character) => (
+                  <Link
+                    key={character.id}
+                    href={`/practice/${course.id}?character=${character.id}`}
+                  >
+                    <Card className="hover:shadow-md transition-shadow cursor-pointer">
+                      <CardContent className="py-2 px-3">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-sm">{character.name_jp}</span>
+                          <Play className="h-3 w-3 text-muted-foreground" />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -230,40 +161,34 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
       {course.sentences && course.sentences.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <MessageSquare className="h-5 w-5" />
-              对话预览
-            </CardTitle>
-            <CardDescription>
-              本课程包含 {course.sentences.length} 句对话
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <MessageSquare className="h-5 w-5" />
+                对话预览
+              </CardTitle>
+              <span className="text-sm text-muted-foreground">
+                本课程包含 {course.sentences.length} 句对话
+              </span>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {course.sentences.slice(0, 5).map((sentence) => {
+              {course.sentences.map((sentence) => {
                 const character = course.characters?.find(c => c.id === sentence.character_id);
                 return (
                   <div key={sentence.id} className="border-b border-border pb-3 last:border-0 last:pb-0">
                     <div className="flex items-start gap-3">
                       <div className="flex-shrink-0 w-20 text-sm text-muted-foreground">
-                        {character?.name_cn || '角色'}
+                        {character?.name_jp || '角色'}
                       </div>
                       <div className="flex-1 space-y-1">
                         <p className="font-medium">{sentence.text_jp}</p>
                         <p className="text-sm text-muted-foreground">{sentence.text_cn}</p>
-                        {sentence.text_furigana && (
-                          <p className="text-xs text-muted-foreground">{sentence.text_furigana}</p>
-                        )}
                       </div>
                     </div>
                   </div>
                 );
               })}
-              {course.sentences.length > 5 && (
-                <p className="text-sm text-center text-muted-foreground pt-2">
-                  还有 {course.sentences.length - 5} 句对话...
-                </p>
-              )}
             </div>
           </CardContent>
         </Card>
