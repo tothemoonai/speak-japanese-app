@@ -120,11 +120,12 @@ export class CourseService {
     const bookNumber = course.book_id;
 
     // Fetch characters for this course
-    // First try course_characters junction table
+    // Use book_id and course_number to query course_characters junction table
     const { data: courseCharacters } = await client
       .from('course_characters')
       .select('character_id, character_order, is_primary, characters(*)')
-      .eq('course_id', course.id)
+      .eq('book_id', course.book_id)
+      .eq('course_id', course.course_number)
       .order('character_order');
 
     let characters: Character[] = [];
