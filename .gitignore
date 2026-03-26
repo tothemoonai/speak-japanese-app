@@ -116,3 +116,5 @@ documents/SUPABASE_UPDATE_GUIDE.md
 # Debug pages (remove from production)
 src/app/debug-auth/
 .claude/settings.local.json
+scripts/brcourses/
+scripts/final-verification.js
