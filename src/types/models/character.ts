@@ -1,6 +1,6 @@
 export interface Character {
   id: number;
-  course_id: number;
+  book_id: number;         // 角色属于哪本书
   name_cn: string;
   name_jp: string;
   gender?: 'male' | 'female' | 'other' | null;

@@ -1,6 +1,7 @@
 export interface Course {
   id: number;
-  book_id: number;
+  book_id: number;  // 注意：这里存储的是 book_number（业务键），不是 books.id（主键）
+  book_number?: number;  // 业务键（冗余字段，用于便捷访问）
   course_number: number;
   title_cn: string;
   title_jp: string;
@@ -13,6 +14,21 @@ export interface Course {
   grammar_count: number | null;
   sort_order: number | null;
   created_at: string;
+  characters?: CourseCharacter[];
+}
+
+export interface CourseCharacter {
+  id: number;
+  course_id: number;
+  character_id: number;
+  character_order: number;
+  is_primary: boolean;
+  character: {
+    id: number;
+    name_cn: string;
+    name_jp: string;
+    avatar_url: string | null;
+  };
 }
 
 export interface CourseWithProgress extends Course {
@@ -24,7 +40,7 @@ export interface CourseWithProgress extends Course {
 }
 
 export interface CourseFilter {
-  book_id?: number;
+  book_id?: number;  // 注意：这里存储的是 book_number（业务键），不是 books.id（主键）
   difficulty?: ('N5' | 'N4' | 'N3')[];
   theme?: string[];
   status?: ('not_started' | 'in_progress' | 'completed')[];
