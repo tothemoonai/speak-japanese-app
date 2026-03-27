@@ -36,11 +36,6 @@ export function BookCard({ book }: BookCardProps) {
             </CardTitle>
           </div>
         </div>
-        {book.description && (
-          <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-            {book.description}
-          </p>
-        )}
       </CardHeader>
 
       <CardContent className="flex-1">
