@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
-import { Noto_Sans_JP, Outfit, JetBrains_Mono } from 'next/font/google';
+import { Noto_Sans_JP, Outfit, JetBrains_Mono, Geist } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/components/providers/AuthProvider';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { FontSizeProvider } from '@/components/providers/FontSizeProvider';
 import { ColorSchemeProvider } from '@/components/providers/ColorSchemeProvider';
 import { Toaster } from '@/components/ui/toaster';
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 /**
  * 字体配置 - Tech-Zen Modern 美学
@@ -51,7 +54,7 @@ export default function RootLayout({
     <html
       lang="zh-CN"
       suppressHydrationWarning
-      className={`${notoSansJP.variable} ${outfit.variable} ${jetbrainsMono.variable}`}
+      className={cn(notoSansJP.variable, outfit.variable, jetbrainsMono.variable, "font-sans", geist.variable)}
       data-scroll-behavior="smooth"
     >
       <body

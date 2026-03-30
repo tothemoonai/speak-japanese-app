@@ -21,6 +21,7 @@ export interface Database {
           updated_at: string
           last_login_at: string | null
           status: 'active' | 'suspended'
+          is_admin: boolean | null
         }
         Insert: {
           id?: string
@@ -33,6 +34,7 @@ export interface Database {
           updated_at?: string
           last_login_at?: string | null
           status?: 'active' | 'suspended'
+          is_admin?: boolean | null
         }
         Update: {
           id?: string
@@ -44,6 +46,7 @@ export interface Database {
           updated_at?: string
           last_login_at?: string | null
           status?: 'active' | 'suspended'
+          is_admin?: boolean | null
         }
       }
       courses: {

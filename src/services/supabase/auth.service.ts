@@ -101,10 +101,12 @@ export class AuthService {
     const defaultNickname = nickname || email.split('@')[0];
     const client = this.getClient();
 
+    const redirectTo = `${window.location.origin}/auth/callback`;
     const { data, error } = await client.auth.signUp({
       email,
       password,
       options: {
+        emailRedirectTo: redirectTo,
         data: {
           nickname: defaultNickname,
         },
