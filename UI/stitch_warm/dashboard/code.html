@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ja"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>IT Japanese - ダッシュボード</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-container": "#730425",
+              "inverse-on-surface": "#f4f1e6",
+              "on-primary-fixed": "#2a1700",
+              "tertiary-fixed-dim": "#7fd0ff",
+              "on-tertiary": "#ffffff",
+              "surface-container": "#f1eee3",
+              "on-primary": "#ffffff",
+              "on-surface": "#1c1c15",
+              "surface-container-highest": "#e6e2d8",
+              "on-secondary-fixed": "#400010",
+              "primary-container": "#f59e0b",
+              "error-container": "#ffdad6",
+              "surface-variant": "#e6e2d8",
+              "background": "#fdf9ee",
+              "on-tertiary-container": "#004966",
+              "surface": "#fdf9ee",
+              "tertiary-fixed": "#c5e7ff",
+              "surface-container-high": "#ece8dd",
+              "on-tertiary-fixed": "#001e2d",
+              "surface-container-low": "#f7f3e8",
+              "tertiary": "#00658b",
+              "surface-tint": "#855300",
+              "secondary-container": "#fe7488",
+              "on-secondary": "#ffffff",
+              "tertiary-container": "#1abdff",
+              "secondary-fixed": "#ffdadc",
+              "primary-fixed": "#ffddb8",
+              "on-primary-container": "#613b00",
+              "on-surface-variant": "#534434",
+              "outline-variant": "#d8c3ad",
+              "outline": "#867461",
+              "surface-dim": "#dddacf",
+              "error": "#ba1a1a",
+              "on-secondary-fixed-variant": "#891933",
+              "secondary": "#a93349",
+              "secondary-fixed-dim": "#ffb2b9",
+              "on-tertiary-fixed-variant": "#004c6a",
+              "inverse-primary": "#ffb95f",
+              "surface-container-lowest": "#ffffff",
+              "on-error-container": "#93000a",
+              "surface-bright": "#fdf9ee",
+              "inverse-surface": "#31312a",
+              "on-background": "#1c1c15",
+              "on-primary-fixed-variant": "#653e00",
+              "on-error": "#ffffff",
+              "primary": "#855300",
+              "primary-fixed-dim": "#ffb95f"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .amber-glow-cta {
+            background: linear-gradient(135deg, #855300 0%, #f59e0b 100%);
+        }
+        .shoji-blur {
+            backdrop-filter: blur(12px);
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-[#fdf9ee] dark:bg-stone-950 sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-6 h-16">
+<div class="flex items-center gap-4">
+<button class="text-[#855300] dark:text-[#f59e0b] active:scale-95 duration-150">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold tracking-tight text-on-surface text-lg text-[#855300] dark:text-[#f59e0b]">IT Japanese</h1>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border-2 border-primary-fixed">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="close-up portrait of a smiling young woman with warm lighting and a soft cream colored background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfUi9Rnce7KRdnfYxPHdIuVuFDTCmt1fHgFnVlgeJmyf2D7ZP9xpNTwEtNb5cJ70STk9ZB0YBw3ah6_3LdZBQTG7shthvCvVBInN6R_T2aQB-M5N0jqQ__-O4vi_fDL5tzx3ZjLVDYmpfzuCl2pvIMvKF1s6DIj2Of3-VgzmZYQXJkdRHU9QDDirLvrWjcx2P2AhCtz06vSJMopSMZH3ZNgr4qR7Zc7RPDy3jMSh4EA_lEWVMTp_-llHRa_y3Gpk1DZ7acou3q3mo"/>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-5xl mx-auto px-6 pt-8 space-y-10">
+<!-- Welcome Hero -->
+<section class="relative overflow-hidden rounded-[32px] bg-surface-container-low p-8 md:p-12 flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="z-10 text-center md:text-left">
+<p class="text-secondary font-medium tracking-[0.05em] mb-2">お帰りなさい、Yuki</p>
+<h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-on-surface mb-4">
+                    エンジニアのための<br/>日本語学習
+                </h2>
+<div class="inline-flex items-center px-4 py-2 bg-primary-fixed text-on-primary-fixed rounded-full text-sm font-bold">
+<span class="material-symbols-outlined mr-2 text-sm" data-icon="school">school</span>
+                    学習レベル: 中級
+                </div>
+</div>
+<div class="relative w-full md:w-1/3 aspect-square max-w-[280px]">
+<div class="absolute inset-0 bg-primary-container/20 rounded-full blur-3xl"></div>
+<img alt="IT Learning Illustration" class="relative z-10 w-full h-full object-contain transform rotate-3" data-alt="abstract artistic 3D render of a wooden desk with a minimalist laptop and a bonsai tree under warm golden sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbaH3TwyJ_hfMXHt1GP2y1yYUqv3Ln05IHjoH9qEkHN277z0t8JA_m-PxeqfJI-Sgxfo11Wdzjiqpte3jz2O2jtKC7lWuBX27cLoQPXZuyrBPMJsmK4gSeHcQJyFFiY1icOuJalMNJotDCmKAJihaf0EX42Ivjvvsge4u85BS5ooFqezb8ZRrDLCd5sHe-DVzNRuYe9nikXxmzNdhc9iUtkut9RCjGV_Wi2g44-z-pif4BU53PhpYilz0Nl4wZKuSt5r8iCej6BXE"/>
+</div>
+</section>
+<!-- Stats Grid -->
+<section class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-[24px] flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary mb-2 text-3xl" data-icon="history_edu">history_edu</span>
+<span class="text-3xl font-extrabold text-on-surface">124</span>
+<span class="text-on-surface-variant text-xs font-medium tracking-wide">練習回数</span>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-[24px] flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-secondary mb-2 text-3xl" data-icon="star">star</span>
+<span class="text-3xl font-extrabold text-on-surface">92%</span>
+<span class="text-on-surface-variant text-xs font-medium tracking-wide">平均スコア</span>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-[24px] flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-tertiary mb-2 text-3xl" data-icon="menu_book">menu_book</span>
+<span class="text-3xl font-extrabold text-on-surface">8</span>
+<span class="text-on-surface-variant text-xs font-medium tracking-wide">コース数</span>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-[24px] flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary-container mb-2 text-3xl" data-icon="emoji_events">emoji_events</span>
+<span class="text-3xl font-extrabold text-on-surface">15</span>
+<span class="text-on-surface-variant text-xs font-medium tracking-wide">アチーブメント</span>
+</div>
+</section>
+<!-- Main Content Layout (Asymmetric) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+<!-- Left: Recent Learning -->
+<section class="lg:col-span-2 space-y-6">
+<div class="flex justify-between items-end px-2">
+<h3 class="text-2xl font-bold text-on-surface tracking-tight">最近の学習</h3>
+<button class="text-primary font-bold text-sm hover:underline">すべて見る</button>
+</div>
+<div class="space-y-4">
+<!-- Course Card 1 -->
+<div class="group bg-surface-container-lowest p-6 rounded-[28px] transition-all hover:bg-surface-bright flex items-center gap-6">
+<div class="w-20 h-20 rounded-2xl bg-primary-fixed/30 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="terminal">terminal</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-2">
+<div>
+<span class="text-[10px] font-bold tracking-[0.1em] text-secondary uppercase">Frontend Development</span>
+<h4 class="text-lg font-bold text-on-surface">Reactの基礎用語</h4>
+</div>
+<span class="text-sm font-bold text-primary">75%</span>
+</div>
+<div class="h-3 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-tertiary-container to-tertiary w-3/4 rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Course Card 2 -->
+<div class="group bg-surface-container-lowest p-6 rounded-[28px] transition-all hover:bg-surface-bright flex items-center gap-6">
+<div class="w-20 h-20 rounded-2xl bg-secondary-fixed/30 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary text-4xl" data-icon="database">database</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-2">
+<div>
+<span class="text-[10px] font-bold tracking-[0.1em] text-secondary uppercase">Backend &amp; Infra</span>
+<h4 class="text-lg font-bold text-on-surface">データベース設計の動詞</h4>
+</div>
+<span class="text-sm font-bold text-primary">42%</span>
+</div>
+<div class="h-3 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-tertiary-container to-tertiary w-[42%] rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right: Side Widgets -->
+<aside class="space-y-8">
+<!-- Word of the Day -->
+<div class="bg-surface-container-high p-8 rounded-[32px] relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-8xl" data-icon="auto_stories">auto_stories</span>
+</div>
+<span class="text-xs font-bold tracking-widest text-secondary mb-4 block uppercase">今日の単語</span>
+<div class="mb-6">
+<h5 class="text-4xl font-extrabold text-on-surface mb-1">実装</h5>
+<p class="text-on-surface-variant italic">じっそう • Jissou</p>
+</div>
+<div class="space-y-4">
+<p class="text-sm leading-relaxed text-on-surface">
+                            システムの機能を実際にプログラムとして作成すること。
+                        </p>
+<div class="p-3 bg-surface-container-lowest rounded-xl border border-outline-variant/15">
+<p class="text-xs font-bold text-primary-container mb-1">例文:</p>
+<p class="text-xs text-on-surface-variant italic">
+                                "この新しい機能を来週までに実装する必要があります。"
+                            </p>
+</div>
+</div>
+</div>
+<!-- Quick Action FAB Contextual -->
+<button class="amber-glow-cta w-full py-5 rounded-[24px] text-on-primary font-bold shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="play_circle">play_circle</span>
+                    学習を再開する
+                </button>
+</aside>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50">
+<div class="shoji-blur border-t border-[#d8c3ad]/15 shadow-[0_-4px_24px_0_rgba(83,68,52,0.06)] rounded-t-[32px] px-4 pt-3 pb-6 flex justify-around items-center">
+<!-- Active Tab: Dashboard -->
+<a class="flex flex-col items-center justify-center bg-[#ffddb8] dark:bg-[#855300]/30 text-[#855300] dark:text-[#ffddb8] rounded-2xl px-5 py-2 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium tracking-wide">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#534434] dark:text-stone-400 px-5 py-2 hover:text-[#855300] dark:hover:text-[#f59e0b] active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="book_5">book_5</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium tracking-wide">Books</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#534434] dark:text-stone-400 px-5 py-2 hover:text-[#855300] dark:hover:text-[#f59e0b] active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium tracking-wide">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#534434] dark:text-stone-400 px-5 py-2 hover:text-[#855300] dark:hover:text-[#f59e0b] active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium tracking-wide">Settings</span>
+</a>
+</div>
+</nav>
+</body></html>

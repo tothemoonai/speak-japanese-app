@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AlertCircle, CheckCircle, Key, Trash2, Eye, EyeOff, Loader2, CheckCircle2, XCircle } from 'lucide-react';
+
 import { saveApiKeys, getApiKeys, clearApiKeys, type ApiKeys } from '@/lib/storage/apiKeyStorage';
 import { useToast } from '@/hooks/use-toast';
 import { validateApiKey, type ApiKeyProvider } from '@/lib/services/apiKeyValidator';
@@ -173,30 +174,6 @@ export function ApiKeySettings() {
       required: true,
       helpUrl: 'https://www.alibabacloud.com/help/zh/model-studio',
     },
-    {
-      key: 'openai' as const,
-      label: 'OpenAI API Key',
-      description: '用于 GPT-4 语音评估（可选）',
-      placeholder: 'sk-xxxxxxxxxxxxxxxxxxxxxxxx',
-      required: false,
-      helpUrl: 'https://platform.openai.com/api-keys',
-    },
-    {
-      key: 'anthropic' as const,
-      label: 'Anthropic API Key',
-      description: '用于 Claude 语音评估（可选）',
-      placeholder: 'sk-ant-xxxxxxxxxxxxxxxxxxxxxxxx',
-      required: false,
-      helpUrl: 'https://console.anthropic.com/',
-    },
-    {
-      key: 'zhipu' as const,
-      label: '智谱 GLM API Key',
-      description: '用于智谱 GLM 语音评估（可选）',
-      placeholder: 'xxxxxxxxxxxxxxxxxxxxxxxx.xxxxxxxxxxxxxxxx',
-      required: false,
-      helpUrl: 'https://open.bigmodel.cn/',
-    },
   ];
 
   return (
@@ -326,51 +303,8 @@ export function ApiKeySettings() {
           })}
         </div>
 
-        {/* 状态提示 */}
-        {Object.values(apiKeys).some(key => key?.trim()) && (
-          <div className="flex items-start gap-3 p-4 bg-green-50 dark:bg-green-950 rounded-lg border border-green-200 dark:border-green-800">
-            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 shrink-0" />
-            <div className="text-sm text-green-800 dark:text-green-200">
-              <p className="font-medium">API 密钥已配置</p>
-              <p className="text-xs mt-1">
-                已配置 {Object.values(apiKeys).filter(key => key?.trim()).length} 个 API 密钥
-              </p>
-            </div>
-          </div>
-        )}
-
         {/* 操作按钮 */}
-        <div className="space-y-3">
-          {/* 验证所有配置的密钥 */}
-          {Object.values(apiKeys).some(key => key?.trim()) && (
-            <Button
-              variant="outline"
-              onClick={() => {
-                Object.keys(apiKeys).forEach(provider => {
-                  if (apiKeys[provider as ApiKeyProvider]?.trim()) {
-                    handleValidate(provider as ApiKeyProvider);
-                  }
-                });
-              }}
-              disabled={validatingProvider !== null}
-              className="w-full"
-            >
-              {validatingProvider ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  验证中...
-                </>
-              ) : (
-                <>
-                  <CheckCircle className="h-4 w-4 mr-2" />
-                  验证所有配置的密钥
-                </>
-              )}
-            </Button>
-          )}
-
-          {/* 保存和清除按钮 */}
-          <div className="flex gap-3">
+        <div className="flex gap-3">
             <Button
               onClick={handleSave}
               disabled={isSaving}
@@ -381,32 +315,13 @@ export function ApiKeySettings() {
             <Button
               variant="destructive"
               onClick={handleClear}
-              disabled={isClearing || !Object.values(apiKeys).some(key => key?.trim())}
+              disabled={isClearing || !apiKeys.dashscope?.trim()}
               className="flex items-center gap-2"
             >
               <Trash2 className="h-4 w-4" />
-              {isClearing ? '删除中...' : '清除所有'}
+              {isClearing ? '删除中...' : '清除'}
             </Button>
           </div>
-
-          {/* 验证结果总结 */}
-          {Object.keys(validationResults).length > 0 && (
-            <div className="flex items-center gap-2 text-sm p-3 bg-muted rounded-lg">
-              {Object.values(validationResults).filter(r => r.valid).length > 0 ? (
-                <span className="flex items-center text-green-700 dark:text-green-300">
-                  <CheckCircle2 className="h-4 w-4 mr-1" />
-                  {Object.values(validationResults).filter(r => r.valid).length} 个有效
-                </span>
-              ) : null}
-              {Object.values(validationResults).filter(r => !r.valid).length > 0 ? (
-                <span className="flex items-center text-red-700 dark:text-red-300">
-                  <XCircle className="h-4 w-4 mr-1" />
-                  {Object.values(validationResults).filter(r => !r.valid).length} 个无效
-                </span>
-              ) : null}
-            </div>
-          )}
-        </div>
 
         {/* 移动端特殊说明 */}
         {window.Capacitor?.isNativePlatform && (
