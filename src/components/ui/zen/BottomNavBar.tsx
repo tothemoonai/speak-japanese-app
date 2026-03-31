@@ -20,7 +20,7 @@ export function BottomNavBar() {
       className={cn(
         'fixed bottom-0 left-0 w-full z-50',
         'flex justify-around items-center px-4 pb-6 pt-3',
-        'glass-nav rounded-t-3xl',
+        'bg-surface/95 backdrop-blur-xl rounded-t-3xl',
         'border-t border-primary/15',
         'nav-shadow'
       )}
