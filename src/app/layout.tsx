@@ -4,6 +4,7 @@ import './globals.css';
 import { AuthProvider } from '@/components/providers/AuthProvider';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { FontSizeProvider } from '@/components/providers/FontSizeProvider';
+import { ColorSchemeProvider } from '@/components/providers/ColorSchemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from "@/lib/utils";
 
@@ -70,10 +71,12 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <FontSizeProvider>
-            <AuthProvider>{children}</AuthProvider>
-            <Toaster />
-          </FontSizeProvider>
+          <ColorSchemeProvider>
+            <FontSizeProvider>
+              <AuthProvider>{children}</AuthProvider>
+              <Toaster />
+            </FontSizeProvider>
+          </ColorSchemeProvider>
         </ThemeProvider>
       </body>
     </html>

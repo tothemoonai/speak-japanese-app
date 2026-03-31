@@ -1,0 +1,109 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e423]:
+    - banner [ref=e424]:
+      - generic [ref=e425]:
+        - button "arrow_back" [ref=e426] [cursor=pointer]:
+          - generic [ref=e427]: arrow_back
+        - generic [ref=e428]: 第1課
+      - link "練習開始" [ref=e429] [cursor=pointer]:
+        - /url: /practice/1
+        - button "練習開始" [ref=e430]
+    - main [ref=e431]:
+      - generic [ref=e432]:
+        - generic [ref=e433]:
+          - generic [ref=e434]:
+            - generic [ref=e435]:
+              - generic [ref=e436]: N5
+              - generic [ref=e437]: 第1課
+              - generic [ref=e438]: 完了
+            - heading "初めての会話" [level=2] [ref=e439]
+            - paragraph [ref=e440]: 初次见面
+            - generic [ref=e441]:
+              - generic [ref=e442]: category
+              - generic [ref=e443]: 日常会话
+          - link "練習を始める play_circle" [ref=e444] [cursor=pointer]:
+            - /url: /practice/1
+            - button "練習を始める play_circle" [ref=e445]:
+              - text: 練習を始める
+              - generic [ref=e446]: play_circle
+        - generic [ref=e447]:
+          - generic [ref=e448]:
+            - generic [ref=e449]:
+              - paragraph [ref=e450]: 学習進捗
+              - paragraph [ref=e451]: 100% 完了
+            - generic [ref=e452]:
+              - generic [ref=e453]: 練習 1回
+              - generic [ref=e454]: 最高 100点
+          - generic [ref=e457]:
+            - button "visibility 中文" [ref=e458] [cursor=pointer]:
+              - generic [ref=e459]: visibility
+              - text: 中文
+            - button "visibility 日本語" [ref=e460] [cursor=pointer]:
+              - generic [ref=e461]: visibility
+              - text: 日本語
+            - button "volume_up 再生" [ref=e462] [cursor=pointer]:
+              - generic [ref=e463]: volume_up
+              - text: 再生
+        - generic [ref=e464]:
+          - generic [ref=e465]:
+            - generic [ref=e466]: group
+            - heading "会話キャラクター" [level=3] [ref=e467]
+          - generic [ref=e468]:
+            - link "田中先生 play_arrow" [ref=e469] [cursor=pointer]:
+              - /url: /practice/1?character=1
+              - generic [ref=e470]:
+                - generic [ref=e471]: 田中先生
+                - generic [ref=e472]: play_arrow
+            - link "山田さん play_arrow" [ref=e473] [cursor=pointer]:
+              - /url: /practice/1?character=2
+              - generic [ref=e474]:
+                - generic [ref=e475]: 山田さん
+                - generic [ref=e476]: play_arrow
+        - generic [ref=e477]:
+          - generic [ref=e478]:
+            - generic [ref=e479]:
+              - generic [ref=e480]: chat_bubble
+              - heading "会話プレビュー" [level=3] [ref=e481]
+            - generic [ref=e482]: 5フレーズ
+          - generic [ref=e483]:
+            - generic [ref=e485]:
+              - generic [ref=e486]: 田中先生
+              - generic [ref=e487]:
+                - paragraph [ref=e488]: こんにちは、はじめまして。
+                - paragraph [ref=e489]: 你好，初次见面。
+            - generic [ref=e491]:
+              - generic [ref=e492]: 田中先生
+              - generic [ref=e493]:
+                - paragraph [ref=e494]: 田中です。よろしくお願いします。
+                - paragraph [ref=e495]: 我是田中，请多关照。
+            - generic [ref=e497]:
+              - generic [ref=e498]: 山田さん
+              - generic [ref=e499]:
+                - paragraph [ref=e500]: 山田です。こちらこそよろしく。
+                - paragraph [ref=e501]: 我是山田，也请多关照。
+            - generic [ref=e503]:
+              - generic [ref=e504]: 田中先生
+              - generic [ref=e505]:
+                - paragraph [ref=e506]: 日本から来ました。
+                - paragraph [ref=e507]: 我来自日本。
+            - generic [ref=e509]:
+              - generic [ref=e510]: 山田さん
+              - generic [ref=e511]:
+                - paragraph [ref=e512]: 東京の会社で働いています。
+                - paragraph [ref=e513]: 在东京的公司工作。
+    - navigation [ref=e514]:
+      - button "dashboard ダッシュボード" [ref=e515] [cursor=pointer]:
+        - generic [ref=e516]: dashboard
+        - generic [ref=e517]: ダッシュボード
+      - button "menu_book 教材" [ref=e518] [cursor=pointer]:
+        - generic [ref=e519]: menu_book
+        - generic [ref=e520]: 教材
+      - button "leaderboard レポート" [ref=e521] [cursor=pointer]:
+        - generic [ref=e522]: leaderboard
+        - generic [ref=e523]: レポート
+      - button "settings 設定" [ref=e524] [cursor=pointer]:
+        - generic [ref=e525]: settings
+        - generic [ref=e526]: 設定
+  - button "Open Next.js Dev Tools" [ref=e12] [cursor=pointer]:
+    - img [ref=e13]
+  - alert [ref=e16]

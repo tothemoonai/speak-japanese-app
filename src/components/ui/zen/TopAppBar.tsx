@@ -35,7 +35,7 @@ export function TopAppBar({
     <header
       className={cn(
         'w-full top-0 sticky z-50',
-        'bg-gradient-to-b from-[#161f35] to-[#0b1326]',
+        'header-gradient',
         'flex justify-between items-center px-6 py-4',
         className
       )}

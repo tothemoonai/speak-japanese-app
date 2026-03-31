@@ -25,7 +25,7 @@ export default function CourseDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-surface">
-        <header className="sticky top-0 z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] px-6 py-4">
+        <header className="sticky top-0 z-50 header-gradient px-6 py-4">
           <div className="flex items-center gap-4">
             <button onClick={() => router.back()} className="text-primary active:scale-95">
               <Icon name="arrow_back" />
@@ -48,7 +48,7 @@ export default function CourseDetailPage() {
   if (error || !course) {
     return (
       <div className="min-h-screen bg-surface">
-        <header className="sticky top-0 z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] px-6 py-4">
+        <header className="sticky top-0 z-50 header-gradient px-6 py-4">
           <div className="flex items-center gap-4">
             <button onClick={() => router.back()} className="text-primary">
               <Icon name="arrow_back" />
@@ -67,7 +67,7 @@ export default function CourseDetailPage() {
 
   return (
     <div className="min-h-screen bg-surface">
-      <header className="sticky top-0 z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] flex justify-between items-center px-6 py-4">
+      <header className="sticky top-0 z-50 header-gradient flex justify-between items-center px-6 py-4">
         <div className="flex items-center gap-4">
           <button onClick={() => router.back()} className="text-primary active:scale-95 duration-200">
             <Icon name="arrow_back" />

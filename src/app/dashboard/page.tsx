@@ -97,7 +97,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-surface">
       {/* Header */}
-      <header className="w-full top-0 sticky z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] flex justify-between items-center px-6 py-4">
+      <header className="w-full top-0 sticky z-50 header-gradient flex justify-between items-center px-6 py-4">
         <div className="flex items-center gap-4">
           <h1 className="font-headline font-bold tracking-tight text-xl text-primary tracking-tighter">
             IT日本語
@@ -130,7 +130,7 @@ export default function DashboardPage() {
             </p>
             <div className="pt-4 flex flex-wrap gap-4">
               <Link href="/books">
-                <button className="bg-primary text-[#0b1326] font-headline font-bold px-8 py-4 rounded-xl flex items-center gap-3 hover:bg-primary-fixed transition-all active:scale-95 shadow-lg shadow-primary/10">
+                <button className="bg-primary text-primary-foreground font-headline font-bold px-8 py-4 rounded-xl flex items-center gap-3 hover:bg-primary-fixed transition-all active:scale-95 shadow-lg shadow-primary/10">
                   学習を再開する
                   <Icon name="play_circle" size={20} />
                 </button>
@@ -227,7 +227,7 @@ export default function DashboardPage() {
       {/* Floating Action Button */}
       <div className="fixed bottom-24 right-6 z-40">
         <Link href="/books">
-          <button className="w-16 h-16 rounded-full bg-primary text-on-primary shadow-[0_8px_32px_rgba(87,241,219,0.3)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+          <button className="w-16 h-16 rounded-full bg-primary text-on-primary btn-shadow-primary flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
             <Icon name="mic" size={28} fill />
           </button>
         </Link>

@@ -3,16 +3,205 @@
 @tailwind utilities;
 
 /**
- * Editorial Tech-Zen Design System - "The Digital Sensei"
- * Dark-only theme: deep obsidian navy with surgical teal precision
+ * "The Digital Sensei" Design System
+ * Dark-only theme with switchable color schemes:
+ *   - 温馨可爱 (Warm): sakura pink + warm purple surfaces
+ *   - 科技未来 (Cool): teal + cold navy surfaces
  */
 
 @layer base {
+  /* ===== 温馨可爱 (Warm) — DEFAULT ===== */
   :root {
-    /* ===== Font scale ===== */
     --font-scale: 1;
 
-    /* ===== Surface colors (dark-only) ===== */
+    /* Surfaces — warm purple-black */
+    --surface: 26 16 40;
+    --surface-container-lowest: 18 10 30;
+    --surface-container-low: 30 21 48;
+    --surface-container: 34 26 55;
+    --surface-container-high: 46 36 70;
+    --surface-container-highest: 58 48 84;
+    --surface-dim: 26 16 40;
+    --surface-bright: 64 54 92;
+    --surface-variant: 58 48 84;
+    --surface-tint: 236 72 153;
+
+    /* On-surface text */
+    --on-surface: 237 224 245;
+    --on-surface-variant: 196 181 212;
+
+    /* Primary — sakura pink */
+    --color-primary: 236 72 153;
+    --color-primary-fg: 255 255 255;
+    --color-primary-container: 244 114 182;
+    --color-primary-fixed: 249 168 212;
+    --color-primary-fixed-dim: 236 72 153;
+
+    /* Secondary — soft lavender */
+    --color-secondary: 196 181 253;
+    --color-secondary-fg: 42 31 71;
+    --color-secondary-container: 60 48 96;
+    --color-secondary-fixed: 214 200 255;
+    --color-secondary-fixed-dim: 196 181 253;
+
+    /* Tertiary — warm amber */
+    --color-tertiary: 251 191 36;
+    --color-tertiary-fg: 61 40 0;
+    --color-tertiary-container: 255 173 58;
+    --color-tertiary-fixed: 255 221 184;
+    --color-tertiary-fixed-dim: 255 185 95;
+
+    /* Error */
+    --color-error: 252 165 165;
+    --color-error-fg: 105 0 5;
+
+    /* Outlines */
+    --outline: 154 135 175;
+    --outline-variant: 78 64 98;
+
+    /* Inverse */
+    --inverse-surface: 237 224 245;
+    --inverse-on-surface: 42 32 62;
+    --inverse-primary: 163 27 94;
+
+    /* Header gradient */
+    --header-from: #281840;
+    --header-to: #1a1030;
+
+    /* Shadows */
+    --shadow-primary: rgba(236, 72, 153, 0.3);
+    --shadow-primary-glow: rgba(236, 72, 153, 0.4);
+    --shadow-tertiary: rgba(251, 191, 36, 0.4);
+
+    /* Selection */
+    --selection-bg: rgba(236, 72, 153, 0.3);
+    --selection-fg: #ede0f5;
+
+    /* Semantic aliases for shadcn */
+    --background: 270 35% 13%;
+    --foreground: 270 50% 90%;
+
+    --card: 270 33% 17%;
+    --card-foreground: 270 50% 90%;
+
+    --popover: 270 33% 17%;
+    --popover-foreground: 270 50% 90%;
+
+    --primary: 330 81% 60%;
+    --primary-foreground: 330 80% 95%;
+
+    --secondary: 260 60% 86%;
+    --secondary-foreground: 260 30% 25%;
+
+    --muted: 270 25% 20%;
+    --muted-foreground: 270 15% 72%;
+
+    --accent: 270 20% 24%;
+    --accent-foreground: 270 50% 90%;
+
+    --destructive: 0 84% 76%;
+    --destructive-foreground: 0 84% 20%;
+
+    --border: 270 30% 86% / 8%;
+    --input: 270 30% 86% / 12%;
+    --ring: 330 81% 60%;
+
+    --radius: 0.625rem;
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    --spacing-3xl: 4rem;
+    --spacing-4xl: 6rem;
+
+    /* Chart colors */
+    --chart-1: 330 81% 60%;
+    --chart-2: 260 60% 86%;
+    --chart-3: 40 92% 56%;
+    --chart-4: 270 20% 24%;
+    --chart-5: 270 25% 20%;
+
+    /* Sidebar */
+    --sidebar: 270 33% 17%;
+    --sidebar-foreground: 270 50% 90%;
+    --sidebar-primary: 330 81% 60%;
+    --sidebar-primary-foreground: 330 80% 95%;
+    --sidebar-accent: 270 20% 24%;
+    --sidebar-accent-foreground: 270 50% 90%;
+    --sidebar-border: 270 30% 86% / 8%;
+    --sidebar-ring: 330 81% 60%;
+  }
+
+  /* ===== 科技未来 (Cool) ===== */
+  [data-color-scheme="cool"] {
+    /* Surfaces — cold navy */
+    --surface: 11 19 38;
+    --surface-container-lowest: 6 14 32;
+    --surface-container-low: 19 27 46;
+    --surface-container: 23 31 51;
+    --surface-container-high: 34 42 61;
+    --surface-container-highest: 45 52 73;
+    --surface-dim: 11 19 38;
+    --surface-bright: 49 57 77;
+    --surface-variant: 45 52 73;
+    --surface-tint: 87 241 219;
+
+    /* On-surface text */
+    --on-surface: 218 226 253;
+    --on-surface-variant: 186 202 197;
+
+    /* Primary — teal */
+    --color-primary: 87 241 219;
+    --color-primary-fg: 0 55 49;
+    --color-primary-container: 45 212 191;
+    --color-primary-fixed: 98 250 227;
+    --color-primary-fixed-dim: 60 221 199;
+
+    /* Secondary — brushed aluminum */
+    --color-secondary: 185 200 222;
+    --color-secondary-fg: 35 49 67;
+    --color-secondary-container: 57 72 90;
+    --color-secondary-fixed: 212 228 250;
+    --color-secondary-fixed-dim: 185 200 222;
+
+    /* Tertiary — gold */
+    --color-tertiary: 255 210 159;
+    --color-tertiary-fg: 71 42 0;
+    --color-tertiary-container: 255 173 58;
+    --color-tertiary-fixed: 255 221 184;
+    --color-tertiary-fixed-dim: 255 185 95;
+
+    /* Error */
+    --color-error: 255 180 171;
+    --color-error-fg: 105 0 5;
+
+    /* Outlines */
+    --outline: 133 148 144;
+    --outline-variant: 60 74 70;
+
+    /* Inverse */
+    --inverse-surface: 218 226 253;
+    --inverse-on-surface: 40 48 68;
+    --inverse-primary: 0 107 95;
+
+    /* Header gradient */
+    --header-from: #161f35;
+    --header-to: #0b1326;
+
+    /* Shadows */
+    --shadow-primary: rgba(87, 241, 219, 0.3);
+    --shadow-primary-glow: rgba(87, 241, 219, 0.4);
+    --shadow-tertiary: rgba(255, 210, 159, 0.4);
+
+    /* Selection */
+    --selection-bg: rgba(87, 241, 219, 0.3);
+    --selection-fg: #dae2fd;
+
+    /* Semantic aliases */
     --background: 221 58% 9%;
     --foreground: 227 65% 86%;
 
@@ -40,18 +229,6 @@
     --border: 227 65% 86% / 8%;
     --input: 227 65% 86% / 12%;
     --ring: 170 89% 65%;
-
-    --radius: 0.625rem;
-
-    /* Spacing */
-    --spacing-xs: 0.25rem;
-    --spacing-sm: 0.5rem;
-    --spacing-md: 1rem;
-    --spacing-lg: 1.5rem;
-    --spacing-xl: 2rem;
-    --spacing-2xl: 3rem;
-    --spacing-3xl: 4rem;
-    --spacing-4xl: 6rem;
 
     /* Chart colors */
     --chart-1: 170 89% 65%;
@@ -93,8 +270,8 @@
 
   /* Selection */
   ::selection {
-    background-color: rgba(87, 241, 219, 0.3);
-    color: #dae2fd;
+    background-color: var(--selection-bg);
+    color: var(--selection-fg);
   }
 
   /* Material Symbols */
@@ -132,20 +309,19 @@
     padding-left: max(0.5rem, env(safe-area-inset-left));
   }
 
-  /* Card backgrounds - tonal stacking, NO borders */
-  [class*="bg-card"] {
-    background-color: #131b2e;
-  }
-
   /* Scrollbar */
   ::-webkit-scrollbar { width: 4px; height: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #3c4a46; border-radius: 10px; }
-  ::-webkit-scrollbar-thumb:hover { background: #57f1db; }
+  ::-webkit-scrollbar-thumb { background: rgb(var(--outline-variant)); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--color-primary)); }
 }
 
-/* ===== Glass effect ===== */
+/* ===== Scheme-aware utility classes ===== */
 @layer utilities {
+  .header-gradient {
+    background: linear-gradient(to bottom, var(--header-from), var(--header-to));
+  }
+
   .glass-effect {
     background: rgba(45, 52, 73, 0.6);
     backdrop-filter: blur(20px);
@@ -158,38 +334,31 @@
     -webkit-backdrop-filter: blur(24px);
   }
 
-  /* Hide scrollbar utility */
   .hide-scrollbar::-webkit-scrollbar { display: none; }
   .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-  /* Recording pulse animation */
   .recording-pulse {
     animation: recording-pulse 2s ease-in-out infinite;
   }
 
-  /* Progress bar glow */
   .progress-glow {
-    box-shadow: 0 0 8px rgba(87, 241, 219, 0.4);
+    box-shadow: 0 0 8px var(--shadow-primary-glow);
   }
 
-  /* Tertiary glow for achievements */
   .progress-glow-gold {
-    box-shadow: 0 0 8px rgba(255, 210, 159, 0.4);
+    box-shadow: 0 0 8px var(--shadow-tertiary);
   }
 
-  /* Bottom nav shadow */
   .nav-shadow {
-    box-shadow: 0 -4px 24px rgba(87, 241, 219, 0.05);
+    box-shadow: 0 -4px 24px var(--shadow-primary);
   }
 
-  /* Primary button shadow */
   .btn-shadow-primary {
-    box-shadow: 0 8px 32px rgba(87, 241, 219, 0.3);
+    box-shadow: 0 8px 32px var(--shadow-primary);
   }
 
-  /* Achievement card shadow */
   .btn-shadow-gold {
-    box-shadow: 0 0 20px rgba(255, 210, 159, 0.1);
+    box-shadow: 0 0 20px var(--shadow-tertiary);
   }
 }
 

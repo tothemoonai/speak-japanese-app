@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="ja"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>IT Japanese - 設定</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-high": "#222a3d",
+              "on-tertiary": "#472a00",
+              "surface": "#0b1326",
+              "on-tertiary-fixed-variant": "#653e00",
+              "primary-fixed": "#62fae3",
+              "tertiary-container": "#ffad3a",
+              "secondary-container": "#39485a",
+              "error-container": "#93000a",
+              "surface-dim": "#0b1326",
+              "on-error-container": "#ffdad6",
+              "secondary-fixed-dim": "#b9c8de",
+              "on-surface-variant": "#bacac5",
+              "primary": "#57f1db",
+              "inverse-on-surface": "#283044",
+              "surface-container-highest": "#2d3449",
+              "on-primary": "#003731",
+              "surface-container-low": "#131b2e",
+              "surface-container": "#171f33",
+              "surface-bright": "#31394d",
+              "tertiary-fixed": "#ffddb8",
+              "primary-fixed-dim": "#3cddc7",
+              "on-primary-fixed-variant": "#005047",
+              "tertiary": "#ffd29f",
+              "secondary": "#b9c8de",
+              "on-primary-container": "#00574d",
+              "on-secondary-fixed": "#0d1c2d",
+              "on-background": "#dae2fd",
+              "outline-variant": "#3c4a46",
+              "inverse-surface": "#dae2fd",
+              "on-primary-fixed": "#00201c",
+              "on-secondary-fixed-variant": "#39485a",
+              "on-tertiary-fixed": "#2a1700",
+              "on-secondary": "#233143",
+              "primary-container": "#2dd4bf",
+              "outline": "#859490",
+              "secondary-fixed": "#d4e4fa",
+              "tertiary-fixed-dim": "#ffb95f",
+              "on-tertiary-container": "#6d4400",
+              "on-error": "#690005",
+              "inverse-primary": "#006b5f",
+              "surface-tint": "#3cddc7",
+              "surface-container-lowest": "#060e20",
+              "on-surface": "#dae2fd",
+              "on-secondary-container": "#a7b6cc",
+              "surface-variant": "#2d3449",
+              "background": "#0b1326",
+              "error": "#ffb4ab"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Manrope"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #0b1326; }
+        ::-webkit-scrollbar-thumb { background: #222a3d; border-radius: 10px; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen selection:bg-primary/30">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<button class="text-[#b9c8de] hover:text-teal-300 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline font-bold tracking-tight text-xl text-teal-400">設定</h1>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-primary/20 bg-surface-container">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="minimalist avatar of a Japanese woman with short dark hair and modern tech-aesthetic features on a dark blue background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9ClytVAyrczVI8UsiOlQ76-rcm7hcjcLO11LF8vedIsrIxGIzwOrN6otQtFz3p9S2i_RHHF5KU95jfH3pT4RSoT_KmDD37JKKduSmZ49C-_ouz1AgBrmkbXRMyi4vZy0L8gnERNnmj8hVYAWArG8ER9JihEEqQcQaavmO-BmwZ0bXxTErTaGgejqA8Nul1VGhcmoS0DRc4FeHPzMAB7EusD9rLcVuHU_aNcEI9Ykt2h8MejxD1fB1MhsBuIkBsRnuIiL-TUMKWd0"/>
+</div>
+</header>
+<main class="max-w-2xl mx-auto px-6 pt-8 pb-32 space-y-12">
+<!-- Profile Section: Bento-ish Layout -->
+<section class="space-y-6">
+<div class="flex items-end justify-between px-2">
+<h2 class="font-headline text-lg font-semibold tracking-wide text-primary">プロフィール</h2>
+<span class="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant/60">ユーザーID: #8829-JP</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Email (Read-only) -->
+<div class="bg-surface-container-low p-6 rounded-xl flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-8xl" data-icon="alternate_email">alternate_email</span>
+</div>
+<label class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">登録メールアドレス</label>
+<div class="flex items-center gap-2">
+<span class="font-medium text-secondary">yuki.tanaka@it-sensei.io</span>
+<span class="material-symbols-outlined text-sm text-on-surface-variant/40" data-icon="lock">lock</span>
+</div>
+</div>
+<!-- Nickname (Editable) -->
+<div class="bg-surface-container-high p-6 rounded-xl flex flex-col justify-between h-32 border-l-2 border-primary/30">
+<label class="font-label text-[10px] uppercase tracking-widest text-primary">ニックネーム</label>
+<div class="flex items-center justify-between">
+<input class="bg-transparent border-none p-0 focus:ring-0 font-headline text-2xl font-bold text-on-surface w-full" type="text" value="Yuki"/>
+<span class="material-symbols-outlined text-primary/60" data-icon="edit">edit</span>
+</div>
+</div>
+<!-- Level Badge -->
+<div class="md:col-span-2 bg-gradient-to-r from-surface-container-low to-surface-container-high p-6 rounded-xl flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary" data-icon="school">school</span>
+</div>
+<div>
+<p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">習熟度レベル</p>
+<p class="font-headline text-lg font-bold text-secondary">中級 (JLPT N3)</p>
+</div>
+</div>
+<button class="px-4 py-2 bg-primary/10 text-primary rounded-lg font-label text-xs font-bold hover:bg-primary/20 transition-all uppercase tracking-tighter">ロードマップを表示</button>
+</div>
+</div>
+</section>
+<!-- Account Management: Secure Interaction -->
+<section class="space-y-6">
+<h2 class="font-headline text-lg font-semibold tracking-wide text-primary px-2">セキュリティ</h2>
+<div class="bg-surface-container-low rounded-2xl p-8 space-y-8">
+<div class="grid gap-6">
+<div class="space-y-2">
+<label class="font-label text-[10px] uppercase tracking-[0.15em] text-on-surface-variant px-1">現在のパスワード</label>
+<div class="relative">
+<input class="w-full bg-surface-container-highest border border-outline-variant/15 rounded-xl px-4 py-3 focus:border-primary/50 focus:ring-0 transition-all placeholder:text-on-surface-variant/30" placeholder="••••••••••••" type="password"/>
+</div>
+</div>
+<div class="grid md:grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="font-label text-[10px] uppercase tracking-[0.15em] text-on-surface-variant px-1">新しいパスワード</label>
+<input class="w-full bg-surface-container-highest border border-outline-variant/15 rounded-xl px-4 py-3 focus:border-primary/50 focus:ring-0 transition-all" type="password"/>
+</div>
+<div class="space-y-2">
+<label class="font-label text-[10px] uppercase tracking-[0.15em] text-on-surface-variant px-1">パスワードの確認</label>
+<input class="w-full bg-surface-container-highest border border-outline-variant/15 rounded-xl px-4 py-3 focus:border-primary/50 focus:ring-0 transition-all" type="password"/>
+</div>
+</div>
+</div>
+<button class="w-full py-4 bg-secondary-container hover:bg-secondary-container/80 text-on-secondary-container rounded-xl font-bold font-label text-sm uppercase tracking-widest transition-all active:scale-[0.98]">パスワードを更新する</button>
+</div>
+</section>
+<!-- Preferences: Visual Customization -->
+<section class="space-y-6">
+<h2 class="font-headline text-lg font-semibold tracking-wide text-primary px-2">インターフェース設定</h2>
+<div class="bg-surface-container-low rounded-2xl overflow-hidden divide-y divide-outline-variant/10">
+<!-- Appearance -->
+<div class="p-6 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary" data-icon="dark_mode">dark_mode</span>
+<div>
+<p class="font-medium text-on-surface">外観モード</p>
+<p class="text-xs text-on-surface-variant">システム設定に従う</p>
+</div>
+</div>
+<div class="flex bg-surface-container-highest p-1 rounded-full border border-outline-variant/20">
+<button class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-tighter transition-all bg-primary text-on-primary shadow-lg shadow-primary/10">ダーク</button>
+<button class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-tighter text-on-surface-variant hover:text-on-surface transition-all">ライト</button>
+</div>
+</div>
+<!-- Font Size Slider -->
+<div class="p-6 space-y-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary" data-icon="format_size">format_size</span>
+<p class="font-medium text-on-surface">タイポグラフィ</p>
+</div>
+<span class="font-label text-xs font-bold text-primary">105%</span>
+</div>
+<div class="relative w-full h-1 bg-surface-container-highest rounded-full">
+<div class="absolute top-0 left-0 h-full bg-primary rounded-full w-[60%]"></div>
+<div class="absolute top-1/2 left-[60%] -translate-y-1/2 w-4 h-4 bg-primary border-2 border-surface rounded-full shadow-lg cursor-pointer"></div>
+</div>
+<div class="flex justify-between text-[10px] font-label text-on-surface-variant/40 uppercase tracking-widest">
+<span>コンパクト</span>
+<span>標準</span>
+<span>拡大</span>
+</div>
+</div>
+<!-- Color Presets -->
+<div class="p-6 space-y-4">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary" data-icon="palette">palette</span>
+<p class="font-medium text-on-surface">アクセントカラー</p>
+</div>
+<div class="flex gap-4">
+<button class="w-10 h-10 rounded-full bg-primary border-4 border-surface ring-2 ring-primary/20 shadow-xl"></button>
+<button class="w-10 h-10 rounded-full bg-blue-400 border-4 border-surface opacity-40 hover:opacity-100 transition-opacity"></button>
+<button class="w-10 h-10 rounded-full bg-purple-400 border-4 border-surface opacity-40 hover:opacity-100 transition-opacity"></button>
+<button class="w-10 h-10 rounded-full bg-rose-400 border-4 border-surface opacity-40 hover:opacity-100 transition-opacity"></button>
+</div>
+</div>
+</div>
+</section>
+<!-- Voice Config: Technical Parameters -->
+<section class="space-y-6">
+<div class="flex items-center justify-between px-2">
+<h2 class="font-headline text-lg font-semibold tracking-wide text-primary">AIエンジン設定</h2>
+<div class="flex items-center gap-1 text-on-surface-variant/40">
+<span class="material-symbols-outlined text-sm" data-icon="help_outline">help_outline</span>
+<span class="text-[10px] font-label uppercase tracking-widest">ドキュメント</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-8 rounded-2xl space-y-4 border border-outline-variant/10">
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<label class="font-label text-[10px] uppercase tracking-[0.15em] text-on-surface-variant px-1">ASR APIキー (音声認識)</label>
+<span class="text-[9px] bg-tertiary-container/10 text-tertiary-container px-2 py-0.5 rounded uppercase font-bold tracking-tighter">プロ機能</span>
+</div>
+<div class="flex gap-2">
+<input class="flex-1 bg-surface-container-highest border border-outline-variant/15 rounded-xl px-4 py-3 focus:border-primary/50 focus:ring-0 transition-all font-mono text-sm" type="text" value="sk-sensei-••••••••••••••••"/>
+<button class="w-12 flex items-center justify-center bg-surface-container-highest border border-outline-variant/15 rounded-xl hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+<p class="text-[11px] text-on-surface-variant/60 leading-relaxed px-1">高度な漢字の書き順音声分析や、IT用語のリアルタイムな発音フィードバックに必要です。</p>
+</div>
+</div>
+</section>
+<!-- Sign Out: Minimalist Danger Zone -->
+<footer class="pt-8 flex flex-col items-center gap-6">
+<button class="w-full max-w-sm py-4 bg-error-container/20 border border-error/20 text-error rounded-xl font-headline font-bold text-sm uppercase tracking-[0.2em] hover:bg-error/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3">
+<span class="material-symbols-outlined text-xl" data-icon="logout">logout</span>
+                ログアウト
+            </button>
+<div class="flex flex-col items-center gap-1 opacity-20">
+<span class="font-headline font-bold text-lg tracking-tighter text-secondary">IT Japanese</span>
+<span class="font-label text-[10px] tracking-widest uppercase">Version 2.4.0-Stable</span>
+</div>
+</footer>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#0b1326]/80 backdrop-blur-xl shadow-[0_-4px_24px_rgba(87,241,219,0.05)] rounded-t-3xl border-t border-teal-500/15">
+<button class="flex flex-col items-center justify-center text-[#b9c8de] opacity-60 hover:opacity-100 hover:text-teal-200 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest mt-1">ダッシュボード</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#b9c8de] opacity-60 hover:opacity-100 hover:text-teal-200 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest mt-1">ライブラリ</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#b9c8de] opacity-60 hover:opacity-100 hover:text-teal-200 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest mt-1">レポート</span>
+</button>
+<button class="flex flex-col items-center justify-center text-teal-400 font-bold bg-teal-500/10 rounded-xl px-3 py-1 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="settings" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest mt-1">設定</span>
+</button>
+</nav>
+</body></html>

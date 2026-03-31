@@ -119,7 +119,7 @@ export default function SettingsPage() {
   return (
     <div className="min-h-screen bg-surface">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] flex justify-between items-center px-6 py-4">
+      <header className="sticky top-0 z-50 header-gradient flex justify-between items-center px-6 py-4">
         <div className="flex items-center gap-4">
           <Icon name="settings" size={20} className="text-primary" />
           <h1 className="font-headline font-bold text-primary tracking-tighter text-xl">設定</h1>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-high": "#222a3d",
+                        "on-tertiary": "#472a00",
+                        "surface": "#0b1326",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "primary-fixed": "#62fae3",
+                        "tertiary-container": "#ffad3a",
+                        "secondary-container": "#39485a",
+                        "error-container": "#93000a",
+                        "surface-dim": "#0b1326",
+                        "on-error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#b9c8de",
+                        "on-surface-variant": "#bacac5",
+                        "primary": "#57f1db",
+                        "inverse-on-surface": "#283044",
+                        "surface-container-highest": "#2d3449",
+                        "on-primary": "#003731",
+                        "surface-container-low": "#131b2e",
+                        "surface-container": "#171f33",
+                        "surface-bright": "#31394d",
+                        "tertiary-fixed": "#ffddb8",
+                        "primary-fixed-dim": "#3cddc7",
+                        "on-primary-fixed-variant": "#005047",
+                        "tertiary": "#ffd29f",
+                        "secondary": "#b9c8de",
+                        "on-primary-container": "#00574d",
+                        "on-secondary-fixed": "#0d1c2d",
+                        "on-background": "#dae2fd",
+                        "outline-variant": "#3c4a46",
+                        "inverse-surface": "#dae2fd",
+                        "on-primary-fixed": "#00201c",
+                        "on-secondary-fixed-variant": "#39485a",
+                        "on-tertiary-fixed": "#2a1700",
+                        "on-secondary": "#233143",
+                        "primary-container": "#2dd4bf",
+                        "outline": "#859490",
+                        "secondary-fixed": "#d4e4fa",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-tertiary-container": "#6d4400",
+                        "on-error": "#690005",
+                        "inverse-primary": "#006b5f",
+                        "surface-tint": "#3cddc7",
+                        "surface-container-lowest": "#060e20",
+                        "on-surface": "#dae2fd",
+                        "on-secondary-container": "#a7b6cc",
+                        "surface-variant": "#2d3449",
+                        "background": "#0b1326",
+                        "error": "#ffb4ab"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Manrope"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #0b1326;
+            color: #dae2fd;
+        }
+        .glass-panel {
+            background: rgba(45, 52, 73, 0.6);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<button class="text-teal-400 active:scale-95 duration-200">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="flex flex-col">
+<span class="text-xs font-label text-[#b9c8de] opacity-60 tracking-wider">エンジニアリング日本語 N2 &gt; コース詳細</span>
+<h1 class="font-headline font-bold tracking-tight text-teal-400 text-xl">Stand-up Meeting</h1>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-teal-500/20">
+<img alt="User Profile" data-alt="minimalist 3d avatar of a professional developer with glasses and casual tech attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJ6pnAwlsWAydUrjyx852uDMYAzP4yI-U6nmxJ0kKku1gTAEtETdEJBapLf7WjIcYcCTsS5hwJgqw6_y98mcDtZWSQCgJg4eVzxcZ8yPs958gQvSjcG2OvwxHH7d4_rl3XmE_povXEIvK0Xq-v9PLXV6bsI52r2ihxOkV0dddWphwV2neq5jZQWsuad0e0g619ElYz1kd2OzFbfFiXDYLVWa39-WCSK78wxy_M9rm84nHb6rZPypHJzOY5QBePFtoS1LmMKsZ2R5c"/>
+</div>
+</div>
+</header>
+<main class="flex-1 px-6 pt-6 pb-32 max-w-4xl mx-auto w-full">
+<!-- Stats Bento Grid -->
+<section class="grid grid-cols-2 gap-4 mb-10">
+<div class="bg-surface-container-low p-5 rounded-xl flex flex-col justify-between h-32">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="font-label text-xs uppercase tracking-widest">所要時間</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-headline text-3xl font-bold text-on-surface">中級</span>
+<span class="text-sm text-secondary">mins</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-5 rounded-xl flex flex-col justify-between h-32">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-sm">leaderboard</span>
+<span class="font-label text-xs uppercase tracking-widest">難易度</span>
+</div>
+<div>
+<span class="font-headline text-2xl font-bold text-on-surface">中級</span>
+</div>
+</div>
+</section>
+<!-- Characters Section -->
+<section class="mb-10">
+<h2 class="font-headline text-lg font-bold mb-4 flex items-center gap-2"><span class="w-1 h-6 bg-primary rounded-full"></span>主な登場人物</h2>
+<div class="flex gap-4">
+<div class="bg-surface-container-high px-4 py-3 rounded-xl flex items-center gap-4 flex-1">
+<img alt="Tanaka-san" class="w-12 h-12 rounded-lg bg-surface-container-highest" data-alt="3d avatar of a japanese middle-aged male executive in a sharp navy suit" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOKYNcdo-2-60sd0S1NHIzg1v1Qms5JagajLT3BOgOyq2aVixHo-6K-GpwZM6g1kGqhYNoJwY8QMzAE6Qc-LIRZRWAdG8-FzE0aCh_UJwjfp6OCJSr6OkildnHn9u081tdPj9k9htY8Zsz9iJHyZs69Idkf-92Xc7Rq8rKhnrOcv-nTOINqBaaNucet6Lnnpo6mgtVkGdh-a2L_XuRGZwMd_9CHAPDnyaBA4qNZuguOQZJ2uAE9QGRqalIOkWlDjXHEUNndQlrEU8"/>
+<div>
+<p class="font-bold text-on-surface">Tanaka-san</p>
+<p class="text-xs text-secondary opacity-70">プロジェクトマネージャー</p>
+</div>
+</div>
+<div class="bg-surface-container-high px-4 py-3 rounded-xl flex items-center gap-4 flex-1">
+<img alt="Suzuki-san" class="w-12 h-12 rounded-lg bg-surface-container-highest" data-alt="3d avatar of a young japanese female software engineer with a creative aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3EZHPb15Zdnl8vlkdp4663HAPWop743dpBwakk-J_eHphihz6IIxCS8mwgwljQgQwf2wkoPYx9rHF9WZAUNTVRaskB2LdaX84xCV4pjMnrcE-Oc96LkMyjqepcaksnYVTIhOEtOwqpsZZHNI9kcC_pkkKoIFrNNBRwQfc1BvgRVX9ZBhlndLxaOsAzMlh3OBYbmXqNrde3dDa86dQfDT6v_vFrmDU1noEfCF87_B77O0MBi8j6ZAycXHyBQd0QUJhwtTwSoTE_gs"/>
+<div>
+<p class="font-bold text-on-surface">Suzuki-san</p>
+<p class="text-xs text-secondary opacity-70">シニアデベロッパー</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Sentence Preview List -->
+<section class="space-y-6">
+<h2 class="font-headline text-lg font-bold mb-4 flex items-center gap-2"><span class="w-1 h-6 bg-primary rounded-full"></span>ダイアログプレビュー</h2>
+<!-- Dialogue Row 1 -->
+<div class="flex gap-4 items-start group">
+<img alt="Tanaka-san" class="w-10 h-10 rounded-full flex-shrink-0" data-alt="avatar of Tanaka-san" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCx-WfvFHp_UzSXbtuo8PGSYw1KGoMYwE8I87aQs28jARHa2uP_dn8tW-qSWfik2l2zWuDBLvbVYriqqHIiQ8UYWU1EODIA1Qr3UP14NxYXDYuDCAXywMgrl_Wzm8bV2JCStQs3w7UHmyU4s8TjDOeNhmaVj-Bg0YZctJKhM9E73qYsm18hbzfqlETfnPOVrcW_KTliCqV8Ot_lR3NHZ0ZeRL1LMBWp1aL40n7U_jrNwfv1THVY9m1iT1to8rxwNSXSpMvHnctPIcw"/>
+<div class="bg-surface-container-low p-4 rounded-xl rounded-tl-none border-l-2 border-primary/20 flex-1">
+<p class="text-xs font-label text-primary mb-2 tracking-widest uppercase">Tanaka-san</p>
+<p class="font-medium text-lg text-on-surface mb-1">おはようございます。今日の進捗を共有してください。</p>
+<p class="text-sm text-secondary opacity-60">Good morning. Please share today's progress.</p>
+</div>
+</div>
+<!-- Dialogue Row 2 -->
+<div class="flex gap-4 items-start flex-row-reverse group">
+<img alt="Suzuki-san" class="w-10 h-10 rounded-full flex-shrink-0" data-alt="avatar of Suzuki-san" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSsHSZVoe77Zwyl0N5HevuV44nl7hAc8DaYKDm-S7lyv2d2eO9yPlP_1-XvHu6ivI1Ixf5Idyd18yfUrAv5cKArewLBQ4EDV--qXVojxUhud7-aaJJjIDUfs6Z2mdtdX2dqMwcsAzyPnJMeKXYXNVlFZNyH6vW2KUWZ9hQlk5j148hIS5c0J68pUp3Z1pf_O_foDcb6EKRwdaR39bvIupWI_Lf3CYiAhVvd3Yag7r240IOTZ40a1s6JXHz36ZE1qAdnE_Og3p3jJU"/>
+<div class="bg-surface-container-high p-4 rounded-xl rounded-tr-none border-r-2 border-primary/40 flex-1 text-right">
+<p class="text-xs font-label text-primary mb-2 tracking-widest uppercase">Suzuki-san</p>
+<p class="font-medium text-lg text-on-surface mb-1">APIの実装は完了しました。現在はテスト中です。</p>
+<p class="text-sm text-secondary opacity-60">The API implementation is complete. Currently testing.</p>
+</div>
+</div>
+<!-- Dialogue Row 3 -->
+<div class="flex gap-4 items-start group">
+<img alt="Tanaka-san" class="w-10 h-10 rounded-full flex-shrink-0" data-alt="avatar of Tanaka-san" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADHcYxzHGQnoart6KBaYEsfdM6XT9tKsHVf5LCYCo0totPSbkaDdXh9Wa21opf14g-Fuv1PaqFmSIoLd6FDdRv6rJZn03NL6559jRm1Hv2_aa5MtG8cNGePms4fh4RJ6Vk4ZB5Ez2hlrtXoq4NcemPwVXpTijLozxHgDoDpfWpMqhxci4D2bRKot6Cj9GiIdJgFv37FgtnizCAolBRn2ZyTHrRqaHk8WRyKoGUtUomgkWyrl6HUX1XlQRvzFkaoQvbxKFg7KKWj6U"/>
+<div class="bg-surface-container-low p-4 rounded-xl rounded-tl-none border-l-2 border-primary/20 flex-1">
+<p class="text-xs font-label text-primary mb-2 tracking-widest uppercase">Tanaka-san</p>
+<p class="font-medium text-lg text-on-surface mb-1">了解しました。何かブロックしている事項はありますか？</p>
+<p class="text-sm text-secondary opacity-60">Understood. Are there any blockers?</p>
+</div>
+</div>
+<!-- Dialogue Row 4 -->
+<div class="flex gap-4 items-start flex-row-reverse group">
+<img alt="Suzuki-san" class="w-10 h-10 rounded-full flex-shrink-0" data-alt="avatar of Suzuki-san" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALMnI9RM0Vntqm8RVAEGkTBbXhkuf7Fp9VEZDZp4uBmIsBmO0y7j-TyThLatSG9sz7gQgs8k-Qm3przezWW0CVOL7ftJR0mOu2IwTmBU8-qaH0Ya5lFTlVKaH_ttO4KhAv5Q-LdgXIKJzJXZmzTVThNbNJ_p-LBsjf6RgkmU4T7uoAVt4lBdM8s_M1n1ObetLxqRecuY_-hqw-jx-WpJWzOkZ-38emK8hXH-QMeEDb_sxBcKGyAsKvANDpp1tguE9SVp0rZ76vjik"/>
+<div class="bg-surface-container-high p-4 rounded-xl rounded-tr-none border-r-2 border-primary/40 flex-1 text-right">
+<p class="text-xs font-label text-primary mb-2 tracking-widest uppercase">Suzuki-san</p>
+<p class="font-medium text-lg text-on-surface mb-1">いいえ、順調です。午後にはデプロイできる予定です。</p>
+<p class="text-sm text-secondary opacity-60">No, everything is going smoothly. Plan to deploy this afternoon.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Fixed Bottom CTA -->
+<div class="fixed bottom-0 left-0 w-full p-6 bg-gradient-to-t from-surface via-surface/90 to-transparent z-50">
+<button class="w-full bg-primary text-on-primary font-headline font-bold py-5 rounded-2xl flex items-center justify-center gap-3 active:scale-95 transition-transform shadow-[0_8px_32px_rgba(87,241,219,0.3)]"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_circle</span>練習を始める</button>
+</div>
+<!-- Hidden BottomNavBar (Suppressed for transactional screen focus) -->
+<!-- But keeping the structure ready as per JSON requirement if needed for shell -->
+<div class="hidden">
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#0b1326]/80 backdrop-blur-xl shadow-[0_-4px_24px_rgba(87,241,219,0.05)] rounded-t-3xl border-t border-teal-500/15">
+<div class="flex flex-col items-center justify-center text-teal-400 font-bold bg-teal-500/10 rounded-xl px-3 py-1">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest">Dashboard</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#b9c8de] opacity-60 hover:opacity-100 hover:text-teal-200">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest">Books</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#b9c8de] opacity-60 hover:opacity-100 hover:text-teal-200">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest">Reports</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#b9c8de] opacity-60 hover:opacity-100 hover:text-teal-200">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest">Settings</span>
+</div>
+</nav>
+</div>
+</body></html>

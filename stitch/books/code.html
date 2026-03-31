@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="ja"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-high": "#222a3d",
+              "on-tertiary": "#472a00",
+              "surface": "#0b1326",
+              "on-tertiary-fixed-variant": "#653e00",
+              "primary-fixed": "#62fae3",
+              "tertiary-container": "#ffad3a",
+              "secondary-container": "#39485a",
+              "error-container": "#93000a",
+              "surface-dim": "#0b1326",
+              "on-error-container": "#ffdad6",
+              "secondary-fixed-dim": "#b9c8de",
+              "on-surface-variant": "#bacac5",
+              "primary": "#57f1db",
+              "inverse-on-surface": "#283044",
+              "surface-container-highest": "#2d3449",
+              "on-primary": "#003731",
+              "surface-container-low": "#131b2e",
+              "surface-container": "#171f33",
+              "surface-bright": "#31394d",
+              "tertiary-fixed": "#ffddb8",
+              "primary-fixed-dim": "#3cddc7",
+              "on-primary-fixed-variant": "#005047",
+              "tertiary": "#ffd29f",
+              "secondary": "#b9c8de",
+              "on-primary-container": "#00574d",
+              "on-secondary-fixed": "#0d1c2d",
+              "on-background": "#dae2fd",
+              "outline-variant": "#3c4a46",
+              "inverse-surface": "#dae2fd",
+              "on-primary-fixed": "#00201c",
+              "on-secondary-fixed-variant": "#39485a",
+              "on-tertiary-fixed": "#2a1700",
+              "on-secondary": "#233143",
+              "primary-container": "#2dd4bf",
+              "outline": "#859490",
+              "secondary-fixed": "#d4e4fa",
+              "tertiary-fixed-dim": "#ffb95f",
+              "on-tertiary-container": "#6d4400",
+              "on-error": "#690005",
+              "inverse-primary": "#006b5f",
+              "surface-tint": "#3cddc7",
+              "surface-container-lowest": "#060e20",
+              "on-surface": "#dae2fd",
+              "on-secondary-container": "#a7b6cc",
+              "surface-variant": "#2d3449",
+              "background": "#0b1326",
+              "error": "#ffb4ab"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Manrope"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #0b1326;
+            color: #dae2fd;
+            font-family: 'Manrope', 'Noto Sans JP', sans-serif;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] flex justify-between items-center px-6 py-4">
+<div class="flex items-center gap-4">
+<button class="text-teal-400 active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold text-teal-400 tracking-tighter font-['Space_Grotesk']">IT日本語 教材一覧</h1>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
+<img alt="プロフィール" class="w-full h-full object-cover" data-alt="Close up portrait of a professional male tech worker with a friendly expression in a modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkLaq3BbWCuYlNUCGU_7iD549c_-gMvgmlLDzp5MpUxCaZLocbRA_jvZCMCmUZAgYmt25ileD0VcyGgI9lwtP3Fjm5ujb6h2l1U4M6wQ3aFYk4puHhesYp20AOLq0gGxJe3QMSkGxDuOJa54Uq3RJcQE8m-AVtj3-UyCAx93F56O3BS3fRXDbuwbzlg3X-z55fhEr1mOffZ7rquLAD4D-VRQ6TgcKvtAqCyy-ukEvG9maE3tQQYngLmGz0s8eS_CJTAx1wuigzW7E"/>
+</div>
+</header>
+<main class="px-6 py-4 max-w-5xl mx-auto">
+<!-- Filter Tabs -->
+<section class="mb-8">
+<div class="flex gap-4 overflow-x-auto hide-scrollbar py-2">
+<button class="px-6 py-2 rounded-full bg-primary text-on-primary font-bold text-sm whitespace-nowrap transition-all">すべて</button>
+<button class="px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-medium text-sm whitespace-nowrap border border-outline-variant/10 hover:border-primary/30 transition-all">N5</button>
+<button class="px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-medium text-sm whitespace-nowrap border border-outline-variant/10 hover:border-primary/30 transition-all">N4</button>
+<button class="px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-medium text-sm whitespace-nowrap border border-outline-variant/10 hover:border-primary/30 transition-all">N3</button>
+<button class="px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-medium text-sm whitespace-nowrap border border-outline-variant/10 hover:border-primary/30 transition-all">N2</button>
+<button class="px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-medium text-sm whitespace-nowrap border border-outline-variant/10 hover:border-primary/30 transition-all">N1</button>
+</div>
+</section>
+<!-- Book Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Book Card 1 -->
+<div class="group relative bg-surface-container-low rounded-xl overflow-hidden p-1 transition-all hover:bg-surface-container-high">
+<div class="flex gap-4 p-4">
+<div class="w-24 h-32 rounded-lg bg-surface-container-highest flex-shrink-0 relative overflow-hidden">
+<img alt="IT Professional N3 Book" class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-500" data-alt="Abstract minimal book cover design for 'IT Professional Japanese' featuring geometric circuit patterns in teal and navy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUPWRS73F6SVu2kHdDgQSM97yKSd8XZHKim98qdhqWK313DVToHAG1Do68fXasgIc-rUckHXjqQGlQij93klHH-7BpOsY_a6aExtUW8F9dS3s3aPmsF8OWJwnu7TFZlZbYLU6tbKpSz-yaNZbgfJyV5ofYNZM3rsjkoCx0mx5HJ2VZL_989V_wE8o8LUHcYFg6e75AOPnrnyFJQRzuGb3Gm9RUbo45FD1TRCBSoIqvWM6v5mn3Ns4d5Rs-2FvLntSh0MbczwNWWMg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 to-transparent"></div>
+<span class="absolute bottom-2 left-2 text-[10px] font-bold text-primary tracking-widest uppercase">Volume 01</span>
+</div>
+<div class="flex flex-col justify-between flex-grow py-1">
+<div>
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold text-primary font-label tracking-widest bg-primary/10 px-2 py-0.5 rounded">N3 レベル</span>
+<span class="text-[10px] text-on-surface-variant font-label opacity-60">15 コース</span>
+</div>
+<h3 class="text-lg font-bold font-headline text-on-surface leading-tight mb-1 group-hover:text-primary transition-colors">IT専門日本語 N3</h3>
+<p class="text-xs text-on-surface-variant font-body">ソフトウェア開発の用語と職場でのマナー。</p>
+</div>
+<div class="mt-4">
+<div class="flex justify-between items-center mb-1.5">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">進捗</span>
+<span class="text-[10px] font-bold text-primary">45%</span>
+</div>
+<div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[45%] rounded-full shadow-[0_0_8px_rgba(87,241,219,0.4)]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Book Card 2 -->
+<div class="group relative bg-surface-container-low rounded-xl overflow-hidden p-1 transition-all hover:bg-surface-container-high">
+<div class="flex gap-4 p-4">
+<div class="w-24 h-32 rounded-lg bg-surface-container-highest flex-shrink-0 relative overflow-hidden">
+<img alt="Engineering Japanese N2 Book" class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-500" data-alt="Minimalist book cover with architectural blueprint lines and technical drawings in deep blue and glowing white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8_tcQMn5c93o9Y_f89T8_xnu2zv9LaMlt6hQctvWJuwad8VNGfW_Wux0kRaoP00fe2nwmg7Xy4UaULscoSBD8FTomki999jkyp4McTpHC0C03ZAdT29FgvQx1FcQj9rvFCdKAN1DmyvBf8EKh52R_Sx0q7ht-HCpLbniaKmcu1zuChM8vJEKuUDLxlQkYLNT6Tta_wyDDI11q22WiYPIhkL6Z-zxX5tGG6atbmjAzIhLJHtV95K8PZ6TQfVOVbiaNqTefRhGICRU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 to-transparent"></div>
+<span class="absolute bottom-2 left-2 text-[10px] font-bold text-primary tracking-widest uppercase">エキスパート</span>
+</div>
+<div class="flex flex-col justify-between flex-grow py-1">
+<div>
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold text-primary font-label tracking-widest bg-primary/10 px-2 py-0.5 rounded">N2 レベル</span>
+<span class="text-[10px] text-on-surface-variant font-label opacity-60">22 コース</span>
+</div>
+<h3 class="text-lg font-bold font-headline text-on-surface leading-tight mb-1 group-hover:text-primary transition-colors">エンジニアリング日本語 N2</h3>
+<p class="text-xs text-on-surface-variant font-body">高度な技術文書とシステム設計のディスカッション。</p>
+</div>
+<div class="mt-4">
+<div class="flex justify-between items-center mb-1.5">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">進捗</span>
+<span class="text-[10px] font-bold text-primary">12%</span>
+</div>
+<div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[12%] rounded-full shadow-[0_0_8px_rgba(87,241,219,0.4)]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Book Card 3 -->
+<div class="group relative bg-surface-container-low rounded-xl overflow-hidden p-1 transition-all hover:bg-surface-container-high">
+<div class="flex gap-4 p-4">
+<div class="w-24 h-32 rounded-lg bg-surface-container-highest flex-shrink-0 relative overflow-hidden">
+<img alt="Cybersecurity Japanese N1" class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-500" data-alt="Modern dark book cover featuring abstract digital code rain and glowing security shields in cyan" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdQmmPNlmSy9wd5qN8Kly7iO6_9nCxCQWemmV5dwT1pGo52N3rEMM-TrGNsnsOQb2lTsGHbN03s0qjeBAGs7XRTSEkVFmSG1H2gp1W07EGb43YNeHbiIFjkqlU4ss8zRBr92IXb7H_fkNItHMtK3Lu1bKArh2G8tJFcLAAip17gaa9KvfdFv2GQ6kVu4bTSS1EfGn_wmTKxVEV1Chl2Y1MApz9_T8zp0F08k5AGgZCo-6tKeMiYS9XyroT2bbnI3yNILGkZrM22B0"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 to-transparent"></div>
+</div>
+<div class="flex flex-col justify-between flex-grow py-1">
+<div>
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold text-primary font-label tracking-widest bg-primary/10 px-2 py-0.5 rounded">N1 レベル</span>
+<span class="text-[10px] text-on-surface-variant font-label opacity-60">30 コース</span>
+</div>
+<h3 class="text-lg font-bold font-headline text-on-surface leading-tight mb-1 group-hover:text-primary transition-colors">サイバーセキュリティ日本語 N1</h3>
+<p class="text-xs text-on-surface-variant font-body">ハイレベルな脅威分析とコンプライアンス報告。</p>
+</div>
+<div class="mt-4">
+<div class="flex justify-between items-center mb-1.5">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">進捗</span>
+<span class="text-[10px] font-bold text-primary">0%</span>
+</div>
+<div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-0 rounded-full shadow-[0_0_8px_rgba(87,241,219,0.4)]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Book Card 4 (S Grade Milestone Highlight) -->
+<div class="group relative bg-gradient-to-br from-tertiary/10 to-surface-container-low rounded-xl overflow-hidden p-1 transition-all border border-tertiary/20">
+<div class="flex gap-4 p-4">
+<div class="w-24 h-32 rounded-lg bg-surface-container-highest flex-shrink-0 relative overflow-hidden shadow-lg shadow-tertiary/10">
+<img alt="Data Science N4 Book" class="w-full h-full object-cover opacity-90 group-hover:scale-110 transition-transform duration-500" data-alt="Editorial book cover with sleek data visualization graphs and floating numbers in a golden light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuhCsdVWbFHQW3TdPnKXICIC7JmZTcXuEtgYrbFIZHBqgssYonm5Uy-wW4SJRnNKRt13bjeE-_IYb3OjxevGz1y6I3F4Vz19sTVWYPrFyTFQf-3cqeD8wpG0tRkm32QqPS6j8mH2ZmdDGSGbxIaRPfCp8YL7cNulxEpwKnD8dro78MiBhtMf2wqx28mmKOaz3I5wrgCmt0agUFIYYXqnSp-9Z8Z41poB1dvMb4rVAECADvooz7skAUiW_zEkRUS1u6q8wqkAJL7xM"/>
+<div class="absolute top-2 right-2 bg-tertiary text-on-tertiary text-[10px] font-bold px-1.5 py-0.5 rounded">S-グレード</div>
+</div>
+<div class="flex flex-col justify-between flex-grow py-1">
+<div>
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold text-tertiary font-label tracking-widest bg-tertiary/20 px-2 py-0.5 rounded">N4 レベル</span>
+<span class="text-[10px] text-on-surface-variant font-label opacity-60">12 コース</span>
+</div>
+<h3 class="text-lg font-bold font-headline text-on-surface leading-tight mb-1 group-hover:text-tertiary transition-colors">データサイエンス基礎 N4</h3>
+<p class="text-xs text-on-surface-variant font-body">統計学の基礎とデータセット操作の語彙。</p>
+</div>
+<div class="mt-4">
+<div class="flex justify-between items-center mb-1.5">
+<span class="text-[10px] font-bold text-tertiary uppercase tracking-tighter">習得済み</span>
+<span class="text-[10px] font-bold text-tertiary">100%</span>
+</div>
+<div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-full rounded-full shadow-[0_0_8px_rgba(255,173,58,0.4)]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Informational Footer inside content -->
+<section class="mt-12 mb-8 bg-surface-container-low/50 rounded-2xl p-6 border-l-4 border-primary">
+<h4 class="font-headline font-bold text-on-surface mb-2">学習を続けましょう</h4>
+<p class="text-sm text-on-surface-variant font-body mb-4">「IT専門日本語 N3」であと3つのレッスンを完了して、限定のテクニカルリードモジュールをアンロックしましょう。</p>
+<button class="flex items-center gap-2 text-primary font-bold text-sm hover:gap-4 transition-all group">
+                ダッシュボードへ <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#0b1326]/80 backdrop-blur-xl rounded-t-3xl border-t border-teal-500/15 shadow-[0_-4px_24px_rgba(87,241,219,0.05)]">
+<a class="flex flex-col items-center justify-center text-[#b9c8de] opacity-60 hover:opacity-100 hover:text-teal-200 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="dashboard">dashboard</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest">ダッシュボード</span>
+</a>
+<a class="flex flex-col items-center justify-center text-teal-400 font-bold bg-teal-500/10 rounded-xl px-3 py-1 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="menu_book" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest">教材一覧</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#b9c8de] opacity-60 hover:opacity-100 hover:text-teal-200 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="leaderboard">leaderboard</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest">レポート</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#b9c8de] opacity-60 hover:opacity-100 hover:text-teal-200 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="settings">settings</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest">設定</span>
+</a>
+</nav>
+</body></html>

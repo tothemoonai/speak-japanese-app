@@ -23,99 +23,98 @@ const config = {
         sans: ['var(--font-manrope)', 'system-ui', 'sans-serif'],
       },
       colors: {
-        // Surface layers (tonal stacking - NO borders)
-        surface: '#0b1326',
-        'surface-container-lowest': '#060e20',
-        'surface-container-low': '#131b2e',
-        'surface-container': '#171f33',
-        'surface-container-high': '#222a3d',
-        'surface-container-highest': '#2d3449',
-        'surface-dim': '#0b1326',
-        'surface-bright': '#31394d',
-        'surface-variant': '#2d3449',
-        'surface-tint': '#3cddc7',
+        // Surface layers — CSS variables for scheme switching
+        surface: 'rgb(var(--surface) / <alpha-value>)',
+        'surface-container-lowest': 'rgb(var(--surface-container-lowest) / <alpha-value>)',
+        'surface-container-low': 'rgb(var(--surface-container-low) / <alpha-value>)',
+        'surface-container': 'rgb(var(--surface-container) / <alpha-value>)',
+        'surface-container-high': 'rgb(var(--surface-container-high) / <alpha-value>)',
+        'surface-container-highest': 'rgb(var(--surface-container-highest) / <alpha-value>)',
+        'surface-dim': 'rgb(var(--surface-dim) / <alpha-value>)',
+        'surface-bright': 'rgb(var(--surface-bright) / <alpha-value>)',
+        'surface-variant': 'rgb(var(--surface-variant) / <alpha-value>)',
+        'surface-tint': 'rgb(var(--surface-tint) / <alpha-value>)',
 
-        // On-surface (text colors)
-        'on-surface': '#dae2fd',
-        'on-surface-variant': '#bacac5',
+        // On-surface text
+        'on-surface': 'rgb(var(--on-surface) / <alpha-value>)',
+        'on-surface-variant': 'rgb(var(--on-surface-variant) / <alpha-value>)',
 
-        // Primary (teal - active states)
+        // Primary
         primary: {
-          DEFAULT: '#57f1db',
-          foreground: '#003731',
-          container: '#2dd4bf',
-          fixed: '#62fae3',
-          'fixed-dim': '#3cddc7',
+          DEFAULT: 'rgb(var(--color-primary) / <alpha-value>)',
+          foreground: 'rgb(var(--color-primary-fg) / <alpha-value>)',
+          container: 'rgb(var(--color-primary-container) / <alpha-value>)',
+          fixed: 'rgb(var(--color-primary-fixed) / <alpha-value>)',
+          'fixed-dim': 'rgb(var(--color-primary-fixed-dim) / <alpha-value>)',
         },
 
-        // Secondary (brushed aluminum - inactive)
+        // Secondary
         secondary: {
-          DEFAULT: '#b9c8de',
-          foreground: '#233143',
-          container: '#39485a',
-          fixed: '#d4e4fa',
-          'fixed-dim': '#b9c8de',
+          DEFAULT: 'rgb(var(--color-secondary) / <alpha-value>)',
+          foreground: 'rgb(var(--color-secondary-fg) / <alpha-value>)',
+          container: 'rgb(var(--color-secondary-container) / <alpha-value>)',
+          fixed: 'rgb(var(--color-secondary-fixed) / <alpha-value>)',
+          'fixed-dim': 'rgb(var(--color-secondary-fixed-dim) / <alpha-value>)',
         },
 
-        // Tertiary (gold - achievements ONLY)
+        // Tertiary
         tertiary: {
-          DEFAULT: '#ffd29f',
-          foreground: '#472a00',
-          container: '#ffad3a',
-          fixed: '#ffddb8',
-          'fixed-dim': '#ffb95f',
+          DEFAULT: 'rgb(var(--color-tertiary) / <alpha-value>)',
+          foreground: 'rgb(var(--color-tertiary-fg) / <alpha-value>)',
+          container: 'rgb(var(--color-tertiary-container) / <alpha-value>)',
+          fixed: 'rgb(var(--color-tertiary-fixed) / <alpha-value>)',
+          'fixed-dim': 'rgb(var(--color-tertiary-fixed-dim) / <alpha-value>)',
         },
 
         // Error
         error: {
-          DEFAULT: '#ffb4ab',
-          foreground: '#690005',
-          container: '#93000a',
+          DEFAULT: 'rgb(var(--color-error) / <alpha-value>)',
+          foreground: 'rgb(var(--color-error-fg) / <alpha-value>)',
         },
 
-        // Outlines (ghost borders at 15% opacity only)
-        outline: '#859490',
-        'outline-variant': '#3c4a46',
+        // Outlines
+        outline: 'rgb(var(--outline) / <alpha-value>)',
+        'outline-variant': 'rgb(var(--outline-variant) / <alpha-value>)',
 
         // Inverse
-        'inverse-surface': '#dae2fd',
-        'inverse-on-surface': '#283044',
-        'inverse-primary': '#006b5f',
+        'inverse-surface': 'rgb(var(--inverse-surface) / <alpha-value>)',
+        'inverse-on-surface': 'rgb(var(--inverse-on-surface) / <alpha-value>)',
+        'inverse-primary': 'rgb(var(--inverse-primary) / <alpha-value>)',
 
         // Semantic aliases for shadcn compatibility
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        background: '#0b1326',
-        foreground: '#dae2fd',
+        background: 'rgb(var(--surface) / <alpha-value>)',
+        foreground: 'rgb(var(--on-surface) / <alpha-value>)',
 
         muted: {
-          DEFAULT: '#171f33',
-          foreground: '#bacac5',
+          DEFAULT: 'rgb(var(--surface-container) / <alpha-value>)',
+          foreground: 'rgb(var(--on-surface-variant) / <alpha-value>)',
         },
         accent: {
-          DEFAULT: '#222a3d',
-          foreground: '#dae2fd',
+          DEFAULT: 'rgb(var(--surface-container-high) / <alpha-value>)',
+          foreground: 'rgb(var(--on-surface) / <alpha-value>)',
         },
         popover: {
-          DEFAULT: '#131b2e',
-          foreground: '#dae2fd',
+          DEFAULT: 'rgb(var(--surface-container-low) / <alpha-value>)',
+          foreground: 'rgb(var(--on-surface) / <alpha-value>)',
         },
         card: {
-          DEFAULT: '#131b2e',
-          foreground: '#dae2fd',
+          DEFAULT: 'rgb(var(--surface-container-low) / <alpha-value>)',
+          foreground: 'rgb(var(--on-surface) / <alpha-value>)',
         },
         destructive: {
-          DEFAULT: '#ffb4ab',
-          foreground: '#690005',
+          DEFAULT: 'rgb(var(--color-error) / <alpha-value>)',
+          foreground: 'rgb(var(--color-error-fg) / <alpha-value>)',
         },
         warning: {
-          DEFAULT: '#ffd29f',
-          foreground: '#472a00',
+          DEFAULT: 'rgb(var(--color-tertiary) / <alpha-value>)',
+          foreground: 'rgb(var(--color-tertiary-fg) / <alpha-value>)',
         },
         success: {
-          DEFAULT: '#57f1db',
-          foreground: '#003731',
+          DEFAULT: 'rgb(var(--color-primary) / <alpha-value>)',
+          foreground: 'rgb(var(--color-primary-fg) / <alpha-value>)',
         },
       },
       borderRadius: {
@@ -144,18 +143,18 @@ const config = {
         },
         'recording-pulse': {
           '0%, 100%': {
-            boxShadow: '0 0 0 0 rgba(87, 241, 219, 0.4)',
+            boxShadow: '0 0 0 0 var(--shadow-primary-glow)',
           },
           '50%': {
-            boxShadow: '0 0 0 20px rgba(87, 241, 219, 0)',
+            boxShadow: '0 0 0 20px transparent',
           },
         },
         'glow': {
           '0%, 100%': {
-            boxShadow: '0 0 20px -5px rgba(87, 241, 219, 0.5)',
+            boxShadow: '0 0 20px -5px var(--shadow-primary-glow)',
           },
           '50%': {
-            boxShadow: '0 0 30px -5px rgba(87, 241, 219, 0.8)',
+            boxShadow: '0 0 30px -5px var(--shadow-primary)',
           },
         },
         'slide-in-bottom': {

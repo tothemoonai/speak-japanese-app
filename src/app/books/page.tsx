@@ -39,7 +39,7 @@ export default function BooksPage() {
   return (
     <div className="min-h-screen bg-surface">
       {/* Header */}
-      <header className="w-full top-0 sticky z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] flex justify-between items-center px-6 py-4">
+      <header className="w-full top-0 sticky z-50 header-gradient flex justify-between items-center px-6 py-4">
         <div className="flex items-center gap-4">
           <Link href="/dashboard">
             <span className="text-primary active:scale-95 duration-200 cursor-pointer">

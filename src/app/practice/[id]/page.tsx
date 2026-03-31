@@ -46,7 +46,7 @@ function PracticePageContent() {
   if (courseLoading || sentencesLoading) {
     return (
       <div className="min-h-screen bg-surface">
-        <header className="sticky top-0 z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] px-6 py-4">
+        <header className="sticky top-0 z-50 header-gradient px-6 py-4">
           <div className="flex items-center gap-4">
             <button onClick={() => router.back()} className="text-primary">
               <Icon name="arrow_back" />
@@ -69,7 +69,7 @@ function PracticePageContent() {
   if (courseError || sentencesError || !course || !sentences || sentences.length === 0) {
     return (
       <div className="min-h-screen bg-surface">
-        <header className="sticky top-0 z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] px-6 py-4">
+        <header className="sticky top-0 z-50 header-gradient px-6 py-4">
           <div className="flex items-center gap-4">
             <button onClick={() => router.back()} className="text-primary">
               <Icon name="arrow_back" />
@@ -99,7 +99,7 @@ function PracticePageContent() {
   return (
     <div className="min-h-screen bg-surface">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] flex justify-between items-center px-6 py-4">
+      <header className="sticky top-0 z-50 header-gradient flex justify-between items-center px-6 py-4">
         <div className="flex items-center gap-4">
           <Link href={`/courses/${courseId}`}>
             <button className="text-primary active:scale-95 duration-200">
@@ -169,7 +169,7 @@ export default function PracticePage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-surface">
-        <header className="sticky top-0 z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] px-6 py-4">
+        <header className="sticky top-0 z-50 header-gradient px-6 py-4">
           <div className="flex items-center gap-4">
             <span className="font-headline font-bold text-primary tracking-tighter text-xl">読み込み中...</span>
           </div>
