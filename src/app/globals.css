@@ -4,140 +4,147 @@
 
 /**
  * "The Digital Sensei" Design System
- * Dark-only theme with switchable color schemes:
- *   - 温馨可爱 (Warm): sakura pink + warm purple surfaces
- *   - 科技未来 (Cool): teal + cold navy surfaces
+ * Switchable color schemes:
+ *   - 温馨可爱 (Warm): light cream bg, amber primary, rose secondary, teal tertiary
+ *   - 科技未来 (Cool): dark navy bg, teal primary, gold tertiary
  */
 
 @layer base {
-  /* ===== 温馨可爱 (Warm) — DEFAULT ===== */
-  :root {
+  /* ===== 温馨可爱 (Warm) — DEFAULT — LIGHT THEME ===== */
+  :root.dark {
     --font-scale: 1;
 
-    /* Surfaces — warm purple-black */
-    --surface: 26 16 40;
-    --surface-container-lowest: 18 10 30;
-    --surface-container-low: 30 21 48;
-    --surface-container: 34 26 55;
-    --surface-container-high: 46 36 70;
-    --surface-container-highest: 58 48 84;
-    --surface-dim: 26 16 40;
-    --surface-bright: 64 54 92;
-    --surface-variant: 58 48 84;
-    --surface-tint: 236 72 153;
+    /* Surfaces — warm cream/white */
+    --surface: 253 249 238;
+    --surface-container-lowest: 255 255 255;
+    --surface-container-low: 247 243 232;
+    --surface-container: 241 238 227;
+    --surface-container-high: 236 232 221;
+    --surface-container-highest: 230 226 216;
+    --surface-dim: 221 218 207;
+    --surface-bright: 253 249 238;
+    --surface-variant: 230 226 216;
+    --surface-tint: 133 83 0;
 
-    /* On-surface text */
-    --on-surface: 237 224 245;
-    --on-surface-variant: 196 181 212;
+    /* On-surface text — dark warm brown */
+    --on-surface: 28 28 21;
+    --on-surface-variant: 83 68 52;
 
-    /* Primary — sakura pink */
-    --color-primary: 236 72 153;
+    --on-primary: 255 255 255;
+    --on-primary-container: 97 59 0;
+    --on-primary-fixed: 42 23 0;
+    --on-primary-fixed-variant: 101 83 0;
+    --on-secondary: 255 255 255;
+    --on-secondary-container: 115 4 37;
+    --on-secondary-fixed: 64 0 16;
+    --on-secondary-fixed-variant: 137 25 51;
+    --on-tertiary: 255 255 255;
+    --on-tertiary-container: 0 73 102;
+    --on-tertiary-fixed: 0 18 45;
+    --on-tertiary-fixed-variant: 0 76 106;
+    --on-error: 255 255 255;
+    --on-error-container: 147 0 10;
+
+    --on-background: 28 28 21;
+
+    /* Primary — amber/orange */
+    --color-primary: 133 83 0;
     --color-primary-fg: 255 255 255;
-    --color-primary-container: 244 114 182;
-    --color-primary-fixed: 249 168 212;
-    --color-primary-fixed-dim: 236 72 153;
+    --color-primary-container: 245 158 11;
+    --color-primary-fixed: 255 221 184;
+    --color-primary-fixed-dim: 255 185 95;
 
-    /* Secondary — soft lavender */
-    --color-secondary: 196 181 253;
-    --color-secondary-fg: 42 31 71;
-    --color-secondary-container: 60 48 96;
-    --color-secondary-fixed: 214 200 255;
-    --color-secondary-fixed-dim: 196 181 253;
+    /* Secondary — rose/pink */
+    --color-secondary: 169 51 73;
+    --color-secondary-fg: 255 255 255;
+    --color-secondary-container: 254 116 136;
+    --color-secondary-fixed: 255 218 220;
+    --color-secondary-fixed-dim: 255 178 185;
 
-    /* Tertiary — warm amber */
-    --color-tertiary: 251 191 36;
-    --color-tertiary-fg: 61 40 0;
-    --color-tertiary-container: 255 173 58;
-    --color-tertiary-fixed: 255 221 184;
-    --color-tertiary-fixed-dim: 255 185 95;
+    /* Tertiary — teal/green */
+    --color-tertiary: 0 101 139;
+    --color-tertiary-fg: 255 255 255;
+    --color-tertiary-container: 26 189 255;
+    --color-tertiary-fixed: 197 231 255;
+    --color-tertiary-fixed-dim: 127 208 255;
 
     /* Error */
-    --color-error: 252 165 165;
-    --color-error-fg: 105 0 5;
+    --color-error: 186 26 26;
+    --color-error-fg: 255 255 255;
 
     /* Outlines */
-    --outline: 154 135 175;
-    --outline-variant: 78 64 98;
+    --outline: 134 116 97;
+    --outline-variant: 216 195 173;
 
     /* Inverse */
-    --inverse-surface: 237 224 245;
-    --inverse-on-surface: 42 32 62;
-    --inverse-primary: 163 27 94;
+    --inverse-surface: 49 49 42;
+    --inverse-on-surface: 244 241 230;
+    --inverse-primary: 255 185 95;
 
-    /* Header gradient */
-    --header-from: #281840;
-    --header-to: #1a1030;
+    /* Header gradient — warm cream */
+    --header-from: #fdf9ee;
+    --header-to: #f7f3e8;
 
-    /* Shadows */
-    --shadow-primary: rgba(236, 72, 153, 0.3);
-    --shadow-primary-glow: rgba(236, 72, 153, 0.4);
-    --shadow-tertiary: rgba(251, 191, 36, 0.4);
+    /* Shadows — warm amber */
+    --shadow-primary: rgba(133, 83, 0, 0.2);
+    --shadow-primary-glow: rgba(245, 158, 11, 0.4);
+    --shadow-tertiary: rgba(0, 101, 139, 0.3);
 
     /* Selection */
-    --selection-bg: rgba(236, 72, 153, 0.3);
-    --selection-fg: #ede0f5;
+    --selection-bg: rgba(133, 83, 0, 0.15);
+    --selection-fg: #1c1c15;
 
     /* Semantic aliases for shadcn */
-    --background: 270 35% 13%;
-    --foreground: 270 50% 90%;
+    --background: 38 60% 95%;
+    --foreground: 30 35% 9%;
 
-    --card: 270 33% 17%;
-    --card-foreground: 270 50% 90%;
+    --card: 38 48% 93%;
+    --card-foreground: 30 35% 9%;
 
-    --popover: 270 33% 17%;
-    --popover-foreground: 270 50% 90%;
+    --popover: 38 48% 93%;
+    --popover-foreground: 30 35% 9%;
 
-    --primary: 330 81% 60%;
-    --primary-foreground: 330 80% 95%;
+    --primary: 38 100% 26%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 260 60% 86%;
-    --secondary-foreground: 260 30% 25%;
+    --secondary: 330 35% 48%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 270 25% 20%;
-    --muted-foreground: 270 15% 72%;
+    --muted: 38 30% 90%;
+    --muted-foreground: 30 20% 25%;
 
-    --accent: 270 20% 24%;
-    --accent-foreground: 270 50% 90%;
+    --accent: 38 25% 88%;
+    --accent-foreground: 30 35% 9%;
 
-    --destructive: 0 84% 76%;
-    --destructive-foreground: 0 84% 20%;
+    --destructive: 0 75% 42%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 270 30% 86% / 8%;
-    --input: 270 30% 86% / 12%;
-    --ring: 330 81% 60%;
+    --border: 30 25% 68% / 15%;
+    --input: 30 25% 68% / 15%;
+    --ring: 38 100% 26%;
 
     --radius: 0.625rem;
 
-    /* Spacing */
-    --spacing-xs: 0.25rem;
-    --spacing-sm: 0.5rem;
-    --spacing-md: 1rem;
-    --spacing-lg: 1.5rem;
-    --spacing-xl: 2rem;
-    --spacing-2xl: 3rem;
-    --spacing-3xl: 4rem;
-    --spacing-4xl: 6rem;
-
     /* Chart colors */
-    --chart-1: 330 81% 60%;
-    --chart-2: 260 60% 86%;
-    --chart-3: 40 92% 56%;
-    --chart-4: 270 20% 24%;
-    --chart-5: 270 25% 20%;
+    --chart-1: 38 100% 26%;
+    --chart-2: 330 35% 48%;
+    --chart-3: 190 100% 27%;
+    --chart-4: 38 25% 88%;
+    --chart-5: 38 30% 90%;
 
     /* Sidebar */
-    --sidebar: 270 33% 17%;
-    --sidebar-foreground: 270 50% 90%;
-    --sidebar-primary: 330 81% 60%;
-    --sidebar-primary-foreground: 330 80% 95%;
-    --sidebar-accent: 270 20% 24%;
-    --sidebar-accent-foreground: 270 50% 90%;
-    --sidebar-border: 270 30% 86% / 8%;
-    --sidebar-ring: 330 81% 60%;
+    --sidebar: 38 48% 93%;
+    --sidebar-foreground: 30 35% 9%;
+    --sidebar-primary: 38 100% 26%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 38 25% 88%;
+    --sidebar-accent-foreground: 30 35% 9%;
+    --sidebar-border: 30 25% 68% / 15%;
+    --sidebar-ring: 38 100% 26%;
   }
 
-  /* ===== 科技未来 (Cool) ===== */
-  [data-color-scheme="cool"] {
+  /* ===== 科技未来 (Cool) — DARK THEME ===== */
+  [data-color-scheme="cool"].dark {
     /* Surfaces — cold navy */
     --surface: 11 19 38;
     --surface-container-lowest: 6 14 32;
@@ -150,9 +157,25 @@
     --surface-variant: 45 52 73;
     --surface-tint: 87 241 219;
 
-    /* On-surface text */
+    /* On-surface text — cool blue-white */
     --on-surface: 218 226 253;
     --on-surface-variant: 186 202 197;
+
+    --on-primary: 0 55 49;
+    --on-primary-container: 0 107 95;
+    --on-primary-fixed: 0 55 49;
+    --on-primary-fixed-variant: 0 107 95;
+    --on-secondary: 35 49 67;
+    --on-secondary-container: 57 72 90;
+    --on-secondary-fixed: 42 31 71;
+    --on-secondary-fixed-variant: 57 47 90;
+    --on-tertiary: 71 42 0;
+    --on-tertiary-container: 255 173 58;
+    --on-tertiary-fixed: 61 40 0;
+    --on-tertiary-fixed-variant: 255 173 58;
+    --on-error: 105 0 5;
+    --on-error-container: 147 0 10;
+    --on-background: 218 226 253;
 
     /* Primary — teal */
     --color-primary: 87 241 219;
@@ -188,11 +211,11 @@
     --inverse-on-surface: 40 48 68;
     --inverse-primary: 0 107 95;
 
-    /* Header gradient */
+    /* Header gradient — cold navy */
     --header-from: #161f35;
     --header-to: #0b1326;
 
-    /* Shadows */
+    /* Shadows — cool teal */
     --shadow-primary: rgba(87, 241, 219, 0.3);
     --shadow-primary-glow: rgba(87, 241, 219, 0.4);
     --shadow-tertiary: rgba(255, 210, 159, 0.4);
@@ -316,63 +339,3 @@
   ::-webkit-scrollbar-thumb:hover { background: rgb(var(--color-primary)); }
 }
 
-/* ===== Scheme-aware utility classes ===== */
-@layer utilities {
-  .header-gradient {
-    background: linear-gradient(to bottom, var(--header-from), var(--header-to));
-  }
-
-  .glass-effect {
-    background: rgba(45, 52, 73, 0.6);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-  }
-
-  .glass-nav {
-    background: rgba(11, 19, 38, 0.8);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-  }
-
-  .hide-scrollbar::-webkit-scrollbar { display: none; }
-  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-  .recording-pulse {
-    animation: recording-pulse 2s ease-in-out infinite;
-  }
-
-  .progress-glow {
-    box-shadow: 0 0 8px var(--shadow-primary-glow);
-  }
-
-  .progress-glow-gold {
-    box-shadow: 0 0 8px var(--shadow-tertiary);
-  }
-
-  .nav-shadow {
-    box-shadow: 0 -4px 24px var(--shadow-primary);
-  }
-
-  .btn-shadow-primary {
-    box-shadow: 0 8px 32px var(--shadow-primary);
-  }
-
-  .btn-shadow-gold {
-    box-shadow: 0 0 20px var(--shadow-tertiary);
-  }
-}
-
-/* ===== Animation utilities ===== */
-@layer utilities {
-  .animate-fade-up {
-    animation: fade-up 0.5s ease-out forwards;
-  }
-  .animate-slide-in-bottom {
-    animation: slide-in-bottom 0.7s ease-out;
-  }
-  .delay-100 { animation-delay: 100ms; }
-  .delay-200 { animation-delay: 200ms; }
-  .delay-300 { animation-delay: 300ms; }
-  .delay-400 { animation-delay: 400ms; }
-  .delay-500 { animation-delay: 500ms; }
-}
