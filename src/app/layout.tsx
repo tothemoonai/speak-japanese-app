@@ -1,48 +1,43 @@
 import type { Metadata } from 'next';
-import { Noto_Sans_JP, Outfit, JetBrains_Mono, Geist } from 'next/font/google';
+import { Space_Grotesk, Manrope, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/components/providers/AuthProvider';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { FontSizeProvider } from '@/components/providers/FontSizeProvider';
-import { ColorSchemeProvider } from '@/components/providers/ColorSchemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
 /**
- * 字体配置 - Tech-Zen Modern 美学
- *
- * - Noto Sans JP: 现代日式字体，用于标题和日文内容
- * - Outfit: 几何无衬线字体，科技感，用于英文标题和 UI
- * - JetBrains Mono: 等宽字体，用于代码和数据展示
+ * Editorial Tech-Zen Typography
+ * - Space Grotesk: Engineered geometric for headlines
+ * - Manrope: Versatile sans-serif for body
+ * - Plus Jakarta Sans: Labels and micro-copy
  */
-
-const notoSansJP = Noto_Sans_JP({
-  subsets: ['latin'],
-  variable: '--font-noto-sans-jp',
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-space-grotesk',
   display: 'swap',
-  weight: ['400', '500', '700', '900'],
+  weight: ['300', '400', '500', '600', '700'],
 });
 
-const outfit = Outfit({
+const manrope = Manrope({
   subsets: ['latin', 'latin-ext'],
-  variable: '--font-outfit',
+  variable: '--font-manrope',
   display: 'swap',
   weight: ['300', '400', '500', '600', '700', '800'],
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin', 'latin-ext'],
-  variable: '--font-jetbrains-mono',
+  variable: '--font-plus-jakarta-sans',
   display: 'swap',
-  weight: ['400', '500', '600'],
+  weight: ['300', '400', '500', '600', '700', '800'],
 });
 
 export const metadata: Metadata = {
-  title: 'IT日语',
-  description: '通过AI技术，帮助你进行沉浸式的IT日语练习',
-  keywords: ['日语', '口语练习', 'IT日语', 'AI学习'],
+  title: 'IT日本語',
+  description: 'AI搭載のIT日本語スピーキング練習プラットフォーム',
+  keywords: ['日本語', 'IT日本語', 'AI学習', 'スピーキング練習'],
 };
 
 export default function RootLayout({
@@ -52,32 +47,34 @@ export default function RootLayout({
 }) {
   return (
     <html
-      lang="zh-CN"
+      lang="ja"
       suppressHydrationWarning
-      className={cn(notoSansJP.variable, outfit.variable, jetbrainsMono.variable, "font-sans", geist.variable)}
+      className={cn(
+        spaceGrotesk.variable,
+        manrope.variable,
+        plusJakartaSans.variable,
+        "dark font-body"
+      )}
       data-scroll-behavior="smooth"
     >
-      <body
-        className="
-          font-sans
-          bg-gradient-mesh
-          dark:bg-gradient-mesh-dark
-          min-h-screen
-        "
-      >
-        <ColorSchemeProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <FontSizeProvider>
-              <AuthProvider>{children}</AuthProvider>
-              <Toaster />
-            </FontSizeProvider>
-          </ThemeProvider>
-        </ColorSchemeProvider>
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        />
+      </head>
+      <body className="bg-surface text-on-surface min-h-screen">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          <FontSizeProvider>
+            <AuthProvider>{children}</AuthProvider>
+            <Toaster />
+          </FontSizeProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

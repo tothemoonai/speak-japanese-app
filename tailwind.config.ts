@@ -17,113 +17,117 @@ const config = {
     },
     extend: {
       fontFamily: {
-        sans: [
-          'var(--font-noto-sans-jp)',
-          'var(--font-outfit)',
-          'system-ui',
-          'sans-serif',
-        ],
-        display: ['var(--font-outfit)', 'sans-serif'],
-        mono: ['var(--font-jetbrains-mono)', 'monospace'],
+        headline: ['var(--font-space-grotesk)', 'sans-serif'],
+        body: ['var(--font-manrope)', 'sans-serif'],
+        label: ['var(--font-plus-jakarta-sans)', 'sans-serif'],
+        sans: ['var(--font-manrope)', 'system-ui', 'sans-serif'],
       },
       colors: {
+        // Surface layers (tonal stacking - NO borders)
+        surface: '#0b1326',
+        'surface-container-lowest': '#060e20',
+        'surface-container-low': '#131b2e',
+        'surface-container': '#171f33',
+        'surface-container-high': '#222a3d',
+        'surface-container-highest': '#2d3449',
+        'surface-dim': '#0b1326',
+        'surface-bright': '#31394d',
+        'surface-variant': '#2d3449',
+        'surface-tint': '#3cddc7',
+
+        // On-surface (text colors)
+        'on-surface': '#dae2fd',
+        'on-surface-variant': '#bacac5',
+
+        // Primary (teal - active states)
+        primary: {
+          DEFAULT: '#57f1db',
+          foreground: '#003731',
+          container: '#2dd4bf',
+          fixed: '#62fae3',
+          'fixed-dim': '#3cddc7',
+        },
+
+        // Secondary (brushed aluminum - inactive)
+        secondary: {
+          DEFAULT: '#b9c8de',
+          foreground: '#233143',
+          container: '#39485a',
+          fixed: '#d4e4fa',
+          'fixed-dim': '#b9c8de',
+        },
+
+        // Tertiary (gold - achievements ONLY)
+        tertiary: {
+          DEFAULT: '#ffd29f',
+          foreground: '#472a00',
+          container: '#ffad3a',
+          fixed: '#ffddb8',
+          'fixed-dim': '#ffb95f',
+        },
+
+        // Error
+        error: {
+          DEFAULT: '#ffb4ab',
+          foreground: '#690005',
+          container: '#93000a',
+        },
+
+        // Outlines (ghost borders at 15% opacity only)
+        outline: '#859490',
+        'outline-variant': '#3c4a46',
+
+        // Inverse
+        'inverse-surface': '#dae2fd',
+        'inverse-on-surface': '#283044',
+        'inverse-primary': '#006b5f',
+
+        // Semantic aliases for shadcn compatibility
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        // 使用精确的十六进制值，确保与预览页面完全匹配
-        primary: {
-          DEFAULT: '#7766EB',
-          light: '#a5b4fc',
-          dark: '#4f46e5',
-          foreground: '#ffffff',
-        },
-        secondary: {
-          DEFAULT: '#2563eb',
-          light: '#60a5fa',
-          dark: '#1d4ed8',
-          foreground: '#ffffff',
-        },
-        destructive: {
-          DEFAULT: '#ef4444',
-          light: '#fca5a5',
-          dark: '#b91c1c',
-          foreground: '#ffffff',
-        },
+        background: '#0b1326',
+        foreground: '#dae2fd',
+
         muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
+          DEFAULT: '#171f33',
+          foreground: '#bacac5',
         },
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
+          DEFAULT: '#222a3d',
+          foreground: '#dae2fd',
         },
         popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
+          DEFAULT: '#131b2e',
+          foreground: '#dae2fd',
         },
         card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
+          DEFAULT: '#131b2e',
+          foreground: '#dae2fd',
+        },
+        destructive: {
+          DEFAULT: '#ffb4ab',
+          foreground: '#690005',
         },
         warning: {
-          DEFAULT: '#f59e0b',
-          light: '#fcd34d',
-          dark: '#b45309',
-          foreground: '#ffffff',
+          DEFAULT: '#ffd29f',
+          foreground: '#472a00',
         },
         success: {
-          DEFAULT: '#22c55e',
-          light: '#86efac',
-          dark: '#15803d',
-          foreground: '#ffffff',
-        },
-        /* 专业紫蓝（完整变体） */
-        'primary-blue': {
-          DEFAULT: '#7766EB',
-          light: '#a5b4fc',
-          dark: '#4f46e5',
-        },
-        /* 樱花粉（点缀色） */
-        sakura: {
-          DEFAULT: '#ec4899',
-          light: '#fce7f3',
-          dark: '#be185d',
-        },
-        /* 日本蓝 */
-        'japan-blue': {
-          DEFAULT: '#2563eb',
-          light: '#60a5fa',
-          dark: '#1d4ed8',
-        },
-        /* 竹绿 */
-        bamboo: {
-          DEFAULT: '#22c55e',
-          light: '#86efac',
-          dark: '#15803d',
-        },
-        /* 琥珀色 */
-        amber: {
-          DEFAULT: '#f59e0b',
-          light: '#fcd34d',
-          dark: '#b45309',
+          DEFAULT: '#57f1db',
+          foreground: '#003731',
         },
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
+        'DEFAULT': '0.125rem',
         sm: 'calc(var(--radius) - 4px)',
-      },
-      spacing: {
-        'xs': 'var(--spacing-xs)',
-        'sm': 'var(--spacing-sm)',
-        'md': 'var(--spacing-md)',
-        'lg': 'var(--spacing-lg)',
-        'xl': 'var(--spacing-xl)',
-        '2xl': 'var(--spacing-2xl)',
-        '3xl': 'var(--spacing-3xl)',
-        '4xl': 'var(--spacing-4xl)',
+        md: 'calc(var(--radius) - 2px)',
+        lg: '0.25rem',
+        xl: '0.5rem',
+        '2xl': '0.75rem',
+        '3xl': '1rem',
+        '4xl': '1.5rem',
+        full: '9999px',
       },
       keyframes: {
         'accordion-down': {
@@ -135,36 +139,37 @@ const config = {
           to: { height: '0' },
         },
         'fade-up': {
-          from: {
-            opacity: '0',
-            transform: 'translateY(20px)',
+          from: { opacity: '0', transform: 'translateY(20px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        'recording-pulse': {
+          '0%, 100%': {
+            boxShadow: '0 0 0 0 rgba(87, 241, 219, 0.4)',
           },
-          to: {
-            opacity: '1',
-            transform: 'translateY(0)',
+          '50%': {
+            boxShadow: '0 0 0 20px rgba(87, 241, 219, 0)',
           },
         },
         'glow': {
           '0%, 100%': {
-            boxShadow: '0 0 20px -5px hsl(var(--primary-blue) / 0.5)',
+            boxShadow: '0 0 20px -5px rgba(87, 241, 219, 0.5)',
           },
           '50%': {
-            boxShadow: '0 0 30px -5px hsl(var(--primary-blue) / 0.8)',
+            boxShadow: '0 0 30px -5px rgba(87, 241, 219, 0.8)',
           },
+        },
+        'slide-in-bottom': {
+          from: { opacity: '0', transform: 'translateY(16px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
         },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'fade-up': 'fade-up 0.5s ease-out forwards',
+        'recording-pulse': 'recording-pulse 2s ease-in-out infinite',
         'glow': 'glow 2s ease-in-out infinite',
-      },
-      backgroundImage: {
-        'gradient-primary': 'linear-gradient(135deg, hsl(var(--primary-blue-light)), hsl(var(--primary-blue)))',
-        'gradient-secondary': 'linear-gradient(135deg, hsl(var(--japan-blue-light)), hsl(var(--japan-blue)))',
-        'gradient-mesh': 'radial-gradient(at 40% 20%, hsl(var(--primary-blue-light) / 0.3) 0px, transparent 50%), radial-gradient(at 80% 0%, hsl(var(--japan-blue-light) / 0.3) 0px, transparent 50%)',
-        /* 保留樱花渐变用于特殊场景 */
-        'gradient-sakura': 'linear-gradient(135deg, hsl(var(--sakura-light)), hsl(var(--sakura)))',
+        'slide-in-bottom': 'slide-in-bottom 0.7s ease-out',
       },
     },
   },

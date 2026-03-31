@@ -4,26 +4,15 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { AppLayout } from '@/components/ui/zen/AppLayout';
+import { BottomNavBar } from '@/components/ui/zen/BottomNavBar';
+import { StatCard } from '@/components/ui/zen/StatCard';
+import { ProgressBar } from '@/components/ui/zen/ProgressBar';
+import { Icon } from '@/components/ui/zen/Icon';
 import { BookList } from '@/components/book/BookList';
-import { Badge } from '@/components/ui/badge';
-import {
-  BookOpen,
-  Mic,
-  TrendingUp,
-  Trophy,
-  Target,
-  LogOut,
-  Sparkles,
-  ArrowUpRight,
-  Flame,
-  BarChart,
-} from 'lucide-react';
 import { getUserLevel } from '@/lib/utils/user';
 import { userProgressService } from '@/services/supabase/userProgress.service';
 import { supabase } from '@/lib/supabase/client';
-import { Footer } from '@/components/layout/Footer';
 
 export const dynamic = 'force-dynamic';
 
@@ -48,77 +37,44 @@ export default function DashboardPage() {
   });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
-    if (mounted && !user) {
-      router.push('/login');
-    }
+    if (mounted && !user) router.push('/login');
   }, [user, router, mounted]);
 
   useEffect(() => {
-    if (user) {
-      fetchUserStats();
-    }
+    if (user) fetchUserStats();
   }, [user]);
 
   const fetchUserStats = async () => {
     if (!user) return;
-
     try {
       setLoading(true);
-
-      // 获取基础统计数据（如果表结构不存在，返回默认值）
       let stats = { total_practices: 0, average_score: 0, courses_completed: 0 };
       try {
         const result = await userProgressService.getUserStats(user.id);
-        if (result) {
-          stats = result;
-        }
-      } catch (statsError) {
-        // practice_records 表结构可能不完整，使用默认值
-        console.warn('统计数据不可用，使用默认值');
-      }
+        if (result) stats = result;
+      } catch { console.warn('统计数据不可用，使用默认值'); }
 
-      // 获取成就数量（如果表不存在，返回0）
       let achievementsCount = 0;
       try {
         const supabaseClient = supabase();
-        const { data: achievements, error: achievementsError } = await supabaseClient
-          .from('user_achievements')
-          .select('id')
-          .eq('user_id', user.id);
+        const { data: achievements } = await supabaseClient
+          .from('user_achievements').select('id').eq('user_id', user.id);
+        if (achievements) achievementsCount = achievements.length;
+      } catch { console.warn('成就数据不可用'); }
 
-        if (!achievementsError && achievements) {
-          achievementsCount = achievements.length;
-        }
-      } catch (achievementsError) {
-        // user_achievements 表可能不存在，使用默认值
-        console.warn('成就数据不可用，使用默认值');
-      }
-
-      // 获取今日练习次数
       let todayPractices = 0;
       try {
         const supabaseClient = supabase();
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); // 设置为今天的00:00:00
-
-        const { data: todayRecords, error: todayError } = await supabaseClient
-          .from('practice_records')
-          .select('id')
-          .eq('user_id', user.id)
-          .gte('started_at', today.toISOString())
-          .not('completed_at', 'is', null); // 只统计已完成的练习
-
-        if (!todayError && todayRecords) {
-          todayPractices = todayRecords.length;
-        }
-      } catch (todayError) {
-        console.warn('今日练习数据不可用，使用默认值');
-      }
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const { data: todayRecords } = await supabaseClient
+          .from('practice_records').select('id')
+          .eq('user_id', user.id).gte('started_at', today.toISOString())
+          .not('completed_at', 'is', null);
+        if (todayRecords) todayPractices = todayRecords.length;
+      } catch { console.warn('今日练习数据不可用'); }
 
       setUserStats({
         total_practices: stats.total_practices,
@@ -127,268 +83,157 @@ export default function DashboardPage() {
         achievements_count: achievementsCount,
         today_practices: todayPractices,
       });
-    } catch (error) {
-      // 任何其他错误也使用默认值
-      console.warn('获取用户统计时出错，使用默认值');
-      setUserStats({
-        total_practices: 0,
-        average_score: 0,
-        courses_completed: 0,
-        achievements_count: 0,
-        today_practices: 0,
-      });
-    } finally {
-      setLoading(false);
-    }
+    } catch {
+      setUserStats({ total_practices: 0, average_score: 0, courses_completed: 0, achievements_count: 0, today_practices: 0 });
+    } finally { setLoading(false); }
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      router.push('/');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
+  if (!mounted || !user) return null;
 
-  if (!mounted || !user) {
-    return null;
-  }
-
+  const nickname = user.nickname || user.user_metadata?.nickname || user.email?.split('@')[0] || '学習者';
   const totalCourses = 32;
+  const todayGoalProgress = Math.min(100, (userStats.today_practices / 3) * 100);
 
   return (
-    <div className="min-h-screen">
-      {/* Header - 玻璃态效果 */}
-      <header className="glass sticky top-0 z-50">
-        <div
-          className="container mx-auto px-1.5 sm:px-2 py-2 sm:py-3"
-          style={{ paddingTop: '0' }}
-        >
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-gradient-sakura">
-                IT日语
-              </h1>
-              <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                通过AI技术，沉浸式学习日语
-              </p>
-            </div>
-            <nav className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-              <Link href="/dashboard">
-                <Button variant="ghost" size="sm" className="text-sm">
-                  首页
-                </Button>
-              </Link>
-              <Link href="/books">
-                <Button variant="ghost" size="sm" className="text-sm">
-                  <BookOpen className="h-4 w-4 mr-1" />
-                  课本
-                </Button>
-              </Link>
-              <Link href="/reports">
-                <Button variant="ghost" size="sm" className="text-sm">
-                  <TrendingUp className="h-4 w-4 mr-1" />
-                  学习报告
-                </Button>
-              </Link>
-              <Badge
-                variant="outline"
-                className="border-sakura/50 text-sakura text-xs"
-              >
-                {getUserLevel(user) === 'beginner' && '初级'}
-                {getUserLevel(user) === 'intermediate' && '中级'}
-                {getUserLevel(user) === 'advanced' && '高级'}
-              </Badge>
-            </nav>
+    <div className="min-h-screen bg-surface">
+      {/* Header */}
+      <header className="w-full top-0 sticky z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] flex justify-between items-center px-6 py-4">
+        <div className="flex items-center gap-4">
+          <h1 className="font-headline font-bold tracking-tight text-xl text-primary tracking-tighter">
+            IT日本語
+          </h1>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="text-right hidden sm:block">
+            <p className="font-label text-xs text-secondary opacity-60 uppercase tracking-widest">
+              {getUserLevel(user) === 'beginner' && '初級'}
+              {getUserLevel(user) === 'intermediate' && '中級'}
+              {getUserLevel(user) === 'advanced' && '上級'}
+            </p>
+            <p className="font-headline font-bold text-on-surface">{nickname}</p>
+          </div>
+          <div className="w-10 h-10 rounded-full border-2 border-primary/20 p-0.5 overflow-hidden bg-surface-container-high flex items-center justify-center">
+            <Icon name="person" size={20} className="text-secondary" />
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-1.5 sm:px-2 py-3 sm:py-4 md:py-6">
-        {/* Welcome Section - 带动画 */}
-        <div className="mb-4 sm:mb-6 animate-fade-up">
-          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-            <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-sakura animate-glow" />
-            <div>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
-                欢迎回来，
-                <span className="text-gradient-sakura">
-                  {user.nickname ||
-                    user.user_metadata?.nickname ||
-                    user.email?.split('@')[0] ||
-                    '学员'}
-                  ！
-                </span>
-              </h2>
+      <main className="px-6 pt-6 pb-32 max-w-7xl mx-auto space-y-10">
+        {/* Welcome Section & Stats Bento Grid */}
+        <section className="flex flex-col md:flex-row gap-8 items-start">
+          <div className="flex-1 space-y-4">
+            <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight text-on-surface">
+              お帰りなさい、<span className="text-primary">{nickname}</span>
+            </h2>
+            <p className="text-secondary font-body text-lg max-w-lg leading-relaxed">
+              現在<span className="text-primary font-bold">{userStats.courses_completed}コース</span>を修了しています。次の会話をデバッグする準備はできていますか？
+            </p>
+            <div className="pt-4 flex flex-wrap gap-4">
+              <Link href="/books">
+                <button className="bg-primary text-[#0b1326] font-headline font-bold px-8 py-4 rounded-xl flex items-center gap-3 hover:bg-primary-fixed transition-all active:scale-95 shadow-lg shadow-primary/10">
+                  学習を再開する
+                  <Icon name="play_circle" size={20} />
+                </button>
+              </Link>
+              <Link href="/reports">
+                <button className="bg-surface-container-high border border-outline-variant/15 text-on-surface font-headline font-semibold px-8 py-4 rounded-xl hover:bg-surface-container-highest transition-all">
+                  レポートを表示
+                </button>
+              </Link>
             </div>
           </div>
-          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl">
-            继续你的IT日语练习之旅。每一次练习，都让你离流利更近一步。
-          </p>
-        </div>
 
-        {/* Stats Cards - 增强版 */}
-        <Card className="mb-2 sm:mb-6 card-gradient-border animate-fade-up delay-100">
-          <CardContent className="p-0.5">
-            <div className="grid grid-cols-4 gap-0.5">
-              {/* 总练习次数 */}
-              <div className="stat-card stat-card-sakura flex flex-col items-center justify-center gap-0 p-0.5 rounded">
-                <Mic className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-sakura flex-shrink-0 mt-1" />
-                {loading ? (
-                  <div className="text-xs font-bold text-muted-foreground">-</div>
-                ) : (
-                  <div className="flex items-baseline gap-0">
-                    <span className="text-xs sm:text-sm font-bold text-sakura-dark dark:text-sakura-light">
-                      {userStats.total_practices}
-                    </span>
-                    <span className="text-[9px] sm:text-[10px] text-muted-foreground">次</span>
-                  </div>
-                )}
-                <span className="text-[9px] sm:text-[10px] text-muted-foreground">
-                  总练习
-                </span>
+          {/* Stats Bento Grid */}
+          <div className="grid grid-cols-2 gap-4 w-full md:w-[400px]">
+            <StatCard label="練習回数" value={loading ? '-' : userStats.total_practices} />
+            <StatCard label="平均スコア" value={loading ? '-' : userStats.average_score} unit="%" />
+            <StatCard label="コース数" value={loading ? '-' : userStats.courses_completed} />
+            <div className="bg-tertiary/10 p-6 rounded-2xl border border-tertiary/5 flex flex-col justify-between h-32 relative overflow-hidden">
+              <div className="absolute -right-2 -bottom-2 opacity-10">
+                <Icon name="emoji_events" size={56} fill className="text-tertiary" />
               </div>
+              <span className="font-label text-[10px] uppercase tracking-[0.2em] text-tertiary font-bold">アチーブメント</span>
+              <p className="font-headline text-3xl font-bold text-tertiary">{loading ? '-' : userStats.achievements_count}</p>
+            </div>
+          </div>
+        </section>
 
-              {/* 平均分数 */}
-              <div className="stat-card stat-card-blue flex flex-col items-center justify-center gap-0 p-0.5 rounded">
-                <Flame className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-japan-blue flex-shrink-0 mt-1" />
-                {loading ? (
-                  <div className="text-xs font-bold text-muted-foreground">-</div>
-                ) : (
-                  <div className="flex items-baseline gap-0">
-                    <span className="text-xs sm:text-sm font-bold text-japan-blue-dark dark:text-japan-blue-light">
-                      {userStats.average_score}
-                    </span>
-                    <span className="text-[9px] sm:text-[10px] text-muted-foreground">分</span>
-                  </div>
-                )}
-                <span className="text-[9px] sm:text-[10px] text-muted-foreground">
-                  平均分
-                </span>
+        {/* Quick Actions Row */}
+        <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Link href="/books" className="block">
+            <div className="bg-surface-container-high p-5 rounded-xl flex items-center justify-between group hover:bg-surface-container-highest cursor-pointer transition-all">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                  <Icon name="track_changes" size={20} />
+                </div>
+                <div>
+                  <p className="font-headline font-bold text-on-surface">今日の目標</p>
+                  <p className="text-[10px] text-secondary opacity-60 font-label tracking-wide uppercase">{todayGoalProgress}% 完了</p>
+                </div>
               </div>
-
-              {/* 已完成课程 */}
-              <div className="stat-card stat-card-green flex flex-col items-center justify-center gap-0 p-0.5 rounded">
-                <BookOpen className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-bamboo flex-shrink-0 mt-1" />
-                {loading ? (
-                  <div className="text-xs font-bold text-muted-foreground">-</div>
-                ) : (
-                  <div className="flex items-baseline gap-0">
-                    <span className="text-xs sm:text-sm font-bold text-bamboo">
-                      {userStats.courses_completed}
-                    </span>
-                    <span className="text-[9px] sm:text-[10px] text-muted-foreground">
-                      /{totalCourses}
-                    </span>
-                  </div>
-                )}
-                <span className="text-[9px] sm:text-[10px] text-muted-foreground">
-                  已完成
-                </span>
-              </div>
-
-              {/* 获得成就 */}
-              <div className="stat-card stat-card-orange flex flex-col items-center justify-center gap-0 p-0.5 rounded">
-                <Trophy className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-maple flex-shrink-0 mt-1" />
-                {loading ? (
-                  <div className="text-xs font-bold text-muted-foreground">-</div>
-                ) : (
-                  <div className="flex items-baseline gap-0">
-                    <span className="text-xs sm:text-sm font-bold text-maple">
-                      {userStats.achievements_count}
-                    </span>
-                    <span className="text-[9px] sm:text-[10px] text-muted-foreground">个</span>
-                  </div>
-                )}
-                <span className="text-[9px] sm:text-[10px] text-muted-foreground">
-                  成就
-                </span>
+              <div className="w-12 h-1 bg-surface-container rounded-full overflow-hidden">
+                <div className="bg-primary h-full" style={{ width: `${todayGoalProgress}%` }} />
               </div>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Quick Actions - 紧凑卡片 */}
-        <div className="grid grid-cols-3 gap-1 mb-3 sm:mb-8">
-          <Link href="/books" className="group col-span-1">
-            <Card className="card-enhanced h-full">
-              <CardContent className="p-1">
-                <div className="flex items-center gap-1">
-                  {/* 图标 */}
-                  <div className="p-0.5 rounded bg-gradient-sakura flex-shrink-0">
-                    <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
-                  </div>
-                  {/* 文字内容 */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-[10px] sm:text-xs font-bold mb-0 truncate leading-tight">继续学习</h3>
-                    <p className="text-[9px] sm:text-[10px] text-muted-foreground truncate">
-                      {totalCourses}门课程
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </Link>
 
-          <Link href="/books" className="group col-span-1">
-            <Card className="card-enhanced h-full">
-              <CardContent className="p-1">
-                <div className="flex items-center gap-1">
-                  <div className="p-0.5 rounded bg-gradient-japan-blue flex-shrink-0">
-                    <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-[10px] sm:text-xs font-bold mb-0 truncate leading-tight">每日目标</h3>
-                    <p className="text-[9px] sm:text-[10px] text-muted-foreground truncate">
-                      今日{userStats.today_practices}/3次
-                    </p>
-                  </div>
+          <Link href="/reports" className="block">
+            <div className="bg-surface-container-high p-5 rounded-xl flex items-center justify-between group hover:bg-surface-container-highest cursor-pointer transition-all">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
+                  <Icon name="analytics" size={20} />
                 </div>
-              </CardContent>
-            </Card>
+                <div>
+                  <p className="font-headline font-bold text-on-surface">詳細レポート</p>
+                  <p className="text-[10px] text-secondary opacity-60 font-label tracking-wide uppercase">週間インサイト</p>
+                </div>
+              </div>
+              <Icon name="chevron_right" size={20} className="text-secondary opacity-40" />
+            </div>
           </Link>
 
-          <Link href="/reports" className="group col-span-1">
-            <Card className="card-enhanced h-full">
-              <CardContent className="p-1">
-                <div className="flex items-center gap-1">
-                  <div className="p-0.5 rounded bg-gradient-to-br from-orange-400 to-orange-600 flex-shrink-0">
-                    <BarChart className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-[10px] sm:text-xs font-bold mb-0 truncate leading-tight">学习报告</h3>
-                    <p className="text-[9px] sm:text-[10px] text-muted-foreground truncate">
-                      学习成果
-                    </p>
-                  </div>
+          <Link href="/books" className="block">
+            <div className="bg-surface-container-high p-5 rounded-xl flex items-center justify-between group hover:bg-surface-container-highest cursor-pointer transition-all">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-lg bg-tertiary/10 flex items-center justify-center text-tertiary group-hover:scale-110 transition-transform">
+                  <Icon name="workspace_premium" size={20} />
                 </div>
-              </CardContent>
-            </Card>
+                <div>
+                  <p className="font-headline font-bold text-on-surface">チャレンジ</p>
+                  <p className="text-[10px] text-secondary opacity-60 font-label tracking-wide uppercase">{totalCourses}コース</p>
+                </div>
+              </div>
+              <Icon name="chevron_right" size={20} className="text-secondary opacity-40" />
+            </div>
           </Link>
-        </div>
+        </section>
 
         {/* Recent Courses */}
-        <div className="animate-fade-up delay-200">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <Sparkles className="h-6 w-6 text-sakura" />
-              <h3 className="text-2xl font-bold">课本列表</h3>
-            </div>
+        <section className="space-y-6">
+          <div className="flex justify-between items-end">
+            <h3 className="font-headline text-2xl font-bold tracking-tight">
+              最近の<span className="text-primary/70">学習</span>
+            </h3>
             <Link href="/books">
-              <Button variant="outline" size="sm" className="group">
-                查看全部
-                <ArrowUpRight className="h-4 w-4 ml-1 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </Button>
+              <span className="text-primary font-label text-xs uppercase tracking-widest font-bold hover:underline cursor-pointer">
+                すべて見る
+              </span>
             </Link>
           </div>
           <BookList userId={user.id} />
-        </div>
+        </section>
       </main>
 
-      {/* Footer */}
-      <Footer />
+      {/* Floating Action Button */}
+      <div className="fixed bottom-24 right-6 z-40">
+        <Link href="/books">
+          <button className="w-16 h-16 rounded-full bg-primary text-on-primary shadow-[0_8px_32px_rgba(87,241,219,0.3)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+            <Icon name="mic" size={28} fill />
+          </button>
+        </Link>
+      </div>
+
+      <BottomNavBar />
     </div>
   );
 }

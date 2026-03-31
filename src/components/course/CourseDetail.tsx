@@ -2,30 +2,15 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { cn } from '@/lib/utils';
+import { Icon } from '@/components/ui/zen/Icon';
+import { ProgressBar } from '@/components/ui/zen/ProgressBar';
 import type { CourseWithProgress, Character, Sentence } from '@/types';
-import { BookOpen, Users, MessageSquare, ArrowLeft, Play, Volume2, VolumeX, Eye, EyeOff } from 'lucide-react';
-import { useTTS } from '@/hooks/useTTS';
 
 interface CourseDetailProps {
   course: CourseWithProgress & { characters?: Character[]; sentences?: Sentence[] };
   onPractice?: (characterId: number) => void;
 }
-
-const difficultyColors = {
-  N5: 'bg-green-100 text-green-800',
-  N4: 'bg-blue-100 text-blue-800',
-  N3: 'bg-purple-100 text-purple-800',
-};
-
-const difficultyLabels = {
-  N5: '初级',
-  N4: '中级',
-  N3: '高级',
-};
 
 export function CourseDetail({ course, onPractice }: CourseDetailProps) {
   const [selectedCharacter, setSelectedCharacter] = useState<number | null>(null);
@@ -34,7 +19,6 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const manuallyStoppedRef = useRef(false);
   const playlistRef = useRef<{ sentences: any[]; index: number } | null>(null);
-  const { controls, state: ttsState } = useTTS();
 
   const handlePractice = (characterId: number) => {
     setSelectedCharacter(characterId);
@@ -43,333 +27,264 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
     }
   };
 
-
   const handlePlayAll = () => {
     if (!course.sentences || course.sentences.length === 0) return;
 
-    // 如果正在播放，则停止
     if (isPlaying) {
       manuallyStoppedRef.current = true;
       playlistRef.current = null;
-      controls.cancel();
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
       setIsPlaying(false);
       return;
     }
 
-    // 初始化播放列表
-    playlistRef.current = {
-      sentences: course.sentences,
-      index: 0
-    };
+    playlistRef.current = { sentences: course.sentences, index: 0 };
     manuallyStoppedRef.current = false;
 
-    // 先停止当前播放
-    controls.cancel();
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
 
-    // 使用 setTimeout 确保 cancel 完成后再开始播放
     setTimeout(() => {
-      if (!playlistRef.current || manuallyStoppedRef.current) {
-        return;
-      }
-
+      if (!playlistRef.current || manuallyStoppedRef.current) return;
       setIsPlaying(true);
 
-      // 在 handlePlayAll 内部定义 playNext，避免外部干扰
       const playNext = () => {
         const playlist = playlistRef.current;
-        console.log(`🔍 playNext被调用 - playlist存在: ${!!playlist}, 手动停止: ${manuallyStoppedRef.current}`);
-
         if (!playlist || manuallyStoppedRef.current) {
-          console.log(`⛔ 停止播放 - playlist: ${!!playlist}, 手动停止: ${manuallyStoppedRef.current}`);
           setIsPlaying(false);
           playlistRef.current = null;
           return;
         }
 
-        console.log(`📊 当前索引: ${playlist.index}, 总句子数: ${playlist.sentences.length}`);
-
         if (playlist.index >= playlist.sentences.length) {
-          // 播放完成
-          console.log(`✅ 所有句子播放完成`);
           setIsPlaying(false);
           playlistRef.current = null;
           return;
         }
 
         const sentence = playlist.sentences[playlist.index];
-        playlist.index++; // 先增加索引
+        playlist.index++;
 
-        console.log(`🎤 准备播放第${playlist.index}句: ${sentence.text_jp.substring(0, 20)}...`);
-
-        // 优先使用 Cordova TTS（在 Android 上更可靠）
         if (window.TTS && typeof window.TTS.speak === 'function') {
           window.TTS.speak(sentence.text_jp, () => {
-            console.log(`✅ TTS回调触发 - 播放完成 ${playlist.index}/${playlist.sentences.length}`);
-            console.log(`🔍 回调中检查 - playlistRef: ${!!playlistRef.current}, 手动停止: ${manuallyStoppedRef.current}`);
-            // 播放完成，播放下一句
             if (playlistRef.current && !manuallyStoppedRef.current) {
-              console.log(`▶️ 继续播放下一句`);
-              // 使用 setTimeout 确保 TTS 引擎准备好
-              setTimeout(() => {
-                playNext();
-              }, 50);
-            } else {
-              console.log(`⛔ 回调中停止播放`);
+              setTimeout(() => playNext(), 50);
             }
           });
         } else if ('speechSynthesis' in window) {
-          // 回退到 Web Speech API
           const utterance = new SpeechSynthesisUtterance(sentence.text_jp);
           utterance.lang = 'ja-JP';
           utterance.pitch = 1.0;
           utterance.rate = 0.9;
-
-          utterance.onend = () => {
-            console.log(`✅ Web Speech播放完成 ${playlist.index}/${playlist.sentences.length}`);
-            playNext();
-          };
-
-          utterance.onerror = (error) => {
-            console.error(`❌ Web Speech错误:`, error);
-            playNext();
-          };
-
+          utterance.onend = () => playNext();
+          utterance.onerror = () => playNext();
           window.speechSynthesis.speak(utterance);
         } else {
-          // 都不可用，停止播放
-          console.error('❌ TTS不可用');
           setIsPlaying(false);
           playlistRef.current = null;
         }
       };
 
-      // 开始播放
-      console.log(`🎵 开始播放 ${course.sentences.length} 个句子`);
       playNext();
     }, 100);
   };
 
-  // 组件卸载时停止播放
   useEffect(() => {
     return () => {
-      // 组件卸载时清理
       manuallyStoppedRef.current = true;
       playlistRef.current = null;
-      controls.cancel();
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
     };
-  }, []); // 空依赖数组，只在组件卸载时执行
+  }, []);
+
+  const progress = course.progress || 0;
+  const isCompleted = course.status === 'completed';
 
   return (
-    <div
-      className="space-y-6"
-      style={{
-        paddingTop: 'max(1rem, env(safe-area-inset-top))',
-        paddingLeft: 'max(0.5rem, env(safe-area-inset-left))'
-      }}
-    >
-      {/* Header */}
-      <div>
-        <Link href="/courses">
-          <Button variant="ghost" className="mb-4">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            返回课程列表
-          </Button>
-        </Link>
-
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <Badge className={difficultyColors[course.difficulty]}>
-                {difficultyLabels[course.difficulty]}
-              </Badge>
-              {course.status && (
-                <Badge variant="outline">
-                  {course.status === 'not_started' && '未开始'}
-                  {course.status === 'in_progress' && '进行中'}
-                  {course.status === 'completed' && '已完成'}
-                </Badge>
-              )}
-            </div>
-
-            <h1 className="text-3xl font-bold mb-2">
-              第{course.course_number}课：{course.title_cn} {course.title_jp}
-            </h1>
-
-            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-              {course.theme && (
-                <div className="flex items-center gap-1">
-                  <BookOpen className="h-4 w-4" />
-                  <span>主题：{course.theme}</span>
-                </div>
-              )}
-              {course.total_sentences !== undefined && course.total_sentences > 0 && (
-                <div className="flex items-center gap-1">
-                  <MessageSquare className="h-4 w-4" />
-                  <span>对话：{course.total_sentences} 句</span>
-                </div>
-              )}
-              {course.vocab_count !== undefined && course.vocab_count > 0 && (
-                <span>词汇：{course.vocab_count}</span>
-              )}
-              {course.grammar_count !== undefined && course.grammar_count > 0 && (
-                <span>语法：{course.grammar_count}</span>
-              )}
-            </div>
+    <div className="space-y-8">
+      {/* Hero Section */}
+      <section className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+        <div className="flex-1 space-y-4">
+          <div className="flex items-center gap-3">
+            <span className={cn(
+              'px-3 py-1 rounded-md font-label text-xs font-bold tracking-widest',
+              isCompleted
+                ? 'bg-tertiary/20 text-tertiary border border-tertiary/20'
+                : 'bg-primary/10 text-primary border border-primary/20'
+            )}>
+              {course.difficulty || 'N/A'}
+            </span>
+            <span className="text-secondary/60 text-xs font-label tracking-widest">
+              第{course.course_number}課
+            </span>
+            {course.status && (
+              <span className="text-secondary/40 text-xs font-label tracking-widest uppercase">
+                {course.status === 'not_started' && '未着手'}
+                {course.status === 'in_progress' && '学習中'}
+                {course.status === 'completed' && '完了'}
+              </span>
+            )}
           </div>
 
-          <Link href={`/practice/${course.id}`} className="w-full md:w-auto">
-            <Button size="lg" className="w-full md:w-auto">
-              <Play className="h-5 w-5 mr-2" />
-              开始练习
-            </Button>
-          </Link>
-        </div>
-      </div>
+          <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight text-on-surface leading-tight">
+            {course.title_jp || course.title_cn}
+          </h2>
+          {course.title_jp && course.title_cn && course.title_jp !== course.title_cn && (
+            <p className="text-secondary font-body text-lg leading-relaxed">{course.title_cn}</p>
+          )}
 
-      {/* Progress Card - 始终显示 */}
-      <Card>
-        <CardContent className="py-4">
-          <div className="flex flex-wrap items-center gap-4 text-sm">
-            {course.progress !== undefined && course.progress > 0 ? (
-              <>
-                <span className="text-muted-foreground">学习进度</span>
-                <span className="font-medium">{course.progress}%</span>
-                <Progress value={course.progress} className="h-2 w-24" />
-              </>
-            ) : (
-              <span className="text-muted-foreground">未开始学习</span>
-            )}
+          {course.theme && (
+            <div className="flex items-center gap-2 text-secondary/60 text-sm font-body">
+              <Icon name="category" size={16} />
+              <span>{course.theme}</span>
+            </div>
+          )}
+        </div>
+
+        <Link href={`/practice/${course.id}`} className="block">
+          <button className="bg-primary text-on-primary font-headline font-bold px-8 py-4 rounded-xl flex items-center gap-3 hover:bg-primary-fixed transition-all active:scale-95 shadow-lg shadow-primary/10">
+            練習を始める
+            <Icon name="play_circle" size={20} />
+          </button>
+        </Link>
+      </section>
+
+      {/* Progress & Controls */}
+      <section className="bg-surface-container-low p-6 rounded-2xl">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+          <div>
+            <p className="font-label text-xs text-secondary/50 uppercase tracking-[0.2em] mb-1">学習進捗</p>
+            <p className="font-headline text-3xl font-bold text-on-surface">
+              {progress}% <span className="text-secondary/40 text-lg font-normal">完了</span>
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
             {course.practice_count !== undefined && course.practice_count > 0 && (
-              <span className="text-muted-foreground">练习 {course.practice_count} 次</span>
+              <span className="text-xs text-secondary/50 font-label tracking-widest">
+                練習 {course.practice_count}回
+              </span>
             )}
             {course.best_score !== undefined && course.best_score > 0 && (
-              <span className="text-muted-foreground">最高分 {course.best_score}</span>
-            )}
-
-            {/* 分隔线 */}
-            <div className="w-px h-4 bg-border" />
-
-            {/* 中文切换按钮 */}
-            <Button
-              variant={showChinese ? "default" : "outline"}
-              size="sm"
-              onClick={() => setShowChinese(!showChinese)}
-              className="h-7 text-xs"
-            >
-              {showChinese ? <Eye className="h-3 w-3 mr-1" /> : <EyeOff className="h-3 w-3 mr-1" />}
-              中文
-            </Button>
-
-            {/* 日文切换按钮 */}
-            <Button
-              variant={showJapanese ? "default" : "outline"}
-              size="sm"
-              onClick={() => setShowJapanese(!showJapanese)}
-              className="h-7 text-xs"
-            >
-              {showJapanese ? <Eye className="h-3 w-3 mr-1" /> : <EyeOff className="h-3 w-3 mr-1" />}
-              日文
-            </Button>
-
-            {/* 播放按钮 */}
-            {course.sentences && course.sentences.length > 0 && (
-              <Button
-                variant={isPlaying ? "destructive" : "outline"}
-                size="sm"
-                onClick={handlePlayAll}
-                className="h-7 text-xs"
-                disabled={!showJapanese}
-              >
-                {isPlaying ? (
-                  <>
-                    <VolumeX className="h-3 w-3 mr-1" />
-                    停止
-                  </>
-                ) : (
-                  <>
-                    <Volume2 className="h-3 w-3 mr-1" />
-                    播放
-                  </>
-                )}
-              </Button>
+              <span className="text-xs text-tertiary font-label font-bold tracking-widest">
+                最高 {course.best_score}点
+              </span>
             )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+        <ProgressBar value={progress} />
+
+        {/* Control Buttons */}
+        <div className="flex flex-wrap items-center gap-3 mt-6 pt-4 border-t border-outline-variant/10">
+          <button
+            onClick={() => setShowChinese(!showChinese)}
+            className={cn(
+              'px-4 py-2 rounded-lg text-xs font-label font-bold tracking-widest transition-all',
+              showChinese
+                ? 'bg-primary/15 text-primary'
+                : 'bg-surface-container-highest text-secondary/50'
+            )}
+          >
+            <Icon name={showChinese ? 'visibility' : 'visibility_off'} size={14} className="mr-1 align-middle" />
+            中文
+          </button>
+          <button
+            onClick={() => setShowJapanese(!showJapanese)}
+            className={cn(
+              'px-4 py-2 rounded-lg text-xs font-label font-bold tracking-widest transition-all',
+              showJapanese
+                ? 'bg-primary/15 text-primary'
+                : 'bg-surface-container-highest text-secondary/50'
+            )}
+          >
+            <Icon name={showJapanese ? 'visibility' : 'visibility_off'} size={14} className="mr-1 align-middle" />
+            日本語
+          </button>
+          {course.sentences && course.sentences.length > 0 && (
+            <button
+              onClick={handlePlayAll}
+              disabled={!showJapanese}
+              className={cn(
+                'px-4 py-2 rounded-lg text-xs font-label font-bold tracking-widest transition-all',
+                isPlaying
+                  ? 'bg-destructive/15 text-destructive'
+                  : 'bg-surface-container-highest text-secondary/50 hover:text-primary',
+                !showJapanese && 'opacity-30 cursor-not-allowed'
+              )}
+            >
+              <Icon name={isPlaying ? 'stop_circle' : 'volume_up'} size={14} className="mr-1 align-middle" />
+              {isPlaying ? '停止' : '再生'}
+            </button>
+          )}
+        </div>
+      </section>
 
       {/* Characters Section */}
       {course.characters && course.characters.length > 0 && (
-        <Card>
-          <CardContent className="py-4">
-            <div className="flex items-center gap-3 flex-wrap">
-              <div className="flex items-center gap-2 text-lg font-semibold">
-                <Users className="h-5 w-5" />
-                <span>对话角色</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {course.characters.map((character) => (
-                  <Link
-                    key={character.id}
-                    href={`/practice/${course.id}?character=${character.id}`}
-                  >
-                    <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                      <CardContent className="py-2 px-3">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium text-sm">{character.name_jp}</span>
-                          <Play className="h-3 w-3 text-muted-foreground" />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <section className="space-y-4">
+          <div className="flex items-center gap-3">
+            <Icon name="group" size={20} className="text-primary" />
+            <h3 className="font-headline text-xl font-bold tracking-tight">会話キャラクター</h3>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {course.characters.map((character) => (
+              <Link
+                key={character.id}
+                href={`/practice/${course.id}?character=${character.id}`}
+              >
+                <div className="bg-surface-container-high px-5 py-3 rounded-xl flex items-center gap-3 hover:bg-surface-container-highest transition-all cursor-pointer group">
+                  <span className="font-headline font-bold text-on-surface text-sm group-hover:text-primary transition-colors">
+                    {character.name_jp}
+                  </span>
+                  <Icon name="play_arrow" size={16} className="text-secondary/40 group-hover:text-primary transition-colors" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
       )}
 
       {/* Sentences Preview */}
       {course.sentences && course.sentences.length > 0 && (
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <MessageSquare className="h-5 w-5" />
-                对话预览
-              </CardTitle>
-              <span className="text-sm text-muted-foreground">
-                本课程包含 {course.sentences.length} 句对话
-              </span>
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Icon name="chat_bubble" size={20} className="text-primary" />
+              <h3 className="font-headline text-xl font-bold tracking-tight">会話プレビュー</h3>
             </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {course.sentences.map((sentence) => {
-                const character = course.characters?.find(c => c.id === sentence.character_id);
-                return (
-                  <div key={sentence.id} className="border-b border-border pb-3 last:border-0 last:pb-0">
-                    <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-20 text-sm text-muted-foreground">
-                        {character?.name_jp || '角色'}
-                      </div>
-                      <div className="flex-1 space-y-1">
-                        {showJapanese && (
-                          <p className="font-medium">{sentence.text_jp}</p>
-                        )}
-                        {showChinese && (
-                          <p className="text-sm text-muted-foreground">{sentence.text_cn}</p>
-                        )}
-                        {!showJapanese && !showChinese && (
-                          <p className="text-sm text-muted-foreground italic">文本已隐藏</p>
-                        )}
-                      </div>
+            <span className="text-secondary/50 font-label text-xs tracking-widest">
+              {course.sentences.length}フレーズ
+            </span>
+          </div>
+          <div className="space-y-3">
+            {course.sentences.map((sentence, index) => {
+              const character = course.characters?.find(c => c.id === sentence.character_id);
+              return (
+                <div
+                  key={sentence.id}
+                  className="bg-surface-container-low p-4 rounded-xl hover:bg-surface-container transition-colors"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-16">
+                      <span className="font-label text-[10px] uppercase tracking-widest text-primary/60">
+                        {character?.name_jp || '---'}
+                      </span>
+                    </div>
+                    <div className="flex-1 space-y-1">
+                      {showJapanese && (
+                        <p className="font-body text-on-surface leading-relaxed">{sentence.text_jp}</p>
+                      )}
+                      {showChinese && (
+                        <p className="font-body text-sm text-secondary/60 leading-relaxed">{sentence.text_cn}</p>
+                      )}
+                      {!showJapanese && !showChinese && (
+                        <p className="text-sm text-secondary/30 italic">テキスト非表示</p>
+                      )}
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+                </div>
+              );
+            })}
+          </div>
+        </section>
       )}
     </div>
   );

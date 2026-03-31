@@ -5,167 +5,166 @@ import { useParams, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
 import { useBook } from '@/hooks/useBook';
 import { CourseList } from '@/components/course/CourseList';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { BottomNavBar } from '@/components/ui/zen/BottomNavBar';
+import { ProgressBar } from '@/components/ui/zen/ProgressBar';
+import { Icon } from '@/components/ui/zen/Icon';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { BookOpen, Clock, TrendingUp, ArrowLeft } from 'lucide-react';
 
 export default function BookDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { user } = useAuthStore();
   const bookId = parseInt(params.id as string);
-
   const { data: book, error, isLoading } = useBook(bookId, user?.id);
 
   useEffect(() => {
-    if (!user) {
-      router.push('/login');
-    }
+    if (!user) router.push('/login');
   }, [user, router]);
 
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   if (isLoading) {
     return (
-      <div className="min-h-screen">
-        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
-          <Card>
-            <CardContent className="pt-4 sm:pt-6">
-              <div className="animate-pulse space-y-4">
-                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+      <div className="min-h-screen bg-surface">
+        <header className="sticky top-0 z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] px-6 py-4">
+          <div className="flex items-center gap-4">
+            <button onClick={() => router.back()} className="text-primary active:scale-95">
+              <Icon name="arrow_back" />
+            </button>
+            <span className="font-headline font-bold text-primary tracking-tighter text-xl">読み込み中...</span>
+          </div>
+        </header>
+        <main className="px-6 pt-8 max-w-4xl mx-auto">
+          <div className="animate-pulse space-y-6">
+            <div className="h-10 bg-surface-container-low rounded-xl w-3/4" />
+            <div className="h-6 bg-surface-container-low rounded-xl w-1/2" />
+            <div className="h-32 bg-surface-container-low rounded-2xl" />
+          </div>
+        </main>
+        <BottomNavBar />
       </div>
     );
   }
 
   if (error || !book) {
     return (
-      <div className="min-h-screen">
-        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
-          <Card>
-            <CardContent className="pt-4 sm:pt-6 text-center py-12">
-              <p className="text-red-600 mb-4">
-                {error?.message || '课本加载失败'}
-              </p>
-              <Link href="/books">
-                <Button>返回课本列表</Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
+      <div className="min-h-screen bg-surface">
+        <header className="sticky top-0 z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] px-6 py-4">
+          <div className="flex items-center gap-4">
+            <button onClick={() => router.back()} className="text-primary">
+              <Icon name="arrow_back" />
+            </button>
+            <span className="font-headline font-bold text-primary tracking-tighter text-xl">エラー</span>
+          </div>
+        </header>
+        <main className="px-6 pt-8 max-w-4xl mx-auto text-center py-12">
+          <p className="text-error mb-4">{error?.message || 'テキストの読み込みに失敗しました'}</p>
+          <Link href="/books" className="text-primary font-bold hover:underline">教材一覧に戻る</Link>
+        </main>
+        <BottomNavBar />
       </div>
     );
   }
 
+  const progress = book.progress || 0;
+  const difficultyLabel = book.difficulty || '';
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-surface">
       {/* Header */}
-      <header className="bg-background border-b border-border">
-        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 sm:gap-4">
-              <Link href="/books">
-                <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
-                  <ArrowLeft className="h-4 w-4 mr-1 sm:mr-2" />
-                  返回
-                </Button>
-              </Link>
-              <h1 className="text-lg sm:text-xl md:text-2xl font-bold truncate">{book.title_cn}</h1>
-            </div>
-            <div className="flex items-center gap-2 sm:gap-4">
-              <span className="text-xs sm:text-sm text-muted-foreground hidden xs:block">
-                {user.nickname || user.email}
-              </span>
-              <Link href="/dashboard">
-                <Button variant="outline" size="sm" className="text-xs sm:text-sm">
-                  返回首页
-                </Button>
-              </Link>
-            </div>
-          </div>
+      <header className="sticky top-0 z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] flex justify-between items-center px-6 py-4">
+        <div className="flex items-center gap-4">
+          <button onClick={() => router.back()} className="text-primary active:scale-95 duration-200">
+            <Icon name="arrow_back" />
+          </button>
+          <span className="font-headline font-bold text-primary tracking-tighter text-xl">IT Japanese</span>
         </div>
       </header>
 
-      {/* Content */}
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
-        {/* Book Info */}
-        <Card className="mb-6 sm:mb-8">
-          <CardContent className="pt-4 sm:pt-6">
-            <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
-              {book.cover_image_url && (
-                <img
-                  src={book.cover_image_url}
-                  alt={book.title_cn}
-                  className="w-full sm:w-32 h-40 object-cover rounded-lg"
-                />
-              )}
-              <div className="flex-1 w-full">
-                <div className="flex flex-wrap items-center gap-2 mb-2">
-                  <h2 className="text-2xl sm:text-3xl font-bold">{book.title_cn}</h2>
-                  {book.difficulty && (
-                    <Badge variant="outline">{book.difficulty}</Badge>
-                  )}
-                </div>
-                <p className="text-lg sm:text-xl text-muted-foreground mb-4">
-                  {book.title_jp}
-                </p>
-                {book.description && (
-                  <p className="text-sm sm:text-base text-muted-foreground mb-4">{book.description}</p>
-                )}
+      <main className="px-6 pt-8 max-w-4xl mx-auto pb-32">
+        {/* Hero Bento Section */}
+        <section className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-12">
+          {/* Left: Book Title & Details */}
+          <div className="md:col-span-8 space-y-6">
+            <div className="flex items-center gap-3">
+              <span className="bg-primary/10 text-primary px-3 py-1 rounded-md font-label text-xs font-bold tracking-widest border border-primary/20">
+                LEVEL {difficultyLabel}
+              </span>
+              <span className="text-secondary/60 text-xs font-label tracking-widest">
+                {book.total_courses} コース
+              </span>
+            </div>
+            <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight text-on-surface leading-tight">
+              {book.title_jp || book.title_cn}
+            </h1>
+            {book.title_jp && book.title_cn && book.title_jp !== book.title_cn && (
+              <p className="text-secondary text-lg leading-relaxed font-body">{book.title_cn}</p>
+            )}
+            {book.description && (
+              <p className="text-secondary text-lg leading-relaxed font-body max-w-xl">{book.description}</p>
+            )}
 
-                {/* Progress */}
-                {user && book.progress !== undefined && book.progress > 0 && (
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">学习进度</span>
-                      <span className="font-medium">{book.progress}%</span>
-                    </div>
-                    <Progress value={book.progress} className="h-2" />
-                  </div>
-                )}
-
-                {/* Stats */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-xs sm:text-sm">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <BookOpen className="h-4 w-4" />
-                    <span>课程：{book.total_courses} 课</span>
-                  </div>
-                  {book.completed_courses !== undefined && book.completed_courses > 0 && (
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <TrendingUp className="h-4 w-4" />
-                      <span>已完成：{book.completed_courses} 课</span>
-                    </div>
-                  )}
-                  {book.total_practices !== undefined && book.total_practices > 0 && (
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Clock className="h-4 w-4" />
-                      <span>练习：{book.total_practices} 次</span>
-                    </div>
-                  )}
+            {/* Progress Section */}
+            <div className="bg-surface-container-low p-6 rounded-xl">
+              <div className="flex justify-between items-end mb-4">
+                <div>
+                  <p className="font-label text-xs text-secondary/50 uppercase tracking-[0.2em] mb-1">学習状況</p>
+                  <p className="font-headline text-3xl font-bold text-on-surface">
+                    {progress}% <span className="text-secondary/40 text-lg font-normal">完了</span>
+                  </p>
                 </div>
+                <Icon name="auto_awesome" size={28} className="text-primary" />
+              </div>
+              <ProgressBar value={progress} />
+            </div>
+          </div>
+
+          {/* Right: Decorative Visual */}
+          <div className="md:col-span-4 relative group hidden md:block">
+            <div className="absolute inset-0 bg-primary/10 rounded-xl blur-3xl group-hover:bg-primary/20 transition-all duration-700" />
+            <div className="relative h-full aspect-[3/4] rounded-xl overflow-hidden bg-surface-container-high min-h-[200px] flex items-center justify-center">
+              <div className="text-center space-y-2">
+                <span className="text-6xl font-headline font-light text-primary/30">{book.book_number}</span>
+                <p className="font-label text-xs text-secondary/40 uppercase tracking-widest">Volume</p>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </section>
 
         {/* Course List */}
-        <div className="mb-4">
-          <h3 className="text-xl sm:text-2xl font-bold mb-4">课程列表</h3>
-        </div>
-        <CourseList
-          filter={{ book_id: book.book_number }}
-          userId={user.id}
-        />
-      </div>
+        <section className="space-y-8">
+          <div className="flex items-center justify-between">
+            <h2 className="font-headline text-2xl font-bold tracking-tight">カリキュラム</h2>
+            <span className="text-secondary/50 font-label text-sm">全 {book.total_courses} ユニット</span>
+          </div>
+          <CourseList filter={{ book_id: book.book_number }} userId={user.id} />
+        </section>
+
+        {/* Stats Grid */}
+        <section className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="p-6 bg-surface-container-low rounded-2xl flex flex-col gap-2">
+            <span className="font-label text-[10px] uppercase tracking-widest text-secondary/40">コース数</span>
+            <span className="font-headline text-3xl font-bold text-on-surface">{book.total_courses}</span>
+          </div>
+          <div className="p-6 bg-surface-container-low rounded-2xl flex flex-col gap-2">
+            <span className="font-label text-[10px] uppercase tracking-widest text-secondary/40">完了</span>
+            <span className="font-headline text-3xl font-bold text-on-surface">{book.completed_courses || 0}</span>
+          </div>
+          <div className="p-6 bg-surface-container-low rounded-2xl flex flex-col gap-2">
+            <span className="font-label text-[10px] uppercase tracking-widest text-secondary/40">練習回数</span>
+            <span className="font-headline text-3xl font-bold text-on-surface">{book.total_practices || 0}</span>
+          </div>
+          <div className="p-6 bg-surface-container-low rounded-2xl flex flex-col gap-2 border border-primary/10">
+            <span className="font-label text-[10px] uppercase tracking-widest text-primary/60">次の目標</span>
+            <span className="font-headline text-3xl font-bold text-primary">
+              {difficultyLabel || '-'}
+            </span>
+          </div>
+        </section>
+      </main>
+
+      <BottomNavBar />
     </div>
   );
 }

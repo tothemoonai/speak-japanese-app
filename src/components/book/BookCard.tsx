@@ -1,91 +1,100 @@
 import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { cn } from '@/lib/utils';
 import type { BookWithProgress } from '@/types';
-import { BookOpen, Clock, TrendingUp } from 'lucide-react';
 
 interface BookCardProps {
   book: BookWithProgress;
 }
 
-const difficultyColors = {
-  N5: 'bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-100',
-  N4: 'bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-100',
-  N3: 'bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-900 dark:text-purple-100',
-  N2: 'bg-orange-100 text-orange-800 hover:bg-orange-200 dark:bg-orange-900 dark:text-orange-100',
-  N1: 'bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900 dark:text-red-100',
+const difficultyLabels: Record<string, string> = {
+  N5: 'N5 レベル',
+  N4: 'N4 レベル',
+  N3: 'N3 レベル',
+  N2: 'N2 レベル',
+  N1: 'N1 レベル',
 };
 
 export function BookCard({ book }: BookCardProps) {
+  const progress = book.progress || 0;
+  const isCompleted = progress >= 100;
+
   return (
-    <Card className="book-card hover:shadow-lg transition-all duration-300 h-full flex flex-col">
-      <CardHeader>
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              {book.difficulty && (
-                <Badge className={difficultyColors[book.difficulty]}>
-                  {book.difficulty}
-                </Badge>
-              )}
-            </div>
-            <CardTitle className="text-xl">
-              {book.title_jp}
-            </CardTitle>
-          </div>
-        </div>
-      </CardHeader>
-
-      <CardContent className="flex-1">
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <BookOpen className="h-4 w-4" />
-            <span>课程：{book.total_courses} 课</span>
-          </div>
-          <Link href={`/books/${book.book_number}`} className="flex-shrink-0">
-            <Button size="sm" className="text-xs px-3">
-              {book.progress === undefined || book.progress === 0 ? '开始学习' : '继续学习'}
-            </Button>
-          </Link>
-        </div>
-
-        {/* 学习进度 - 始终显示 */}
-        <div className="flex items-start gap-3">
-          {/* 左侧：学习进度 */}
-          <div className="flex-1">
-            <div className="flex items-center justify-between text-sm mb-1">
-              <span className="text-muted-foreground">学习进度</span>
-              <span className="font-medium">
-                {book.progress !== undefined ? book.progress : 0}%
+    <Link href={`/books/${book.book_number}`} className="block group">
+      <div
+        className={cn(
+          'relative rounded-xl overflow-hidden p-1 transition-all',
+          'bg-surface-container-low hover:bg-surface-container-high',
+          isCompleted && 'bg-gradient-to-br from-tertiary/10 to-surface-container-low border border-tertiary/20'
+        )}
+      >
+        <div className="flex gap-4 p-4">
+          {/* Book Cover */}
+          <div className="w-24 h-32 rounded-lg bg-surface-container-highest flex-shrink-0 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 to-transparent" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="font-headline text-2xl font-bold text-primary/20">
+                {book.book_number}
               </span>
             </div>
-            <Progress value={book.progress || 0} className="h-2" />
+            <span className="absolute bottom-2 left-2 text-[10px] font-bold text-primary tracking-widest uppercase font-label">
+              Vol.{String(book.book_number).padStart(2, '0')}
+            </span>
           </div>
 
-          {/* 右侧：统计信息 */}
-          <div className="flex flex-col gap-1 text-xs text-muted-foreground">
-            {book.completed_courses !== undefined && book.completed_courses > 0 ? (
-              <div className="flex items-center gap-1">
-                <TrendingUp className="h-3 w-3" />
-                <span>已完成 {book.completed_courses} 课</span>
+          {/* Book Info */}
+          <div className="flex flex-col justify-between flex-grow py-1">
+            <div>
+              <div className="flex justify-between items-start mb-1">
+                <span className={cn(
+                  'text-[10px] font-bold tracking-widest font-label px-2 py-0.5 rounded',
+                  isCompleted
+                    ? 'text-tertiary bg-tertiary/20'
+                    : 'text-primary bg-primary/10'
+                )}>
+                  {difficultyLabels[book.difficulty || ''] || book.difficulty || 'N/A'}
+                </span>
+                <span className="text-[10px] text-on-surface-variant font-label opacity-60">
+                  {book.total_courses} コース
+                </span>
               </div>
-            ) : (
-              <div className="flex items-center gap-1">
-                <TrendingUp className="h-3 w-3" />
-                <span>未开始</span>
+              <h3 className="text-lg font-bold font-headline text-on-surface leading-tight mb-1 group-hover:text-primary transition-colors">
+                {book.title_jp}
+              </h3>
+              {book.title_cn && (
+                <p className="text-xs text-on-surface-variant font-body">
+                  {book.title_cn}
+                </p>
+              )}
+            </div>
+
+            {/* Progress */}
+            <div className="mt-4">
+              <div className="flex justify-between items-center mb-1.5">
+                <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter font-label">
+                  進捗
+                </span>
+                <span className={cn(
+                  'text-[10px] font-bold font-label',
+                  isCompleted ? 'text-tertiary' : 'text-primary'
+                )}>
+                  {progress}%
+                </span>
               </div>
-            )}
-            {book.total_practices !== undefined && book.total_practices > 0 && (
-              <div className="flex items-center gap-1">
-                <Clock className="h-3 w-3" />
-                <span>练习 {book.total_practices} 次</span>
+              <div className="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+                <div
+                  className={cn(
+                    'h-full rounded-full transition-all duration-500',
+                    isCompleted
+                      ? 'bg-tertiary progress-glow-gold'
+                      : 'bg-primary progress-glow'
+                  )}
+                  style={{ width: `${progress}%` }}
+                />
               </div>
-            )}
+            </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </Link>
   );
 }

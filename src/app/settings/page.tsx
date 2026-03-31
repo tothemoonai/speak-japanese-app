@@ -5,14 +5,9 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
 import { authService } from '@/services/supabase/auth.service';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Settings, User, Palette, LogOut, Check, Loader2, Shield, Sun, Moon } from 'lucide-react';
-import { Footer } from '@/components/layout/Footer';
-import { useTheme } from 'next-themes';
-import { useToast } from '@/hooks/use-toast';
+import { BottomNavBar } from '@/components/ui/zen/BottomNavBar';
+import { Icon } from '@/components/ui/zen/Icon';
+import { cn } from '@/lib/utils';
 import { getUserLevel } from '@/lib/utils/user';
 import { ApiKeySettings } from '@/components/settings/ApiKeySettings';
 import { FontSizeSettings } from '@/components/settings/FontSizeSettings';
@@ -22,37 +17,31 @@ import { VERSION_DISPLAY } from '@/VERSION';
 export default function SettingsPage() {
   const router = useRouter();
   const { user, logout, setUser } = useAuthStore();
-  const { theme, setTheme } = useTheme();
-  const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
 
-  // 昵称编辑状态
+  // Nickname editing
   const [isEditingNickname, setIsEditingNickname] = useState(false);
   const [nickname, setNickname] = useState('');
   const [isUpdatingNickname, setIsUpdatingNickname] = useState(false);
+  const [nicknameError, setNicknameError] = useState('');
 
-  // 修改密码状态
+  // Password change
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
-
-  // 错误信息
-  const [nicknameError, setNicknameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
-    setMounted(true);
-    if (user) {
-      setNickname(user.nickname || '');
-    }
+    if (user) setNickname(user.nickname || '');
   }, [user]);
 
   useEffect(() => {
-    if (mounted && !user) {
-      router.push('/login');
-    }
+    if (mounted && !user) router.push('/login');
   }, [user, router, mounted]);
 
   const handleLogout = async () => {
@@ -66,26 +55,18 @@ export default function SettingsPage() {
 
   const handleUpdateNickname = async () => {
     setNicknameError('');
-    if (!nickname.trim()) {
-      setNicknameError('昵称不能为空');
-      return;
-    }
+    if (!nickname.trim()) { setNicknameError('ニックネームを入力してください'); return; }
 
     setIsUpdatingNickname(true);
     try {
       const { user: updatedUser, error } = await authService.updateNickname(nickname.trim());
       if (error) throw error;
-
       if (updatedUser) {
         setUser(updatedUser);
-        toast({
-          title: '昵称更新成功',
-          description: '您的昵称已成功更新',
-        });
         setIsEditingNickname(false);
       }
     } catch (error: any) {
-      setNicknameError(error.message || '更新昵称失败');
+      setNicknameError(error.message || 'ニックネームの更新に失敗しました');
     } finally {
       setIsUpdatingNickname(false);
     }
@@ -93,419 +74,272 @@ export default function SettingsPage() {
 
   const handleChangePassword = async () => {
     setPasswordError('');
+    setPasswordSuccess('');
 
     if (!currentPassword || !newPassword || !confirmPassword) {
-      setPasswordError('请填写所有密码字段');
+      setPasswordError('すべてのパスワードフィールドを入力してください');
       return;
     }
-
     if (newPassword.length < 6) {
-      setPasswordError('新密码长度至少为6位');
+      setPasswordError('新しいパスワードは6文字以上にしてください');
       return;
     }
-
     if (newPassword !== confirmPassword) {
-      setPasswordError('两次输入的新密码不一致');
+      setPasswordError('新しいパスワードが一致しません');
       return;
     }
 
     setIsUpdatingPassword(true);
     try {
-      // 首先验证当前密码
-      const { error: loginError } = await authService.login({
-        email: user.email,
-        password: currentPassword,
-      });
+      const { error: loginError } = await authService.login({ email: user!.email, password: currentPassword });
+      if (loginError) { setPasswordError('現在のパスワードが正しくありません'); setIsUpdatingPassword(false); return; }
 
-      if (loginError) {
-        setPasswordError('当前密码不正确');
-        setIsUpdatingPassword(false);
-        return;
-      }
-
-      // 更新密码
       const { error } = await authService.updatePassword(newPassword);
       if (error) throw error;
 
-      toast({
-        title: '密码修改成功',
-        description: '请使用新密码重新登录',
-      });
-
-      // 清空表单
+      setPasswordSuccess('パスワードが変更されました。再度ログインしてください。');
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
       setIsChangingPassword(false);
 
-      // 登出用户
-      setTimeout(async () => {
-        await logout();
-        router.push('/login');
-      }, 1500);
+      setTimeout(async () => { await logout(); router.push('/login'); }, 1500);
     } catch (error: any) {
-      setPasswordError(error.message || '修改密码失败');
+      setPasswordError(error.message || 'パスワードの変更に失敗しました');
     } finally {
       setIsUpdatingPassword(false);
     }
   };
 
-  if (!mounted || !user) {
-    return null;
-  }
+  if (!mounted || !user) return null;
+
+  const levelMap = { beginner: '初級', intermediate: '中級', advanced: '上級' };
+  const userLevel = getUserLevel(user);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-surface">
       {/* Header */}
-      <header className="bg-background border-b border-border sticky top-0 z-10">
-        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-            <Link href="/dashboard">
-              <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-primary flex items-center gap-2">
-                <Settings className="h-5 w-5 sm:h-6 sm:w-6" />
-                设置
-              </h1>
-            </Link>
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <Link href="/dashboard">
-                <Button variant="outline" size="sm" className="text-xs sm:text-sm">
-                  返回首页
-                </Button>
-              </Link>
-            </div>
-          </div>
+      <header className="sticky top-0 z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] flex justify-between items-center px-6 py-4">
+        <div className="flex items-center gap-4">
+          <Icon name="settings" size={20} className="text-primary" />
+          <h1 className="font-headline font-bold text-primary tracking-tighter text-xl">設定</h1>
         </div>
+        <span className="font-label text-xs text-secondary/50 tracking-widest hidden sm:block">
+          {user.nickname || user.email?.split('@')[0]}
+        </span>
       </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
-        {/* User Info */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5" />
-              账户信息
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center justify-between py-2 border-b">
-              <span className="text-sm text-muted-foreground">邮箱</span>
-              <span className="text-sm font-medium">{user.email}</span>
+      <main className="px-6 pt-6 pb-32 max-w-4xl mx-auto space-y-6">
+        {/* User Info Card */}
+        <section className="bg-surface-container-low p-6 rounded-2xl">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-12 h-12 rounded-full border-2 border-primary/20 p-0.5 bg-surface-container-high flex items-center justify-center">
+              <Icon name="person" size={24} className="text-secondary" />
             </div>
-            <div className="flex items-center justify-between py-2 border-b">
-              <span className="text-sm text-muted-foreground">当前等级</span>
-              <Badge variant="outline">
-                {getUserLevel(user) === 'beginner' && '初级'}
-                {getUserLevel(user) === 'intermediate' && '中级'}
-                {getUserLevel(user) === 'advanced' && '高级'}
-              </Badge>
+            <div>
+              <p className="font-headline font-bold text-on-surface">{user.nickname || '未設定'}</p>
+              <p className="text-secondary/50 text-xs font-label tracking-widest">{user.email}</p>
             </div>
-            <div className="flex items-center justify-between py-2">
-              <span className="text-sm text-muted-foreground">当前版本</span>
-              <Badge variant="secondary" className="font-mono">
-                {VERSION_DISPLAY}
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
+            <span className={cn(
+              'ml-auto px-3 py-1 rounded-lg font-label text-xs font-bold tracking-widest',
+              'bg-primary/10 text-primary'
+            )}>
+              {levelMap[userLevel as keyof typeof levelMap] || '初級'}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-secondary/40 text-xs font-label">
+            <Icon name="info" size={14} />
+            <span>バージョン {VERSION_DISPLAY}</span>
+          </div>
+        </section>
 
         {/* Edit Nickname */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5" />
-              修改昵称
-            </CardTitle>
-            <CardDescription>
-              设置您在IT日语中显示的名称
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {isEditingNickname ? (
-              <div className="space-y-3">
-                <div className="space-y-2">
-                  <Input
-                    value={nickname}
-                    onChange={(e) => setNickname(e.target.value)}
-                    placeholder="输入新昵称"
-                    maxLength={20}
-                    disabled={isUpdatingNickname}
-                  />
-                  {nicknameError && (
-                    <p className="text-sm text-red-600">{nicknameError}</p>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    onClick={handleUpdateNickname}
-                    disabled={isUpdatingNickname}
-                    size="sm"
-                  >
-                    {isUpdatingNickname ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        更新中...
-                      </>
-                    ) : (
-                      <>
-                        <Check className="h-4 w-4 mr-2" />
-                        保存
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setIsEditingNickname(false);
-                      setNickname(user.nickname || '');
-                      setNicknameError('');
-                    }}
-                    disabled={isUpdatingNickname}
-                    size="sm"
-                  >
-                    取消
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium">{user.nickname || '未设置'}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    点击右侧按钮修改昵称
-                  </p>
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsEditingNickname(true)}
-                >
-                  修改
-                </Button>
-              </div>
+        <section className="bg-surface-container-low p-6 rounded-2xl space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Icon name="edit" size={18} className="text-primary" />
+              <h3 className="font-headline font-bold text-on-surface">ニックネーム</h3>
+            </div>
+            {!isEditingNickname && (
+              <button
+                onClick={() => setIsEditingNickname(true)}
+                className="text-xs text-primary font-label font-bold tracking-widest hover:underline"
+              >
+                変更
+              </button>
             )}
-          </CardContent>
-        </Card>
+          </div>
+
+          {isEditingNickname ? (
+            <div className="space-y-3">
+              <input
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                placeholder="新しいニックネーム"
+                maxLength={20}
+                disabled={isUpdatingNickname}
+                className="w-full bg-surface-container-high px-4 py-3 rounded-xl text-on-surface font-body border border-outline-variant/10 focus:border-primary/50 focus:outline-none transition-colors"
+              />
+              {nicknameError && <p className="text-destructive text-xs font-body">{nicknameError}</p>}
+              <div className="flex gap-3">
+                <button
+                  onClick={handleUpdateNickname}
+                  disabled={isUpdatingNickname}
+                  className="bg-primary text-on-primary font-headline font-bold text-sm px-5 py-2.5 rounded-xl active:scale-95 transition-all disabled:opacity-50"
+                >
+                  {isUpdatingNickname ? '保存中...' : '保存'}
+                </button>
+                <button
+                  onClick={() => { setIsEditingNickname(false); setNickname(user.nickname || ''); setNicknameError(''); }}
+                  className="bg-surface-container-high text-on-surface-variant font-headline font-bold text-sm px-5 py-2.5 rounded-xl hover:bg-surface-container-highest transition-all"
+                >
+                  キャンセル
+                </button>
+              </div>
+            </div>
+          ) : (
+            <p className="text-secondary/60 text-sm font-body">{user.nickname || '未設定'}</p>
+          )}
+        </section>
 
         {/* Change Password */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5" />
-              修改密码
-            </CardTitle>
-            <CardDescription>
-              定期修改密码以保护账户安全
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {isChangingPassword ? (
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">当前密码</label>
-                  <Input
-                    type="password"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    placeholder="输入当前密码"
-                    disabled={isUpdatingPassword}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">新密码</label>
-                  <Input
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="至少6位"
-                    disabled={isUpdatingPassword}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">确认新密码</label>
-                  <Input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="再次输入新密码"
-                    disabled={isUpdatingPassword}
-                  />
-                </div>
-                {passwordError && (
-                  <p className="text-sm text-red-600">{passwordError}</p>
-                )}
-                <div className="flex gap-2">
-                  <Button
-                    onClick={handleChangePassword}
-                    disabled={isUpdatingPassword}
-                    size="sm"
-                  >
-                    {isUpdatingPassword ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        修改中...
-                      </>
-                    ) : (
-                      '确认修改'
-                    )}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setIsChangingPassword(false);
-                      setCurrentPassword('');
-                      setNewPassword('');
-                      setConfirmPassword('');
-                      setPasswordError('');
-                    }}
-                    disabled={isUpdatingPassword}
-                    size="sm"
-                  >
-                    取消
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <Button
-                variant="outline"
-                onClick={() => setIsChangingPassword(true)}
-                className="w-full sm:w-auto"
-              >
-                修改密码
-              </Button>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Theme Settings */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Palette className="h-5 w-5" />
-              外观设置
-            </CardTitle>
-            <CardDescription>
-              选择您喜欢的主题模式
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-2">
-              <Button
-                variant={theme === 'light' ? 'default' : 'outline'}
-                onClick={() => setTheme('light')}
-                className="flex-1 sm:flex-none"
-              >
-                <Sun className="h-4 w-4 mr-2" />
-                白天模式
-              </Button>
-              <Button
-                variant={theme === 'dark' ? 'default' : 'outline'}
-                onClick={() => setTheme('dark')}
-                className="flex-1 sm:flex-none"
-              >
-                <Moon className="h-4 w-4 mr-2" />
-                夜晚模式
-              </Button>
-              <Button
-                variant={theme === 'system' ? 'default' : 'outline'}
-                onClick={() => setTheme('system')}
-                className="flex-1 sm:flex-none"
-              >
-                跟随系统
-              </Button>
+        <section className="bg-surface-container-low p-6 rounded-2xl space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Icon name="lock" size={18} className="text-primary" />
+              <h3 className="font-headline font-bold text-on-surface">パスワード</h3>
             </div>
-          </CardContent>
-        </Card>
+            {!isChangingPassword && (
+              <button
+                onClick={() => setIsChangingPassword(true)}
+                className="text-xs text-primary font-label font-bold tracking-widest hover:underline"
+              >
+                変更
+              </button>
+            )}
+          </div>
+
+          {passwordSuccess && (
+            <div className="bg-primary/10 text-primary px-4 py-3 rounded-xl text-sm font-body">
+              {passwordSuccess}
+            </div>
+          )}
+
+          {isChangingPassword ? (
+            <div className="space-y-3">
+              <input
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                placeholder="現在のパスワード"
+                disabled={isUpdatingPassword}
+                className="w-full bg-surface-container-high px-4 py-3 rounded-xl text-on-surface font-body border border-outline-variant/10 focus:border-primary/50 focus:outline-none transition-colors"
+              />
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="新しいパスワード（6文字以上）"
+                disabled={isUpdatingPassword}
+                className="w-full bg-surface-container-high px-4 py-3 rounded-xl text-on-surface font-body border border-outline-variant/10 focus:border-primary/50 focus:outline-none transition-colors"
+              />
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="新しいパスワードを再入力"
+                disabled={isUpdatingPassword}
+                className="w-full bg-surface-container-high px-4 py-3 rounded-xl text-on-surface font-body border border-outline-variant/10 focus:border-primary/50 focus:outline-none transition-colors"
+              />
+              {passwordError && <p className="text-destructive text-xs font-body">{passwordError}</p>}
+              <div className="flex gap-3">
+                <button
+                  onClick={handleChangePassword}
+                  disabled={isUpdatingPassword}
+                  className="bg-primary text-on-primary font-headline font-bold text-sm px-5 py-2.5 rounded-xl active:scale-95 transition-all disabled:opacity-50"
+                >
+                  {isUpdatingPassword ? '変更中...' : '確認'}
+                </button>
+                <button
+                  onClick={() => { setIsChangingPassword(false); setCurrentPassword(''); setNewPassword(''); setConfirmPassword(''); setPasswordError(''); }}
+                  className="bg-surface-container-high text-on-surface-variant font-headline font-bold text-sm px-5 py-2.5 rounded-xl hover:bg-surface-container-highest transition-all"
+                >
+                  キャンセル
+                </button>
+              </div>
+            </div>
+          ) : (
+            <p className="text-secondary/60 text-sm font-body">セキュリティのため定期的に変更してください</p>
+          )}
+        </section>
 
         {/* Font Size Settings */}
-        <div className="mb-6">
+        <section className="bg-surface-container-low p-6 rounded-2xl">
           <FontSizeSettings />
-        </div>
+        </section>
 
         {/* Color Scheme Settings */}
-        <div className="mb-6">
+        <section className="bg-surface-container-low p-6 rounded-2xl">
           <ColorSchemeSettings />
-        </div>
+        </section>
 
         {/* API Key Settings */}
-        <ApiKeySettings />
+        <section className="bg-surface-container-low p-6 rounded-2xl">
+          <ApiKeySettings />
+        </section>
 
-        {/* ASR Model Info */}
-        <Card className="mt-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Palette className="h-5 w-5" />
-              语音识别服务配置
-            </CardTitle>
-            <CardDescription>
-              当前使用的语音识别模型信息
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <div className="text-sm text-muted-foreground">模型名称</div>
-                <div className="font-mono text-sm font-medium">qwen3-asr-flash</div>
-              </div>
-              <div className="space-y-2">
-                <div className="text-sm text-muted-foreground">API提供商</div>
-                <div className="flex items-center gap-2">
-                  <span>阿里云 DashScope</span>
-                  <Badge variant="outline" className="text-xs">国际版</Badge>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div className="text-sm text-muted-foreground">API端点</div>
-                <div className="text-xs font-mono text-muted-foreground break-all">
-                  dashscope-intl.aliyuncs.com
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div className="text-sm text-muted-foreground">支持语言</div>
-                <div>日语、中文、英语（自动检测）</div>
-              </div>
+        {/* ASR Info */}
+        <section className="bg-surface-container-low p-6 rounded-2xl space-y-4">
+          <div className="flex items-center gap-3">
+            <Icon name="mic" size={18} className="text-primary" />
+            <h3 className="font-headline font-bold text-on-surface">音声認識サービス</h3>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="font-label text-[10px] uppercase tracking-widest text-secondary/40 mb-1">モデル</p>
+              <p className="font-body text-sm text-on-surface font-medium">qwen3-asr-flash</p>
             </div>
-
-            <div className="border-t pt-4">
-              <div className="text-sm text-muted-foreground mb-2">模型特性</div>
-              <ul className="space-y-1 text-sm">
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>快速识别：flash 模型，响应时间约 5-10 秒</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 text-green-600 flex-sh-0 mt-0.5" />
-                  <span>高准确率：专业日语语音识别，准确率 &gt; 95%</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>多语言支持：自动检测日语、中文、英语</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>智能分析：返回情感分析和语言检测结果</span>
-                </li>
-              </ul>
+            <div>
+              <p className="font-label text-[10px] uppercase tracking-widest text-secondary/40 mb-1">プロバイダー</p>
+              <p className="font-body text-sm text-on-surface font-medium">Alibaba Cloud DashScope</p>
             </div>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="font-label text-[10px] uppercase tracking-widest text-secondary/40 mb-1">エンドポイント</p>
+              <p className="font-body text-xs text-secondary/60 font-mono break-all">dashscope-intl.aliyuncs.com</p>
+            </div>
+            <div>
+              <p className="font-label text-[10px] uppercase tracking-widest text-secondary/40 mb-1">対応言語</p>
+              <p className="font-body text-sm text-on-surface font-medium">日本語・中国語・英語</p>
+            </div>
+          </div>
+          <div className="pt-4 border-t border-outline-variant/10 space-y-2">
+            {[
+              '高速認識：flashモデル、5-10秒で応答',
+              '高精度：専門日本語音声認識、精度 > 95%',
+              '多言語対応：日本語・中国語・英語を自動検出',
+              '感情分析と言語検出の結果を返却',
+            ].map((feature, i) => (
+              <div key={i} className="flex items-start gap-2">
+                <Icon name="check_circle" size={14} className="text-primary mt-0.5 flex-shrink-0" fill />
+                <span className="text-sm text-secondary/70 font-body">{feature}</span>
+              </div>
+            ))}
+          </div>
+        </section>
 
-        {/* Logout Button */}
-        <Card className="mt-6 border-red-200 dark:border-red-900">
-          <CardContent className="pt-6">
-            <Button
-              variant="destructive"
-              onClick={handleLogout}
-              className="w-full sm:w-auto"
-            >
-              <LogOut className="h-4 w-4 mr-2" />
-              退出登录
-            </Button>
-          </CardContent>
-        </Card>
+        {/* Logout */}
+        <section className="pt-4">
+          <button
+            onClick={handleLogout}
+            className="w-full bg-destructive/10 text-destructive font-headline font-bold text-sm px-6 py-4 rounded-xl hover:bg-destructive/20 transition-all active:scale-95 flex items-center justify-center gap-3"
+          >
+            <Icon name="logout" size={18} />
+            ログアウト
+          </button>
+        </section>
       </main>
 
-      <Footer />
+      <BottomNavBar />
     </div>
   );
 }

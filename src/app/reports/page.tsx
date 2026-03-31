@@ -6,10 +6,10 @@ import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
 import { useDailyReport, useWeeklyReport, useOverallStats } from '@/hooks/useReport';
 import { DailyReportDisplay, WeeklyReportDisplay } from '@/components/report/DailyReport';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Calendar, TrendingUp, Award, Flame, BookOpen, Target } from 'lucide-react';
+import { BottomNavBar } from '@/components/ui/zen/BottomNavBar';
+import { StatCard } from '@/components/ui/zen/StatCard';
+import { Icon } from '@/components/ui/zen/Icon';
+import { cn } from '@/lib/utils';
 import { getWeekNumber } from '@/lib/utils/format';
 
 type ReportPeriod = 'daily' | 'weekly' | 'overall';
@@ -17,36 +17,21 @@ type ReportPeriod = 'daily' | 'weekly' | 'overall';
 export default function ReportsPage() {
   const router = useRouter();
   const { user } = useAuthStore();
-  const [period, setPeriod] = useState<ReportPeriod>('daily');
+  const [period, setPeriod] = useState<ReportPeriod>('overall');
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
-  // Get current week info
   const currentWeek = getWeekNumber(new Date());
   const currentYear = new Date().getFullYear();
 
-  // Fetch reports
-  const { data: dailyReport, isLoading: dailyLoading } = useDailyReport(
-    user?.id || '',
-    selectedDate
-  );
-
-  const { data: weeklyReport, isLoading: weeklyLoading } = useWeeklyReport(
-    user?.id || '',
-    currentYear,
-    currentWeek
-  );
-
+  const { data: dailyReport, isLoading: dailyLoading } = useDailyReport(user?.id || '', selectedDate);
+  const { data: weeklyReport, isLoading: weeklyLoading } = useWeeklyReport(user?.id || '', currentYear, currentWeek);
   const { data: overallStats, isLoading: overallLoading } = useOverallStats(user?.id || '');
 
   useEffect(() => {
-    if (!user) {
-      router.push('/login');
-    }
+    if (!user) router.push('/login');
   }, [user, router]);
 
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   const handleDateChange = (days: number) => {
     const date = new Date(selectedDate);
@@ -54,254 +39,180 @@ export default function ReportsPage() {
     setSelectedDate(date.toISOString().split('T')[0]);
   };
 
-  const handleWeekChange = (weeks: number) => {
-    setPeriod('weekly');
-    // Week change logic would be handled by updating currentWeek
-    // For simplicity, we'll just stay on current week
-  };
+  const periodTabs: { key: ReportPeriod; label: string; icon: string }[] = [
+    { key: 'overall', label: '総括', icon: 'analytics' },
+    { key: 'weekly', label: '週間', icon: 'date_range' },
+    { key: 'daily', label: '日次', icon: 'today' },
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-surface">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/dashboard">
-              <h1 className="text-2xl font-bold">学习报告</h1>
-            </Link>
-            <span className="text-sm text-muted-foreground">
-              {user.nickname || user.email}
-            </span>
-            <Link href="/dashboard">
-              <Button variant="outline" size="sm">
-                返回首页
-              </Button>
-            </Link>
-          </div>
+      <header className="sticky top-0 z-50 bg-gradient-to-b from-[#161f35] to-[#0b1326] flex justify-between items-center px-6 py-4">
+        <div className="flex items-center gap-4">
+          <h1 className="font-headline font-bold text-primary tracking-tighter text-xl">学習レポート</h1>
         </div>
+        <span className="font-label text-xs text-secondary/50 tracking-widest hidden sm:block">
+          {user.nickname || user.email?.split('@')[0]}
+        </span>
       </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        {/* Period Selector */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2">
-            <Button
-              variant={period === 'overall' ? 'default' : 'outline'}
-              onClick={() => setPeriod('overall')}
-            >
-              总览
-            </Button>
-            <Button
-              variant={period === 'weekly' ? 'default' : 'outline'}
-              onClick={() => setPeriod('weekly')}
-            >
-              本周
-            </Button>
-            <Button
-              variant={period === 'daily' ? 'default' : 'outline'}
-              onClick={() => setPeriod('daily')}
-            >
-              当日
-            </Button>
+      <main className="px-6 pt-6 pb-32 max-w-4xl mx-auto">
+        {/* Period Tabs */}
+        <section className="mb-8">
+          <div className="flex gap-3">
+            {periodTabs.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setPeriod(tab.key)}
+                className={cn(
+                  'flex items-center gap-2 px-5 py-2.5 rounded-xl font-headline font-bold text-sm transition-all',
+                  period === tab.key
+                    ? 'bg-primary text-on-primary'
+                    : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high'
+                )}
+              >
+                <Icon name={tab.icon} size={16} />
+                {tab.label}
+              </button>
+            ))}
           </div>
-        </div>
+        </section>
 
         {/* Overall Stats */}
         {period === 'overall' && (
-          <>
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold mb-2">总览统计</h2>
-              <p className="text-muted-foreground">你的学习成果总览</p>
+          <section className="space-y-6">
+            <div>
+              <h2 className="font-headline text-2xl font-bold tracking-tight mb-1">総括統計</h2>
+              <p className="text-secondary/50 font-body text-sm">あなたの学習成果の概要</p>
             </div>
 
             {overallLoading ? (
-              <Card>
-                <CardContent className="pt-6 text-center py-12">
-                  <p className="text-muted-foreground">加载中...</p>
-                </CardContent>
-              </Card>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {[1, 2, 3, 4, 5, 6].map(i => (
+                  <div key={i} className="h-32 bg-surface-container-low rounded-2xl animate-pulse" />
+                ))}
+              </div>
             ) : overallStats ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">
-                      总练习次数
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <div className="text-3xl font-bold">{overallStats.total_practice_count}</div>
-                      <Target className="h-6 w-6 text-muted-foreground" />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">
-                      总学习时长
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <div className="text-3xl font-bold">
-                        {Math.floor(overallStats.total_study_time / 60)}小时
-                      </div>
-                      <Calendar className="h-6 w-6 text-muted-foreground" />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">
-                      平均分数
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <div className="text-3xl font-bold">{overallStats.average_score}</div>
-                      <TrendingUp className="h-6 w-6 text-muted-foreground" />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">
-                      最高分数
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <div className="text-3xl font-bold">{overallStats.best_score}</div>
-                      <Award className="h-6 w-6 text-muted-foreground" />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">
-                      完成课程
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <div className="text-3xl font-bold">{overallStats.courses_completed}</div>
-                      <BookOpen className="h-6 w-6 text-muted-foreground" />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">
-                      连续学习
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <div className="text-3xl font-bold">{overallStats.current_streak}天</div>
-                      <Flame className="h-6 w-6 text-muted-foreground" />
-                    </div>
-                  </CardContent>
-                </Card>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <StatCard
+                  label="総練習回数"
+                  value={overallStats.total_practice_count}
+                  icon="track_changes"
+                  accent="primary"
+                />
+                <StatCard
+                  label="総学習時間"
+                  value={Math.floor(overallStats.total_study_time / 60)}
+                  unit="時間"
+                  icon="schedule"
+                  accent="secondary"
+                />
+                <StatCard
+                  label="平均スコア"
+                  value={overallStats.average_score}
+                  icon="trending_up"
+                  accent="primary"
+                />
+                <StatCard
+                  label="最高スコア"
+                  value={overallStats.best_score}
+                  icon="emoji_events"
+                  accent="tertiary"
+                />
+                <StatCard
+                  label="完了コース"
+                  value={overallStats.courses_completed}
+                  icon="menu_book"
+                  accent="primary"
+                />
+                <StatCard
+                  label="連続学習"
+                  value={overallStats.current_streak}
+                  unit="日"
+                  icon="local_fire_department"
+                  accent="tertiary"
+                />
               </div>
             ) : (
-              <Card>
-                <CardContent className="pt-6 text-center py-12">
-                  <p className="text-muted-foreground">暂无数据</p>
-                </CardContent>
-              </Card>
+              <div className="bg-surface-container-low p-12 rounded-2xl text-center">
+                <Icon name="bar_chart" size={48} className="text-secondary/20 mb-4" />
+                <p className="text-secondary/50 font-body">まだデータがありません</p>
+                <p className="text-secondary/30 text-sm font-body mt-2">練習を始めると統計が表示されます</p>
+              </div>
             )}
-          </>
+          </section>
         )}
 
         {/* Daily Report */}
         {period === 'daily' && (
-          <>
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">当日报告</h2>
-                  <p className="text-muted-foreground">查看你的每日学习情况</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDateChange(-1)}
-                  >
-                    前一天
-                  </Button>
-                  <span className="text-sm px-3 py-1 bg-gray-100 rounded">
-                    {selectedDate}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDateChange(1)}
-                    disabled={selectedDate === new Date().toISOString().split('T')[0]}
-                  >
-                    后一天
-                  </Button>
-                </div>
-              </div>
+          <section className="space-y-6">
+            <div>
+              <h2 className="font-headline text-2xl font-bold tracking-tight mb-1">日次レポート</h2>
+              <p className="text-secondary/50 font-body text-sm">毎日の学習状況</p>
+            </div>
+
+            {/* Date Navigator */}
+            <div className="flex items-center gap-3 bg-surface-container-low px-4 py-3 rounded-xl">
+              <button onClick={() => handleDateChange(-1)} className="text-secondary/60 hover:text-primary transition-colors">
+                <Icon name="chevron_left" size={20} />
+              </button>
+              <span className="font-headline font-bold text-on-surface text-sm flex-1 text-center">{selectedDate}</span>
+              <button
+                onClick={() => handleDateChange(1)}
+                disabled={selectedDate === new Date().toISOString().split('T')[0]}
+                className={cn(
+                  'transition-colors',
+                  selectedDate === new Date().toISOString().split('T')[0]
+                    ? 'text-secondary/20 cursor-not-allowed'
+                    : 'text-secondary/60 hover:text-primary'
+                )}
+              >
+                <Icon name="chevron_right" size={20} />
+              </button>
             </div>
 
             {dailyLoading ? (
-              <Card>
-                <CardContent className="pt-6 text-center py-12">
-                  <p className="text-muted-foreground">加载中...</p>
-                </CardContent>
-              </Card>
+              <div className="h-48 bg-surface-container-low rounded-2xl animate-pulse" />
             ) : dailyReport ? (
               <DailyReportDisplay report={dailyReport} />
             ) : (
-              <Card>
-                <CardContent className="pt-6 text-center py-12">
-                  <p className="text-muted-foreground">暂无数据</p>
-                </CardContent>
-              </Card>
+              <div className="bg-surface-container-low p-12 rounded-2xl text-center">
+                <Icon name="event_busy" size={48} className="text-secondary/20 mb-4" />
+                <p className="text-secondary/50 font-body">この日のデータはありません</p>
+              </div>
             )}
-          </>
+          </section>
         )}
 
         {/* Weekly Report */}
         {period === 'weekly' && (
-          <>
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">本周报告</h2>
-                  <p className="text-muted-foreground">查看你的每周学习情况</p>
-                </div>
-                <Badge variant="outline">
-                  第 {currentWeek} 周
-                </Badge>
+          <section className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="font-headline text-2xl font-bold tracking-tight mb-1">週間レポート</h2>
+                <p className="text-secondary/50 font-body text-sm">週ごとの学習推移</p>
               </div>
+              <span className="bg-primary/10 text-primary px-3 py-1 rounded-lg font-label text-xs font-bold tracking-widest">
+                第{currentWeek}週
+              </span>
             </div>
 
             {weeklyLoading ? (
-              <Card>
-                <CardContent className="pt-6 text-center py-12">
-                  <p className="text-muted-foreground">加载中...</p>
-                </CardContent>
-              </Card>
+              <div className="h-48 bg-surface-container-low rounded-2xl animate-pulse" />
             ) : weeklyReport ? (
               <WeeklyReportDisplay report={weeklyReport} />
             ) : (
-              <Card>
-                <CardContent className="pt-6 text-center py-12">
-                  <p className="text-muted-foreground">暂无数据</p>
-                </CardContent>
-              </Card>
+              <div className="bg-surface-container-low p-12 rounded-2xl text-center">
+                <Icon name="date_range" size={48} className="text-secondary/20 mb-4" />
+                <p className="text-secondary/50 font-body">今週のデータはまだありません</p>
+              </div>
             )}
-          </>
+          </section>
         )}
       </main>
+
+      <BottomNavBar />
     </div>
   );
 }
