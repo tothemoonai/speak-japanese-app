@@ -232,6 +232,11 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
                 href={`/practice/${course.id}?character=${character.id}`}
               >
                 <div className="bg-surface-container-high px-5 py-3 rounded-xl flex items-center gap-3 hover:bg-surface-container-highest transition-all cursor-pointer group">
+                  <img
+                    src={getAvatarUrl(character.name_jp, character.gender)}
+                    alt={character.name_jp}
+                    className="w-8 h-8 rounded-full flex-shrink-0"
+                  />
                   <span className="font-headline font-bold text-on-surface text-sm group-hover:text-primary transition-colors">
                     {character.name_jp}
                   </span>
