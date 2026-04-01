@@ -321,7 +321,7 @@ export default function AdminContentPage() {
           { key: 'title_jp', label: '日文标题', type: 'text' },
           { key: 'title_cn', label: '中文标题', type: 'text' },
           { key: 'description', label: '描述', type: 'textarea' },
-          { key: 'difficulty', label: '难度', type: 'select', options: ['N5', 'N4', 'N3'] },
+          { key: 'difficulty', label: '难度', type: 'select', options: ['N5', 'N4', 'N3', 'N2', 'N1'] },
           { key: 'theme', label: '主题', type: 'text' },
         ];
       case 'characters':

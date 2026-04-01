@@ -6,7 +6,7 @@ export interface Course {
   title_cn: string;
   title_jp: string;
   description: string | null;
-  difficulty: 'N5' | 'N4' | 'N3';
+  difficulty: 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
   theme: string | null;
   scene_image_url: string | null;
   total_sentences: number | null;
@@ -41,7 +41,7 @@ export interface CourseWithProgress extends Course {
 
 export interface CourseFilter {
   book_id?: number;  // 注意：这里存储的是 book_number（业务键），不是 books.id（主键）
-  difficulty?: ('N5' | 'N4' | 'N3')[];
+  difficulty?: ('N5' | 'N4' | 'N3' | 'N2' | 'N1')[];
   theme?: string[];
   status?: ('not_started' | 'in_progress' | 'completed')[];
   search?: string;

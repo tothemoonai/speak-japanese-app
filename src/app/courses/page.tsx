@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { CourseFilter } from '@/types';
 
-const DIFFICULTIES = ['N5', 'N4', 'N3'] as const;
+const DIFFICULTIES = ['N5', 'N4', 'N3', 'N2', 'N1'] as const;
 const THEMES = ['日常', '商务', '旅游', '购物', '餐饮', '交通', '学校', '工作'] as const;
 
 export default function CoursesPage() {

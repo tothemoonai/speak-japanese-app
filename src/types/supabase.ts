@@ -56,7 +56,7 @@ export interface Database {
           title_cn: string
           title_jp: string
           description: string | null
-          difficulty: 'N5' | 'N4' | 'N3'
+          difficulty: 'N5' | 'N4' | 'N3' | 'N2' | 'N1'
           theme: string | null
           scene_image_url: string | null
           total_sentences: number | null
@@ -71,7 +71,7 @@ export interface Database {
           title_cn: string
           title_jp: string
           description?: string | null
-          difficulty: 'N5' | 'N4' | 'N3'
+          difficulty: 'N5' | 'N4' | 'N3' | 'N2' | 'N1'
           theme?: string | null
           scene_image_url?: string | null
           total_sentences?: number | null
@@ -86,7 +86,7 @@ export interface Database {
           title_cn?: string
           title_jp?: string
           description?: string | null
-          difficulty?: 'N5' | 'N4' | 'N3'
+          difficulty?: 'N5' | 'N4' | 'N3' | 'N2' | 'N1'
           theme?: string | null
           scene_image_url?: string | null
           total_sentences?: number | null
