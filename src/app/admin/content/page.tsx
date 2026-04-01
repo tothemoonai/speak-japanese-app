@@ -350,8 +350,8 @@ export default function AdminContentPage() {
 
   if (loading && !isAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full" />
+      <div className="min-h-screen flex items-center justify-center bg-surface">
+        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -359,20 +359,24 @@ export default function AdminContentPage() {
   // ─── Render ─────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-8">
+    <div className="min-h-screen bg-surface p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            コンテンツ管理
-          </h1>
-          <Button variant="outline" size="sm" onClick={() => router.push('/')}>
-            ← ホーム
-          </Button>
-        </div>
+        <header className="sticky top-0 z-50 header-gradient">
+          <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4 -mx-4 md:-mx-8 w-[calc(100%+2rem)] md:w-[calc(100%+4rem)]">
+            <div className="flex items-center gap-4">
+              <button onClick={() => router.push('/')} className="text-primary active:scale-95 duration-200">
+                <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24", fontSize: 24 }}>arrow_back</span>
+              </button>
+              <h1 className="font-headline font-bold text-primary tracking-tighter text-xl">
+                コンテンツ管理
+              </h1>
+            </div>
+          </div>
+        </header>
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as Entity)}>
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as Entity)} className="mt-6">
           <TabsList>
             <TabsTrigger value="books">书本</TabsTrigger>
             <TabsTrigger value="courses">课程</TabsTrigger>
@@ -459,20 +463,20 @@ export default function AdminContentPage() {
         </Tabs>
 
         {/* Import Guide Section */}
-        <div className="mt-8 border rounded-lg bg-white dark:bg-gray-800 overflow-hidden">
+        <div className="mt-8 border border-outline-variant/15 rounded-lg bg-surface-container-low overflow-hidden">
           <button
             onClick={() => setGuideOpen(!guideOpen)}
-            className="w-full px-4 py-3 flex items-center justify-between text-left font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
+            className="w-full px-4 py-3 flex items-center justify-between text-left font-headline font-bold text-on-surface hover:bg-surface-container-high transition-colors"
           >
             <span>导入指南 &amp; JSON模板</span>
             <span>{guideOpen ? '▲' : '▼'}</span>
           </button>
           {guideOpen && (
-            <div className="p-4 border-t space-y-4">
+            <div className="p-4 border-t border-outline-variant/15 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <h3 className="font-semibold mb-2 text-gray-900 dark:text-white">嵌套模板（推荐）</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  <h3 className="font-headline font-bold mb-2 text-on-surface">嵌套模板（推荐）</h3>
+                  <p className="text-sm text-secondary mb-2">
                     一个JSON文件包含书本→课程→角色→句子的完整层级。支持自动关联。
                   </p>
                   <Button size="sm" variant="outline" onClick={() => downloadJson(NESTED_TEMPLATE, 'nested-template.json')}>
@@ -480,8 +484,8 @@ export default function AdminContentPage() {
                   </Button>
                 </div>
                 <div>
-                  <h3 className="font-semibold mb-2 text-gray-900 dark:text-white">独立模板</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  <h3 className="font-headline font-bold mb-2 text-on-surface">独立模板</h3>
+                  <p className="text-sm text-secondary mb-2">
                     每种实体单独导入，需要手动指定关联ID。
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -494,14 +498,14 @@ export default function AdminContentPage() {
               </div>
 
               <div className="mt-4">
-                <h3 className="font-semibold mb-2 text-gray-900 dark:text-white">字段说明</h3>
-                <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                  <p><code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">book_number</code> - 书本业务编号（唯一键）</p>
-                  <p><code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">course_number</code> - 课程编号（同一本书内唯一）</p>
-                  <p><code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">character_name</code> - 嵌套导入时用角色名自动匹配（无需ID）</p>
-                  <p><code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">book_id / course_id</code> - 独立导入时填编号（非数据库ID）</p>
-                  <p><code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">difficulty</code> - 书: N5-N1, 课程: N5-N3</p>
-                  <p><code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">difficulty_level</code> - 句子: easy/medium/hard</p>
+                <h3 className="font-headline font-bold mb-2 text-on-surface">字段说明</h3>
+                <div className="text-sm text-secondary space-y-1">
+                  <p><code className="bg-surface-container-high px-1 rounded">book_number</code> - 书本业务编号（唯一键）</p>
+                  <p><code className="bg-surface-container-high px-1 rounded">course_number</code> - 课程编号（同一本书内唯一）</p>
+                  <p><code className="bg-surface-container-high px-1 rounded">character_name</code> - 嵌套导入时用角色名自动匹配（无需ID）</p>
+                  <p><code className="bg-surface-container-high px-1 rounded">book_id / course_id</code> - 独立导入时填编号（非数据库ID）</p>
+                  <p><code className="bg-surface-container-high px-1 rounded">difficulty</code> - 书: N5-N1, 课程: N5-N3</p>
+                  <p><code className="bg-surface-container-high px-1 rounded">difficulty_level</code> - 句子: easy/medium/hard</p>
                 </div>
               </div>
             </div>
@@ -544,7 +548,7 @@ export default function AdminContentPage() {
                       onChange={(e) => setFormData({ ...formData, [field.key]: e.target.checked })}
                       className="h-4 w-4"
                     />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                    <span className="text-sm text-secondary">
                       {formData[field.key] ? '是' : '否'}
                     </span>
                   </div>
@@ -657,7 +661,7 @@ function EntityTab({
         <Button size="sm" onClick={onAdd}>+ 新增</Button>
         <Button size="sm" variant="outline" onClick={onImport}>导入 JSON</Button>
       </div>
-      <div className="border rounded-lg bg-white dark:bg-gray-800">
+      <div className="border border-outline-variant/15 rounded-lg bg-surface-container-low">
         <ScrollArea className="max-h-[500px]">
           <Table>
             <TableHeader>
@@ -671,7 +675,7 @@ function EntityTab({
             <TableBody>
               {data.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={columns.length + 1} className="text-center text-gray-400 py-8">
+                  <TableCell colSpan={columns.length + 1} className="text-center text-secondary/40 py-8">
                     暂无数据
                   </TableCell>
                 </TableRow>
@@ -688,7 +692,7 @@ function EntityTab({
                     <TableCell className="text-right">
                       <div className="flex gap-1 justify-end">
                         <Button size="sm" variant="ghost" onClick={() => onEdit(record)}>编辑</Button>
-                        <Button size="sm" variant="ghost" className="text-red-600 hover:text-red-700" onClick={() => onDelete(record.id)}>删除</Button>
+                        <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => onDelete(record.id)}>删除</Button>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -698,7 +702,7 @@ function EntityTab({
           </Table>
         </ScrollArea>
       </div>
-      <div className="text-sm text-gray-500 dark:text-gray-400">
+      <div className="text-sm text-secondary/60">
         共 {data.length} 条记录
       </div>
     </div>
@@ -732,12 +736,12 @@ function ImportPreview({ text }: { text: string }) {
     if (data.sentences) counts['句子'] = data.sentences.length;
 
     return (
-      <div className="text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 p-2 rounded">
+      <div className="text-sm text-secondary bg-surface-container-high p-2 rounded">
         预览: {Object.entries(counts).map(([k, v]) => `${k} ${v}`).join(', ') || '无有效数据'}
       </div>
     );
   } catch {
-    return <div className="text-sm text-red-500">JSON 格式错误</div>;
+    return <div className="text-sm text-destructive">JSON 格式错误</div>;
   }
 }
 
