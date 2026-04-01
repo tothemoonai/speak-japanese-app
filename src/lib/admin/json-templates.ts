@@ -95,3 +95,33 @@ export const SENTENCES_TEMPLATE = {
     }
   ]
 };
+
+export const COURSE_FILE_TEMPLATE = {
+  book_number: 1,
+  course_number: 1,
+  title_jp: "応募問合せ",
+  title_cn: "应聘咨询",
+  description: "求人問合せの電話をかける時の日本語表現を学ぶ",
+  difficulty: "N2",
+  theme: "IT業務日本語",
+  sentences: [
+    {
+      sentence_order: 1,
+      character_id: 1,
+      text_jp: "はい、〇〇社でございます。",
+      text_cn: "您好，这里是〇〇公司。",
+      text_furigana: "はい、〇〇しゃでございます。",
+      text_romaji: "Hai, 〇〇 sha de gozaimasu.",
+      difficulty_level: "medium"
+    },
+    {
+      sentence_order: 2,
+      character_id: 2,
+      text_jp: "すみません、求人の件でお聞きしたいことがあります。",
+      text_cn: "您好，有关招聘的事情想咨询一下。",
+      text_furigana: "すみません、きゅうじんのけんでおききしたいことがあります。",
+      text_romaji: "Sumimasen, kyūjin no ken de okiki shitai koto ga arimasu.",
+      difficulty_level: "medium"
+    }
+  ]
+};

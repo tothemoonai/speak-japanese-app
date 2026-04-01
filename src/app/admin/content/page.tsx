@@ -49,6 +49,7 @@ import {
   COURSES_TEMPLATE,
   CHARACTERS_TEMPLATE,
   SENTENCES_TEMPLATE,
+  COURSE_FILE_TEMPLATE,
 } from '@/lib/admin/json-templates';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -386,9 +387,18 @@ export default function AdminContentPage() {
           </button>
           {guideOpen && (
             <div className="p-4 border-t border-outline-variant/15 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <h3 className="font-headline font-bold mb-2 text-on-surface">嵌套模板（推荐）</h3>
+                  <h3 className="font-headline font-bold mb-2 text-on-surface">課程ファイル（推奨）</h3>
+                  <p className="text-sm text-secondary mb-2">
+                    1つのJSONファイルに1課分の全文章をまとめられます。書本・コース・文章を自動で作成します。character_idは既存のIDを使用。
+                  </p>
+                  <Button size="sm" variant="outline" onClick={() => downloadJson(COURSE_FILE_TEMPLATE, 'course-template.json')}>
+                    課程テンプレート
+                  </Button>
+                </div>
+                <div>
+                  <h3 className="font-headline font-bold mb-2 text-on-surface">嵌套模板</h3>
                   <p className="text-sm text-secondary mb-2">
                     一个JSON文件包含书本→课程→角色→句子的完整层级。支持自动关联。
                   </p>

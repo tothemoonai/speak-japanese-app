@@ -23,6 +23,48 @@ export function validateImportData(data: any): { valid: boolean; errors: string[
     return { valid: false, errors: ['Invalid JSON: expected an object'], parsed: {} };
   }
 
+  // Single-course file format: has course_number + sentences (flat)
+  if (data.course_number && data.sentences && Array.isArray(data.sentences) && !data.books) {
+    if (!data.title_jp) errors.push('course file: missing title_jp');
+    if (!data.title_cn) errors.push('course file: missing title_cn');
+    for (let i = 0; i < data.sentences.length; i++) {
+      const s = data.sentences[i];
+      if (!s.text_jp) errors.push(`sentences[${i}]: missing text_jp`);
+      if (!s.text_cn) errors.push(`sentences[${i}]: missing text_cn`);
+      if (!s.sentence_order) errors.push(`sentences[${i}]: missing sentence_order`);
+    }
+    // Wrap into nested format for unified processing
+    const wrapped = {
+      books: [{
+        book_number: data.book_number || 1,
+        title_jp: data.book_title_jp || 'IT業務日本語',
+        title_cn: data.book_title_cn || 'IT业务日语',
+        description: data.book_description || null,
+        difficulty: data.difficulty || 'N2',
+        is_published: true,
+        sort_order: data.book_number || 1,
+        courses: [{
+          course_number: data.course_number,
+          title_jp: data.title_jp,
+          title_cn: data.title_cn,
+          description: data.description || null,
+          difficulty: data.difficulty || 'N2',
+          theme: data.theme || null,
+          sentences: data.sentences.map((s: any) => ({
+            sentence_order: s.sentence_order,
+            character_id: s.character_id || null,
+            text_jp: s.text_jp,
+            text_cn: s.text_cn,
+            text_furigana: s.text_furigana || null,
+            text_romaji: s.text_romaji || null,
+            difficulty_level: s.difficulty_level || null,
+          })),
+        }],
+      }],
+    };
+    return { valid: errors.length === 0, errors, parsed: wrapped };
+  }
+
   // Nested import: books with courses/characters/sentences
   if (data.books && Array.isArray(data.books)) {
     for (let i = 0; i < data.books.length; i++) {
