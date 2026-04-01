@@ -46,12 +46,14 @@ function PracticePageContent() {
   if (courseLoading || sentencesLoading) {
     return (
       <div className="min-h-screen bg-surface">
-        <header className="sticky top-0 z-50 header-gradient px-6 py-4">
+        <header className="sticky top-0 z-50 header-gradient">
+          <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center gap-4">
             <button onClick={() => router.back()} className="text-primary">
               <Icon name="arrow_back" />
             </button>
             <span className="font-headline font-bold text-primary tracking-tighter text-xl">読み込み中...</span>
+          </div>
           </div>
         </header>
         <main className="px-6 pt-8 max-w-4xl mx-auto">
@@ -69,12 +71,14 @@ function PracticePageContent() {
   if (courseError || sentencesError || !course || !sentences || sentences.length === 0) {
     return (
       <div className="min-h-screen bg-surface">
-        <header className="sticky top-0 z-50 header-gradient px-6 py-4">
+        <header className="sticky top-0 z-50 header-gradient">
+          <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center gap-4">
             <button onClick={() => router.back()} className="text-primary">
               <Icon name="arrow_back" />
             </button>
             <span className="font-headline font-bold text-primary tracking-tighter text-xl">エラー</span>
+          </div>
           </div>
         </header>
         <main className="px-6 pt-8 max-w-4xl mx-auto text-center py-12">
@@ -99,7 +103,8 @@ function PracticePageContent() {
   return (
     <div className="min-h-screen bg-surface">
       {/* Header */}
-      <header className="sticky top-0 z-50 header-gradient flex justify-between items-center px-6 py-4">
+      <header className="sticky top-0 z-50 header-gradient">
+        <div className="max-w-4xl mx-auto flex justify-between items-center px-6 py-4">
         <div className="flex items-center gap-4">
           <Link href={`/courses/${courseId}`}>
             <button className="text-primary active:scale-95 duration-200">
@@ -119,6 +124,7 @@ function PracticePageContent() {
           <span className="font-label text-xs text-secondary/50 tracking-widest hidden sm:block">
             {user.nickname || user.email?.split('@')[0]}
           </span>
+        </div>
         </div>
       </header>
 
@@ -169,9 +175,11 @@ export default function PracticePage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-surface">
-        <header className="sticky top-0 z-50 header-gradient px-6 py-4">
+        <header className="sticky top-0 z-50 header-gradient">
+          <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center gap-4">
             <span className="font-headline font-bold text-primary tracking-tighter text-xl">読み込み中...</span>
+          </div>
           </div>
         </header>
         <main className="px-6 pt-8 max-w-4xl mx-auto">

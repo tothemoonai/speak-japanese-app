@@ -119,7 +119,8 @@ export default function SettingsPage() {
   return (
     <div className="min-h-screen bg-surface">
       {/* Header */}
-      <header className="sticky top-0 z-50 header-gradient flex justify-between items-center px-6 py-4">
+      <header className="sticky top-0 z-50 header-gradient">
+        <div className="max-w-4xl mx-auto flex justify-between items-center px-6 py-4">
         <div className="flex items-center gap-4">
           <Icon name="settings" size={20} className="text-primary" />
           <h1 className="font-headline font-bold text-primary tracking-tighter text-xl">設定</h1>
@@ -127,6 +128,7 @@ export default function SettingsPage() {
         <span className="font-label text-xs text-secondary/50 tracking-widest hidden sm:block">
           {user.nickname || user.email?.split('@')[0]}
         </span>
+        </div>
       </header>
 
       <main className="px-6 pt-6 pb-32 max-w-4xl mx-auto space-y-6">

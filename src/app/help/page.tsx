@@ -54,10 +54,12 @@ export default function HelpPage() {
   return (
     <div className="min-h-screen bg-surface">
       {/* Header */}
-      <header className="sticky top-0 z-50 header-gradient flex justify-between items-center px-6 py-4">
+      <header className="sticky top-0 z-50 header-gradient">
+        <div className="max-w-4xl mx-auto flex justify-between items-center px-6 py-4">
         <div className="flex items-center gap-4">
           <Icon name="help" size={20} className="text-primary" />
           <h1 className="font-headline font-bold text-primary tracking-tighter text-xl">ヘルプセンター</h1>
+        </div>
         </div>
       </header>
 

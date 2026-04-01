@@ -25,12 +25,14 @@ export default function CourseDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-surface">
-        <header className="sticky top-0 z-50 header-gradient px-6 py-4">
+        <header className="sticky top-0 z-50 header-gradient">
+          <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center gap-4">
             <button onClick={() => router.back()} className="text-primary active:scale-95">
               <Icon name="arrow_back" />
             </button>
             <span className="font-headline font-bold text-primary tracking-tighter text-xl">読み込み中...</span>
+          </div>
           </div>
         </header>
         <main className="px-6 pt-8 max-w-4xl mx-auto">
@@ -48,12 +50,14 @@ export default function CourseDetailPage() {
   if (error || !course) {
     return (
       <div className="min-h-screen bg-surface">
-        <header className="sticky top-0 z-50 header-gradient px-6 py-4">
+        <header className="sticky top-0 z-50 header-gradient">
+          <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center gap-4">
             <button onClick={() => router.back()} className="text-primary">
               <Icon name="arrow_back" />
             </button>
             <span className="font-headline font-bold text-primary tracking-tighter text-xl">エラー</span>
+          </div>
           </div>
         </header>
         <main className="px-6 pt-8 max-w-4xl mx-auto text-center py-12">
@@ -67,7 +71,8 @@ export default function CourseDetailPage() {
 
   return (
     <div className="min-h-screen bg-surface">
-      <header className="sticky top-0 z-50 header-gradient flex justify-between items-center px-6 py-4">
+      <header className="sticky top-0 z-50 header-gradient">
+        <div className="max-w-4xl mx-auto flex justify-between items-center px-6 py-4">
         <div className="flex items-center gap-4">
           <button onClick={() => router.back()} className="text-primary active:scale-95 duration-200">
             <Icon name="arrow_back" />
@@ -81,6 +86,7 @@ export default function CourseDetailPage() {
             練習開始
           </button>
         </Link>
+        </div>
       </header>
 
       <main className="px-6 pt-8 max-w-4xl mx-auto pb-32">

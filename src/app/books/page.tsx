@@ -39,7 +39,8 @@ export default function BooksPage() {
   return (
     <div className="min-h-screen bg-surface">
       {/* Header */}
-      <header className="w-full top-0 sticky z-50 header-gradient flex justify-between items-center px-6 py-4">
+      <header className="w-full top-0 sticky z-50 header-gradient">
+        <div className="max-w-5xl mx-auto flex justify-between items-center px-6 py-4">
         <div className="flex items-center gap-4">
           <Link href="/dashboard">
             <span className="text-primary active:scale-95 duration-200 cursor-pointer">
@@ -56,6 +57,7 @@ export default function BooksPage() {
               {user.nickname || user.email?.split('@')[0]}
             </p>
           </div>
+        </div>
         </div>
       </header>
 
