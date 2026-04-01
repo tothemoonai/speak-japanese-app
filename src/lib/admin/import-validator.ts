@@ -32,6 +32,19 @@ export function validateImportData(data: any): { valid: boolean; errors: string[
       if (!s.text_jp) errors.push(`sentences[${i}]: missing text_jp`);
       if (!s.sentence_order) errors.push(`sentences[${i}]: missing sentence_order`);
     }
+
+    // Auto-extract unique characters from character_name in sentences
+    const characterNames = new Set<string>();
+    for (const s of data.sentences) {
+      if (s.character_name) characterNames.add(s.character_name);
+    }
+    const characters = [...characterNames].map(name => ({
+      name_jp: name,
+      name_cn: name,
+      gender: null,
+      description: null,
+    }));
+
     // Wrap into nested format for unified processing
     const wrapped = {
       books: [{
@@ -49,6 +62,7 @@ export function validateImportData(data: any): { valid: boolean; errors: string[
           description: data.description || null,
           difficulty: data.difficulty || 'N2',
           theme: data.theme || null,
+          characters,
           sentences: data.sentences.map((s: any) => ({
             sentence_order: s.sentence_order,
             character_id: s.character_id || null,

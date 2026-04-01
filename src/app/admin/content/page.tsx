@@ -387,7 +387,7 @@ export default function AdminContentPage() {
       if (!res.ok) throw new Error(json.error || '导入失败');
 
       toast.success(
-        `导入完成: ${json.stats.courses}门课, ${json.stats.sentences}个句子 (${characterMap.size}个角色)`
+        `导入完成: ${json.stats.courses}门课, ${json.stats.sentences}个句子 (${json.stats.characters}个角色)`
       );
       setDialogueText('');
       setDialogueCourseTitle('');
