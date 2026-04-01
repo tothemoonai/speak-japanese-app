@@ -313,85 +313,122 @@ export default function AdminContentPage() {
     if (!dialogueText.trim()) return;
     setDialogueImporting(true);
     try {
-      // Parse dialogue: "名前：文章" followed by "（名前：中文翻译）"
+      // 1. Parse dialogue text
       const lines = dialogueText.trim().split('\n').filter(l => l.trim());
-
-      const sentences: any[] = [];
+      const parsed: { order: number; name: string; textJp: string; textCn: string }[] = [];
       let i = 0;
 
       while (i < lines.length) {
         const line = lines[i].trim();
-        // Chinese translation line: starts with （ or ( and ends with ） or )
-        if (/^[（(]/.test(line)) {
-          i++;
-          continue; // skip orphan translation line
-        }
-        // Japanese line: "名前：文章"
+        if (/^[（(]/.test(line)) { i++; continue; }
         const match = line.match(/^(.+?)[：:]\s*(.+)$/);
         if (!match) { i++; continue; }
         const [, name, textJp] = match;
-
-        // Check if next line is Chinese translation: （名前：中文）
         let textCn = '';
         if (i + 1 < lines.length) {
           const nextLine = lines[i + 1].trim();
           const cnMatch = nextLine.match(/^[（(]\s*(.+?)[：:]\s*(.+?)[）)]\s*$/);
-          if (cnMatch) {
-            textCn = cnMatch[2].trim();
-            i++;
-          }
+          if (cnMatch) { textCn = cnMatch[2].trim(); i++; }
         }
-
-        sentences.push({
-          sentence_order: sentences.length + 1,
-          character_name: name.trim(),
-          text_jp: textJp.trim(),
-          text_cn: textCn,
-          text_furigana: '',
-          text_romaji: '',
-          difficulty_level: 'medium',
-        });
+        parsed.push({ order: parsed.length + 1, name: name.trim(), textJp: textJp.trim(), textCn });
         i++;
       }
 
-      if (sentences.length === 0) {
+      if (parsed.length === 0) {
         toast.error('未检测到对话。格式: 名前：日本語文，下一行（名前：中文翻译）');
         return;
       }
 
-      // Build course file format
-      const courseData = {
-        book_number: dialogueBookId,
-        course_number: (courses.filter(c => c.book_id === dialogueBookId).length + 1),
-        title_jp: dialogueCourseTitle || `レッスン${courses.filter(c => c.book_id === dialogueBookId).length + 1}`,
-        title_cn: dialogueCourseTitle || `第${courses.filter(c => c.book_id === dialogueBookId).length + 1}课`,
-        description: '',
-        difficulty: 'N2',
-        theme: 'IT業務日本語',
-        sentences,
-      };
+      // 2. Create course via CRUD API
+      const bookCoursesCount = courses.filter(c => c.book_id === dialogueBookId).length;
+      const courseNumber = bookCoursesCount + 1;
+      let courseId: number;
+      try {
+        const courseRes = await apiFetch('courses', 'POST', {
+          book_id: dialogueBookId,
+          course_number: courseNumber,
+          title_jp: dialogueCourseTitle || `レッスン${courseNumber}`,
+          title_cn: dialogueCourseTitle || `第${courseNumber}课`,
+          description: '',
+          difficulty: 'N2',
+          theme: 'IT業務日本語',
+        });
+        courseId = courseRes.data?.course_number ?? courseNumber;
+      } catch (e: any) {
+        toast.error(`创建课程失败: ${e.message}`);
+        return;
+      }
 
-      // Import via API
-      const token = await getToken();
-      if (!token) throw new Error('未登录');
+      // 3. Resolve characters (find existing or create new)
+      const charIdMap: Record<string, number> = {};
+      const uniqueNames = [...new Set(parsed.map(s => s.name))];
+      let newChars = 0;
 
-      const res = await fetch('/api/admin/import', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(courseData),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || '导入失败');
+      for (const name of uniqueNames) {
+        // Check existing characters in local state
+        const existing = characters.find(c => c.name_jp === name || c.name_cn === name);
+        if (existing) {
+          charIdMap[name] = existing.id;
+          continue;
+        }
+        // Create new character
+        try {
+          const charRes = await apiFetch('characters', 'POST', {
+            name_jp: name,
+            name_cn: name,
+          });
+          if (charRes.data?.id) {
+            charIdMap[name] = charRes.data.id;
+            newChars++;
+          }
+        } catch {
+          // Character might already exist (stale state) — try refetch
+          try {
+            const allCharsRes = await apiFetch('characters', 'GET');
+            const found = allCharsRes.data?.find((c: any) => c.name_jp === name || c.name_cn === name);
+            if (found) { charIdMap[name] = found.id; }
+            else { toast.warning(`角色「${name}」创建失败`); }
+          } catch { toast.warning(`角色「${name}」无法创建或查找`); }
+        }
+      }
 
-      toast.success(
-        `导入完成: ${json.stats.courses}门课, ${json.stats.sentences}个句子 (${json.stats.characters}个角色)`
-      );
-      setDialogueText('');
-      setDialogueCourseTitle('');
-      fetchData(activeTab);
+      // 4. Create sentences
+      let created = 0;
+      const errors: string[] = [];
+      for (const s of parsed) {
+        const charId = charIdMap[s.name];
+        if (!charId) { errors.push(`第${s.order}句: 角色未找到`); continue; }
+        try {
+          await apiFetch('sentences', 'POST', {
+            book_id: dialogueBookId,
+            course_id: courseNumber,
+            sentence_order: s.order,
+            character_id: charId,
+            text_jp: s.textJp,
+            text_cn: s.textCn,
+            text_furigana: '',
+            text_romaji: '',
+            difficulty_level: 'medium',
+          });
+          created++;
+        } catch (e: any) {
+          errors.push(`第${s.order}句: ${e.message}`);
+        }
+      }
+
+      // 5. Report results
+      if (created === 0) {
+        toast.error(`导入失败，0个句子被创建。${errors.slice(0, 3).join('; ')}`);
+        console.error('Dialogue import errors:', errors);
+      } else {
+        toast.success(`导入完成: 课${courseNumber}, ${created}句, ${newChars}个新角色`);
+        if (errors.length) toast.warning(`${errors.length}个句子有错误`);
+        setDialogueText('');
+        setDialogueCourseTitle('');
+        fetchData('courses');
+        fetchData('sentences');
+        fetchData('characters');
+      }
     } catch (e: any) {
       toast.error(`导入失败: ${e.message}`);
     } finally {
