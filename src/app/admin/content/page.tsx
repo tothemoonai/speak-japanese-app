@@ -170,6 +170,12 @@ export default function AdminContentPage() {
   // Guide state
   const [guideOpen, setGuideOpen] = useState(false);
 
+  // Dialogue import state
+  const [dialogueText, setDialogueText] = useState('');
+  const [dialogueBookId, setDialogueBookId] = useState<number>(1);
+  const [dialogueCourseTitle, setDialogueCourseTitle] = useState('');
+  const [dialogueImporting, setDialogueImporting] = useState(false);
+
   // ─── Auth Guard ──────────────────────────────────────────────────────────
 
   useEffect(() => {
@@ -299,6 +305,100 @@ export default function AdminContentPage() {
       setImportText(ev.target?.result as string || '');
     };
     reader.readAsText(file);
+  };
+
+  // ─── Dialogue Import Handler ─────────────────────────────────────────────
+
+  const handleDialogueImport = async () => {
+    if (!dialogueText.trim()) return;
+    setDialogueImporting(true);
+    try {
+      // Parse dialogue: "名前：文章" or "名前: 文章"
+      const lines = dialogueText.trim().split('\n').filter(l => l.trim());
+      const characterMap = new Map<string, number>(); // name -> character_id
+      let nextCharId = 1;
+
+      // Find max existing character_id
+      if (characters.length > 0) {
+        nextCharId = Math.max(...characters.map(c => c.id)) + 1;
+      }
+
+      const sentences: any[] = [];
+
+      for (const line of lines) {
+        // Support both ：(fullwidth) and : (halfwidth)
+        const match = line.match(/^(.+?)[：:]\s*(.+)$/);
+        if (!match) continue;
+        const [, name, text] = match;
+
+        let charId: number;
+        if (characterMap.has(name.trim())) {
+          charId = characterMap.get(name.trim())!;
+        } else {
+          // Check if character already exists
+          const existing = characters.find(c => c.name_jp === name.trim() || c.name_cn === name.trim());
+          if (existing) {
+            charId = existing.id;
+          } else {
+            charId = nextCharId++;
+          }
+          characterMap.set(name.trim(), charId);
+        }
+
+        sentences.push({
+          sentence_order: sentences.length + 1,
+          character_id: charId,
+          text_jp: text.trim(),
+          text_cn: '',
+          text_furigana: '',
+          text_romaji: '',
+          difficulty_level: 'medium',
+        });
+      }
+
+      if (sentences.length === 0) {
+        toast.error('No dialogue found. Format: 名前：文章');
+        return;
+      }
+
+      // Build course file format
+      const courseData = {
+        book_number: dialogueBookId,
+        course_number: (courses.filter(c => c.book_id === dialogueBookId).length + 1),
+        title_jp: dialogueCourseTitle || `レッスン${courses.filter(c => c.book_id === dialogueBookId).length + 1}`,
+        title_cn: dialogueCourseTitle || `第${courses.filter(c => c.book_id === dialogueBookId).length + 1}课`,
+        description: '',
+        difficulty: 'N2',
+        theme: 'IT業務日本語',
+        sentences,
+      };
+
+      // Import via API
+      const token = await getToken();
+      if (!token) throw new Error('未登录');
+
+      const res = await fetch('/api/admin/import', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(courseData),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || '导入失败');
+
+      toast.success(
+        `导入完成: ${json.stats.courses}门课, ${json.stats.sentences}个句子 (${characterMap.size}个角色)`
+      );
+      setDialogueText('');
+      setDialogueCourseTitle('');
+      fetchData(activeTab);
+    } catch (e: any) {
+      toast.error(`导入失败: ${e.message}`);
+    } finally {
+      setDialogueImporting(false);
+    }
   };
 
   // ─── Render Helpers ────────────────────────────────────────────────────
@@ -433,6 +533,63 @@ export default function AdminContentPage() {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Dialogue Import Section */}
+        <div className="mt-4 border border-outline-variant/15 rounded-lg bg-surface-container-low p-4 space-y-3">
+          <h3 className="font-headline font-bold text-on-surface flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24", fontSize: 20 }}>chat</span>
+            对话导入
+          </h3>
+          <p className="text-sm text-secondary">
+            粘贴对话文本，格式：<code className="bg-surface-container-high px-1 rounded">角色名：台词</code>，每行一句。自动创建课程和角色。
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <Label className="text-sm text-secondary mb-1 block">书本</Label>
+              <Select value={String(dialogueBookId)} onValueChange={(v) => setDialogueBookId(Number(v))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {books.map((b) => (
+                    <SelectItem key={b.id} value={String(b.book_number)}>{b.book_number}. {b.title_cn}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="md:col-span-2">
+              <Label className="text-sm text-secondary mb-1 block">课程标题（可选）</Label>
+              <Input
+                value={dialogueCourseTitle}
+                onChange={(e) => setDialogueCourseTitle(e.target.value)}
+                placeholder="默认自动编号"
+              />
+            </div>
+          </div>
+
+          <Textarea
+            placeholder={`田口：はい、お電話替わりました。人事部の田口です。\nラジュ：あ、おはようございます。ラジュと申します。求人の件でお聞きしたいことがあるんですが。\n田口：何でしょうか\n...`}
+            value={dialogueText}
+            onChange={(e) => setDialogueText(e.target.value)}
+            rows={8}
+            className="font-mono text-sm"
+          />
+
+          {dialogueText.trim() && (
+            <div className="text-sm text-secondary bg-surface-container-high p-2 rounded">
+              预览: {(() => {
+                const lines = dialogueText.trim().split('\n').filter(l => l.trim() && l.match(/^.+[：:]/));
+                const names = new Set(lines.map(l => l.match(/^(.+?)[：:]/)?.[1]?.trim()).filter(Boolean));
+                return `${lines.length} 句, ${names.size} 个角色 (${[...names].join(', ')})`;
+              })()}
+            </div>
+          )}
+
+          <div className="flex justify-end">
+            <Button onClick={handleDialogueImport} disabled={!dialogueText.trim() || dialogueImporting}>
+              {dialogueImporting ? '导入中...' : '导入对话'}
+            </Button>
+          </div>
         </div>
 
         {/* Tabs */}
