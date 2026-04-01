@@ -313,30 +313,49 @@ export default function AdminContentPage() {
     if (!dialogueText.trim()) return;
     setDialogueImporting(true);
     try {
-      // Parse dialogue: "名前：文章" or "名前: 文章"
+      // Parse dialogue: "名前：文章" followed by "（名前：中文翻译）"
       const lines = dialogueText.trim().split('\n').filter(l => l.trim());
 
       const sentences: any[] = [];
+      let i = 0;
 
-      for (const line of lines) {
-        // Support both ：(fullwidth) and : (halfwidth)
+      while (i < lines.length) {
+        const line = lines[i].trim();
+        // Chinese translation line: starts with （ or ( and ends with ） or )
+        if (/^[（(]/.test(line)) {
+          i++;
+          continue; // skip orphan translation line
+        }
+        // Japanese line: "名前：文章"
         const match = line.match(/^(.+?)[：:]\s*(.+)$/);
-        if (!match) continue;
-        const [, name, text] = match;
+        if (!match) { i++; continue; }
+        const [, name, textJp] = match;
+
+        // Check if next line is Chinese translation: （名前：中文）
+        let textCn = '';
+        if (i + 1 < lines.length) {
+          const nextLine = lines[i + 1].trim();
+          const cnMatch = nextLine.match(/^[（(]\s*(.+?)[：:]\s*(.+?)[）)]\s*$/);
+          if (cnMatch) {
+            textCn = cnMatch[2].trim();
+            i++;
+          }
+        }
 
         sentences.push({
           sentence_order: sentences.length + 1,
-          character_name: name.trim(), // use name instead of id, let API auto-match/create
-          text_jp: text.trim(),
-          text_cn: '',
+          character_name: name.trim(),
+          text_jp: textJp.trim(),
+          text_cn: textCn,
           text_furigana: '',
           text_romaji: '',
           difficulty_level: 'medium',
         });
+        i++;
       }
 
       if (sentences.length === 0) {
-        toast.error('No dialogue found. Format: 名前：文章');
+        toast.error('未检测到对话。格式: 名前：日本語文，下一行（名前：中文翻译）');
         return;
       }
 
@@ -521,7 +540,7 @@ export default function AdminContentPage() {
             对话导入
           </h3>
           <p className="text-sm text-secondary">
-            粘贴对话文本，格式：<code className="bg-surface-container-high px-1 rounded">角色名：台词</code>，每行一句。自动创建课程和角色。
+            粘贴对话文本，日文行后紧跟中文翻译行（用括号括起）。自动创建课程和角色。
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -547,7 +566,7 @@ export default function AdminContentPage() {
           </div>
 
           <Textarea
-            placeholder={`田口：はい、お電話替わりました。人事部の田口です。\nラジュ：あ、おはようございます。ラジュと申します。求人の件でお聞きしたいことがあるんですが。\n田口：何でしょうか\n...`}
+            placeholder={`田口：はい、お電話替わりました。人事部の田口です。\n（田口：是的，电话转接好了。我是人事部的田口。）\nラジュ：あ、おはようございます。ラジュと申します。求人の件でお聞きしたいことがあるんですが。\n（拉朱：啊，早上好。我叫拉朱。我想咨询一下招聘相关的事宜。）\n田口：何でしょうか\n（田口：请问是什么事？）`}
             value={dialogueText}
             onChange={(e) => setDialogueText(e.target.value)}
             rows={8}
@@ -557,9 +576,11 @@ export default function AdminContentPage() {
           {dialogueText.trim() && (
             <div className="text-sm text-secondary bg-surface-container-high p-2 rounded">
               预览: {(() => {
-                const lines = dialogueText.trim().split('\n').filter(l => l.trim() && l.match(/^.+[：:]/));
-                const names = new Set(lines.map(l => l.match(/^(.+?)[：:]/)?.[1]?.trim()).filter(Boolean));
-                return `${lines.length} 句, ${names.size} 个角色 (${[...names].join(', ')})`;
+                const allLines = dialogueText.trim().split('\n').filter(l => l.trim());
+                const jpLines = allLines.filter(l => !/^[（(]/.test(l.trim()) && l.match(/^.+?[：:]/));
+                const cnLines = allLines.filter(l => /^[（(]/.test(l.trim()));
+                const names = new Set(jpLines.map(l => l.match(/^(.+?)[：:]/)?.[1]?.trim()).filter(Boolean));
+                return `${jpLines.length} 句, ${cnLines.length} 条中文翻译, ${names.size} 个角色 (${[...names].join(', ')})`;
               })()}
             </div>
           )}
