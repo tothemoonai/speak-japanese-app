@@ -339,8 +339,15 @@ export default function AdminContentPage() {
         return;
       }
 
-      // 2. Create course via CRUD API
-      const bookCoursesCount = courses.filter(c => c.book_id === dialogueBookId).length;
+      // 2. Fetch fresh courses & characters from API (local state may be stale)
+      const [freshCoursesRes, freshCharsRes] = await Promise.all([
+        apiFetch('courses', 'GET'),
+        apiFetch('characters', 'GET'),
+      ]);
+      const freshCourses: any[] = freshCoursesRes.data || [];
+      const freshChars: any[] = freshCharsRes.data || [];
+
+      const bookCoursesCount = freshCourses.filter(c => c.book_id === dialogueBookId).length;
       const courseNumber = bookCoursesCount + 1;
       let courseId: number;
       try {
@@ -365,8 +372,8 @@ export default function AdminContentPage() {
       let newChars = 0;
 
       for (const name of uniqueNames) {
-        // Check existing characters in local state
-        const existing = characters.find(c => c.name_jp === name || c.name_cn === name);
+        // Check existing characters (from fresh API data)
+        const existing = freshChars.find(c => c.name_jp === name || c.name_cn === name);
         if (existing) {
           charIdMap[name] = existing.id;
           continue;
