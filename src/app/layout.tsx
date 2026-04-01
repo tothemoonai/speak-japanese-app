@@ -36,9 +36,9 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'IT日本語',
-  description: 'AI搭載のIT日本語スピーキング練習プラットフォーム',
-  keywords: ['日本語', 'IT日本語', 'AI学習', 'スピーキング練習'],
+  title: 'IT業務日本語',
+  description: 'AI搭載のIT業務日本語スピーキング練習プラットフォーム',
+  keywords: ['日本語', 'IT業務日本語', 'AI学習', 'スピーキング練習'],
 };
 
 export default function RootLayout({

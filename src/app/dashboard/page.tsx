@@ -98,7 +98,7 @@ export default function DashboardPage() {
       <header className="w-full top-0 sticky z-50 header-gradient flex justify-between items-center px-6 py-4">
         <div className="flex items-center gap-4">
           <h1 className="font-headline font-bold tracking-tight text-xl text-primary tracking-tighter">
-            IT日本語
+            IT業務日本語
           </h1>
         </div>
         <div className="flex items-center gap-3">
