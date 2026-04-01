@@ -126,15 +126,15 @@ export default function DashboardPage() {
             <p className="text-secondary font-body text-lg max-w-lg leading-relaxed">
               現在<span className="text-primary font-bold">{userStats.courses_completed}コース</span>を修了しています。次の会話をデバッグする準備はできていますか？
             </p>
-            <div className="pt-4 flex flex-wrap gap-4">
-              <Link href="/books">
-                <button className="bg-primary text-primary-foreground font-headline font-bold px-8 py-4 rounded-xl flex items-center gap-3 hover:bg-primary-fixed transition-all active:scale-95 shadow-lg shadow-primary/10">
+            <div className="pt-4 flex flex-nowrap gap-3">
+              <Link href="/books" className="shrink-0">
+                <button className="bg-primary text-primary-foreground font-headline font-bold text-sm px-5 py-3 rounded-xl flex items-center gap-2 hover:bg-primary-fixed transition-all active:scale-95 shadow-lg shadow-primary/10 whitespace-nowrap">
                   学習を再開する
-                  <Icon name="play_circle" size={20} />
+                  <Icon name="play_circle" size={16} />
                 </button>
               </Link>
-              <Link href="/reports">
-                <button className="bg-surface-container-high border border-outline-variant/15 text-on-surface font-headline font-semibold px-8 py-4 rounded-xl hover:bg-surface-container-highest transition-all">
+              <Link href="/reports" className="shrink-0">
+                <button className="bg-surface-container-high border border-outline-variant/15 text-on-surface font-headline font-semibold text-sm px-5 py-3 rounded-xl hover:bg-surface-container-highest transition-all whitespace-nowrap">
                   レポートを表示
                 </button>
               </Link>
