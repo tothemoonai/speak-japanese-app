@@ -26,6 +26,7 @@ function PracticePageContent() {
   const { data: sentences, error: sentencesError, isLoading: sentencesLoading } = useCourseSentences(courseId);
 
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
+  const [dialogueMode, setDialogueMode] = useState(false);
 
   useEffect(() => {
     if (!user) router.push('/login');
@@ -36,8 +37,10 @@ function PracticePageContent() {
       if (characterId) {
         const char = course.characters.find(c => c.id === characterId);
         setSelectedCharacter(char || course.characters[0]);
+        setDialogueMode(false);
       } else {
-        setSelectedCharacter(course.characters[0]);
+        setDialogueMode(true);
+        setSelectedCharacter(null);
       }
     }
   }, [course, characterId]);
@@ -136,18 +139,30 @@ function PracticePageContent() {
           {course.title_cn}
         </Link>
 
-        {/* Character Selector */}
+        {/* Mode Selector */}
         {course.characters && course.characters.length > 1 && (
           <section className="mb-6">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-secondary/40 font-label tracking-widest uppercase">キャラクター</span>
+              <span className="text-xs text-secondary/40 font-label tracking-widest uppercase">モード</span>
+              <button
+                onClick={() => { setDialogueMode(true); setSelectedCharacter(null); }}
+                className={cn(
+                  'flex items-center gap-2 px-3 py-1.5 rounded-full font-headline font-bold text-sm transition-all',
+                  dialogueMode
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high'
+                )}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: 16 }}>forum</span>
+                全対話
+              </button>
               {course.characters.map((char) => (
                 <button
                   key={char.id}
-                  onClick={() => setSelectedCharacter(char)}
+                  onClick={() => { setDialogueMode(false); setSelectedCharacter(char); }}
                   className={cn(
                     'flex items-center gap-2 px-3 py-1.5 rounded-full font-headline font-bold text-sm transition-all',
-                    selectedCharacter?.id === char.id
+                    !dialogueMode && selectedCharacter?.id === char.id
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high'
                   )}
@@ -157,7 +172,7 @@ function PracticePageContent() {
                     alt={char.name_jp}
                     className={cn(
                       'w-6 h-6 rounded-full',
-                      selectedCharacter?.id === char.id ? 'ring-1 ring-primary-foreground/30' : ''
+                      !dialogueMode && selectedCharacter?.id === char.id ? 'ring-1 ring-primary-foreground/30' : ''
                     )}
                   />
                   {char.name_jp}
@@ -172,6 +187,8 @@ function PracticePageContent() {
           course={courseId}
           character={selectedCharacter}
           sentences={sentences}
+          dialogueMode={dialogueMode}
+          characters={course.characters}
         />
       </main>
 

@@ -23,9 +23,11 @@ interface PracticeAreaProps {
   course: number;
   character?: Character | null;
   sentences: Sentence[];
+  dialogueMode?: boolean;
+  characters?: Character[];
 }
 
-export function PracticeArea({ course, character, sentences }: PracticeAreaProps) {
+export function PracticeArea({ course, character, sentences, dialogueMode, characters }: PracticeAreaProps) {
   const router = useRouter();
   const { user } = useAuthStore();
 
@@ -54,10 +56,10 @@ export function PracticeArea({ course, character, sentences }: PracticeAreaProps
   const [results, setResults] = useState<any[]>([]);
   const [practiceStartTime, setPracticeStartTime] = useState<number>(Date.now());
 
-  // 当角色改变时，重置到第一句
+  // 当角色改变或切换模式时，重置到第一句
   useEffect(() => {
     setCurrentIndex(0);
-  }, [character?.id]);
+  }, [character?.id, dialogueMode]);
 
   // 当句子变化时，确保索引有效
   useEffect(() => {
@@ -321,16 +323,34 @@ export function PracticeArea({ course, character, sentences }: PracticeAreaProps
             {/* Character Info */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                {character && (
-                  <img
-                    src={getAvatarUrl(character.name_jp, character.gender)}
-                    alt={character.name_jp}
-                    className="w-8 h-8 rounded-full"
-                  />
+                {dialogueMode && currentSentence && characters ? (
+                  (() => {
+                    const speaker = characters.find(c => c.id === currentSentence.character_id);
+                    return speaker ? (
+                      <>
+                        <img
+                          src={getAvatarUrl(speaker.name_jp, speaker.gender)}
+                          alt={speaker.name_jp}
+                          className="w-8 h-8 rounded-full"
+                        />
+                        <span className="text-sm font-medium">{speaker.name_jp}</span>
+                      </>
+                    ) : (
+                      <span className="text-sm font-medium">全对话</span>
+                    );
+                  })()
+                ) : character ? (
+                  <>
+                    <img
+                      src={getAvatarUrl(character.name_jp, character.gender)}
+                      alt={character.name_jp}
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <span className="text-sm font-medium">{character.name_jp}</span>
+                  </>
+                ) : (
+                  <span className="text-sm font-medium">全部角色</span>
                 )}
-                <span className="text-sm font-medium">
-                  {character?.name_jp || '全部角色'}
-                </span>
                 <Badge variant="outline" className="text-xs">
                   {filteredSentences.length}
                 </Badge>
