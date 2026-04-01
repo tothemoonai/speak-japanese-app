@@ -30,7 +30,6 @@ export function validateImportData(data: any): { valid: boolean; errors: string[
     for (let i = 0; i < data.sentences.length; i++) {
       const s = data.sentences[i];
       if (!s.text_jp) errors.push(`sentences[${i}]: missing text_jp`);
-      if (!s.text_cn) errors.push(`sentences[${i}]: missing text_cn`);
       if (!s.sentence_order) errors.push(`sentences[${i}]: missing sentence_order`);
     }
     // Wrap into nested format for unified processing
@@ -53,8 +52,9 @@ export function validateImportData(data: any): { valid: boolean; errors: string[
           sentences: data.sentences.map((s: any) => ({
             sentence_order: s.sentence_order,
             character_id: s.character_id || null,
+            character_name: s.character_name || null,
             text_jp: s.text_jp,
-            text_cn: s.text_cn,
+            text_cn: s.text_cn || '',
             text_furigana: s.text_furigana || null,
             text_romaji: s.text_romaji || null,
             difficulty_level: s.difficulty_level || null,

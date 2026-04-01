@@ -315,13 +315,6 @@ export default function AdminContentPage() {
     try {
       // Parse dialogue: "名前：文章" or "名前: 文章"
       const lines = dialogueText.trim().split('\n').filter(l => l.trim());
-      const characterMap = new Map<string, number>(); // name -> character_id
-      let nextCharId = 1;
-
-      // Find max existing character_id
-      if (characters.length > 0) {
-        nextCharId = Math.max(...characters.map(c => c.id)) + 1;
-      }
 
       const sentences: any[] = [];
 
@@ -331,23 +324,9 @@ export default function AdminContentPage() {
         if (!match) continue;
         const [, name, text] = match;
 
-        let charId: number;
-        if (characterMap.has(name.trim())) {
-          charId = characterMap.get(name.trim())!;
-        } else {
-          // Check if character already exists
-          const existing = characters.find(c => c.name_jp === name.trim() || c.name_cn === name.trim());
-          if (existing) {
-            charId = existing.id;
-          } else {
-            charId = nextCharId++;
-          }
-          characterMap.set(name.trim(), charId);
-        }
-
         sentences.push({
           sentence_order: sentences.length + 1,
-          character_id: charId,
+          character_name: name.trim(), // use name instead of id, let API auto-match/create
           text_jp: text.trim(),
           text_cn: '',
           text_furigana: '',
