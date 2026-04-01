@@ -14,6 +14,7 @@ import { getUserLevel } from '@/lib/utils/user';
 import { userProgressService } from '@/services/supabase/userProgress.service';
 import { achievementService } from '@/services/supabase/achievement.service';
 import { supabase } from '@/lib/supabase/client';
+import { Capacitor } from '@capacitor/core';
 
 export const dynamic = 'force-dynamic';
 
@@ -126,15 +127,15 @@ export default function DashboardPage() {
             <p className="text-secondary font-body text-lg max-w-lg leading-relaxed">
               現在<span className="text-primary font-bold">{userStats.courses_completed}コース</span>を修了しています。次の会話をデバッグする準備はできていますか？
             </p>
-            <div className="pt-4 flex flex-nowrap gap-3">
-              <Link href="/books" className="shrink-0">
-                <button className="bg-primary text-primary-foreground font-headline font-bold text-sm px-5 py-3 rounded-xl flex items-center gap-2 hover:bg-primary-fixed transition-all active:scale-95 shadow-lg shadow-primary/10 whitespace-nowrap">
+            <div className={`pt-4 flex ${Capacitor.isNativePlatform() ? 'flex-nowrap gap-3' : 'flex-wrap gap-4'}`}>
+              <Link href="/books" className={Capacitor.isNativePlatform() ? 'shrink-0' : ''}>
+                <button className={`bg-primary text-primary-foreground font-headline font-bold rounded-xl flex items-center hover:bg-primary-fixed transition-all active:scale-95 shadow-lg shadow-primary/10 ${Capacitor.isNativePlatform() ? 'text-sm px-5 py-3 gap-2' : 'px-8 py-4 gap-3'}`}>
                   学習を再開する
-                  <Icon name="play_circle" size={16} />
+                  <Icon name="play_circle" size={Capacitor.isNativePlatform() ? 16 : 20} />
                 </button>
               </Link>
-              <Link href="/reports" className="shrink-0">
-                <button className="bg-surface-container-high border border-outline-variant/15 text-on-surface font-headline font-semibold text-sm px-5 py-3 rounded-xl hover:bg-surface-container-highest transition-all whitespace-nowrap">
+              <Link href="/reports" className={Capacitor.isNativePlatform() ? 'shrink-0' : ''}>
+                <button className={`bg-surface-container-high border border-outline-variant/15 text-on-surface font-headline font-semibold rounded-xl hover:bg-surface-container-highest transition-all ${Capacitor.isNativePlatform() ? 'text-sm px-5 py-3' : 'px-8 py-4'}`}>
                   レポートを表示
                 </button>
               </Link>
