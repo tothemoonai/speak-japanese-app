@@ -9,6 +9,7 @@ import { PracticeArea } from '@/components/practice/PracticeArea';
 import { BottomNavBar } from '@/components/ui/zen/BottomNavBar';
 import { Icon } from '@/components/ui/zen/Icon';
 import { cn } from '@/lib/utils';
+import { getAvatarUrl } from '@/lib/utils/avatar';
 import type { Character } from '@/types';
 
 function PracticePageContent() {
@@ -145,12 +146,20 @@ function PracticePageContent() {
                   key={char.id}
                   onClick={() => setSelectedCharacter(char)}
                   className={cn(
-                    'px-4 py-2 rounded-full font-headline font-bold text-sm transition-all',
+                    'flex items-center gap-2 px-3 py-1.5 rounded-full font-headline font-bold text-sm transition-all',
                     selectedCharacter?.id === char.id
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high'
                   )}
                 >
+                  <img
+                    src={getAvatarUrl(char.name_jp, char.gender)}
+                    alt={char.name_jp}
+                    className={cn(
+                      'w-6 h-6 rounded-full',
+                      selectedCharacter?.id === char.id ? 'ring-1 ring-primary-foreground/30' : ''
+                    )}
+                  />
                   {char.name_jp}
                 </button>
               ))}

@@ -11,6 +11,7 @@ import { evaluationService, type EvaluationResult } from '@/services/processing/
 import { userProgressService } from '@/services/supabase/userProgress.service';
 import { practiceRecordService } from '@/services/supabase/practiceRecord.service';
 import { useAuthStore } from '@/store/authStore';
+import { getAvatarUrl } from '@/lib/utils/avatar';
 import type { Sentence, Character } from '@/types';
 import { Volume2, Mic, CheckCircle, Loader2, AlertCircle, ChevronLeft, ChevronRight, List } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -320,6 +321,13 @@ export function PracticeArea({ course, character, sentences }: PracticeAreaProps
             {/* Character Info */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
+                {character && (
+                  <img
+                    src={getAvatarUrl(character.name_jp, character.gender)}
+                    alt={character.name_jp}
+                    className="w-8 h-8 rounded-full"
+                  />
+                )}
                 <span className="text-sm font-medium">
                   {character?.name_jp || '全部角色'}
                 </span>

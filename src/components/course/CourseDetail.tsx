@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { getAvatarUrl } from '@/lib/utils/avatar';
 import { Icon } from '@/components/ui/zen/Icon';
 import { ProgressBar } from '@/components/ui/zen/ProgressBar';
 import type { CourseWithProgress, Character, Sentence } from '@/types';
@@ -277,17 +278,11 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
                     className={cn('flex gap-3 items-start', isLeft ? '' : 'flex-row-reverse')}
                   >
                     {/* Avatar */}
-                    <div className={cn(
-                      'w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center',
-                      isLeft ? 'bg-primary/15' : 'bg-tertiary/15'
-                    )}>
-                      <span className={cn(
-                        'font-headline text-sm font-bold',
-                        isLeft ? 'text-primary' : 'text-tertiary'
-                      )}>
-                        {(character?.name_jp || '?').charAt(0)}
-                      </span>
-                    </div>
+                    <img
+                      src={getAvatarUrl(character?.name_jp || '?', character?.gender)}
+                      alt={character?.name_jp || ''}
+                      className="w-10 h-10 rounded-full flex-shrink-0"
+                    />
 
                     {/* Bubble */}
                     <div className={cn(
