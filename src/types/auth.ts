@@ -8,6 +8,7 @@ export interface ExtendedUser extends SupabaseUser {
   level?: 'beginner' | 'intermediate' | 'advanced';
   total_study_time?: number;
   avatar_url?: string;
+  is_admin?: boolean;
 
   // 这些字段从 user_metadata 中获取
   user_metadata?: SupabaseUser['user_metadata'] & {

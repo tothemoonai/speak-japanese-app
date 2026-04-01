@@ -30,7 +30,7 @@ export class AuthService {
       const client = this.getClient();
       const { data: publicUser, error } = await client
         .from('users')
-        .select('level, total_study_time, avatar_url')
+        .select('level, total_study_time, avatar_url, is_admin')
         .eq('id', user.id)
         .single();
 
@@ -54,6 +54,7 @@ export class AuthService {
         level: publicUser.level || 'beginner',
         total_study_time: publicUser.total_study_time,
         avatar_url: publicUser.avatar_url,
+        is_admin: publicUser.is_admin === true,
         user_metadata: {
           ...user.user_metadata,
           nickname,

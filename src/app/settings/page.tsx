@@ -155,6 +155,22 @@ export default function SettingsPage() {
           </div>
         </section>
 
+        {/* Admin Content Management - only for admin users */}
+        {user.is_admin && (
+          <Link href="/admin/content" className="block">
+            <section className="bg-surface-container-low p-6 rounded-2xl flex items-center justify-between group hover:bg-surface-container-high cursor-pointer transition-all">
+              <div className="flex items-center gap-3">
+                <Icon name="admin_panel_settings" size={20} className="text-primary" />
+                <div>
+                  <h3 className="font-headline font-bold text-on-surface">データ管理</h3>
+                  <p className="text-secondary/50 text-xs font-label tracking-widest">教材・コース・文の管理</p>
+                </div>
+              </div>
+              <Icon name="chevron_right" size={20} className="text-secondary opacity-40" />
+            </section>
+          </Link>
+        )}
+
         {/* Edit Nickname */}
         <section className="bg-surface-container-low p-6 rounded-2xl space-y-4">
           <div className="flex items-center justify-between">
