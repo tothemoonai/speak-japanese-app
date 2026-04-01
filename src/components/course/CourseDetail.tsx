@@ -296,12 +296,6 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
                         ? 'bg-surface-container-low rounded-tl-none border-l-2 border-primary/20'
                         : 'bg-surface-container-high rounded-tr-none border-r-2 border-tertiary/30 text-right'
                     )}>
-                      <p className={cn(
-                        'text-xs font-label tracking-widest uppercase mb-2',
-                        isLeft ? 'text-primary' : 'text-tertiary'
-                      )}>
-                        {character?.name_jp || '---'}
-                      </p>
                       {showJapanese && (
                         <p className="font-medium text-lg text-on-surface mb-1">{sentence.text_jp}</p>
                       )}
