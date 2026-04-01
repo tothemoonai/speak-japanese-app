@@ -242,50 +242,83 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
         </section>
       )}
 
-      {/* Sentences Preview */}
-      {course.sentences && course.sentences.length > 0 && (
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Icon name="chat_bubble" size={20} className="text-primary" />
-              <h3 className="font-headline text-xl font-bold tracking-tight">会話プレビュー</h3>
+      {/* Sentences Preview - Chat Bubble Style */}
+      {course.sentences && course.sentences.length > 0 && (() => {
+        // Determine which characters are "left" vs "right" based on first appearance
+        const characterSides = new Map<number, 'left' | 'right'>();
+        let sideToggle = false;
+        course.sentences.forEach(s => {
+          if (!characterSides.has(s.character_id)) {
+            characterSides.set(s.character_id, sideToggle ? 'right' : 'left');
+            sideToggle = !sideToggle;
+          }
+        });
+
+        return (
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-headline text-lg font-bold flex items-center gap-2">
+                <span className="w-1 h-6 bg-primary rounded-full" />
+                ダイアログプレビュー
+              </h3>
+              <span className="text-secondary/50 font-label text-xs tracking-widest">
+                {course.sentences.length}フレーズ
+              </span>
             </div>
-            <span className="text-secondary/50 font-label text-xs tracking-widest">
-              {course.sentences.length}フレーズ
-            </span>
-          </div>
-          <div className="space-y-3">
-            {course.sentences.map((sentence, index) => {
-              const character = course.characters?.find(c => c.id === sentence.character_id);
-              return (
-                <div
-                  key={sentence.id}
-                  className="bg-surface-container-low p-4 rounded-xl hover:bg-surface-container transition-colors"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-16">
-                      <span className="font-label text-[10px] uppercase tracking-widest text-primary/60">
-                        {character?.name_jp || '---'}
+            <div className="space-y-3">
+              {course.sentences.map((sentence) => {
+                const character = course.characters?.find(c => c.id === sentence.character_id);
+                const side = characterSides.get(sentence.character_id) || 'left';
+                const isLeft = side === 'left';
+
+                return (
+                  <div
+                    key={sentence.id}
+                    className={cn('flex gap-3 items-start', isLeft ? '' : 'flex-row-reverse')}
+                  >
+                    {/* Avatar */}
+                    <div className={cn(
+                      'w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center',
+                      isLeft ? 'bg-primary/15' : 'bg-tertiary/15'
+                    )}>
+                      <span className={cn(
+                        'font-headline text-sm font-bold',
+                        isLeft ? 'text-primary' : 'text-tertiary'
+                      )}>
+                        {(character?.name_jp || '?').charAt(0)}
                       </span>
                     </div>
-                    <div className="flex-1 space-y-1">
+
+                    {/* Bubble */}
+                    <div className={cn(
+                      'p-4 rounded-xl flex-1',
+                      isLeft
+                        ? 'bg-surface-container-low rounded-tl-none border-l-2 border-primary/20'
+                        : 'bg-surface-container-high rounded-tr-none border-r-2 border-tertiary/30 text-right'
+                    )}>
+                      <p className={cn(
+                        'text-xs font-label tracking-widest uppercase mb-2',
+                        isLeft ? 'text-primary' : 'text-tertiary'
+                      )}>
+                        {character?.name_jp || '---'}
+                      </p>
                       {showJapanese && (
-                        <p className="font-body text-on-surface leading-relaxed">{sentence.text_jp}</p>
+                        <p className="font-medium text-lg text-on-surface mb-1">{sentence.text_jp}</p>
                       )}
                       {showChinese && (
-                        <p className="font-body text-sm text-secondary/60 leading-relaxed">{sentence.text_cn}</p>
+                        <p className="text-sm text-secondary/60">{sentence.text_cn}</p>
                       )}
                       {!showJapanese && !showChinese && (
                         <p className="text-sm text-secondary/30 italic">テキスト非表示</p>
                       )}
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      )}
+                );
+              })}
+            </div>
+          </section>
+        );
+      })()}
     </div>
   );
 }
