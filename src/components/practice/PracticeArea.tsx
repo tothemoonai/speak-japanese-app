@@ -443,56 +443,54 @@ export function PracticeArea({ course, character, sentences }: PracticeAreaProps
         <CardContent className="pt-4 sm:pt-6">
           <div className="space-y-3 sm:space-y-4">
             {/* Previous/Next Buttons */}
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center justify-center gap-2">
               <Button
                 variant="outline"
                 onClick={handlePrevious}
                 disabled={isFirstSentence || isEvaluating}
-                className="flex-1"
+                className="flex-1 max-w-[160px]"
               >
                 <ChevronLeft className="h-4 w-4 mr-1" />
                 上一句
               </Button>
 
-              <div className="flex gap-2 flex-1">
-                <Button
-                  variant="outline"
-                  onClick={handleRetry}
-                  disabled={!recordedAudio || isEvaluating}
-                  className="flex-1"
-                >
-                  重新录音
-                </Button>
+              <Button
+                variant="outline"
+                onClick={handleRetry}
+                disabled={!recordedAudio || isEvaluating}
+                className="flex-1 max-w-[160px]"
+              >
+                重新录音
+              </Button>
 
-                {!result && !error && (
-                  <Button
-                    onClick={handleEvaluate}
-                    disabled={!recordedAudio || isEvaluating}
-                    className="flex-1"
-                  >
-                    {isEvaluating ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        评估中...
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle className="h-4 w-4 mr-2" />
-                        评估
-                      </>
-                    )}
-                  </Button>
-                )}
-              </div>
+              {!result && !error && (
+                <Button
+                  onClick={handleEvaluate}
+                  disabled={!recordedAudio || isEvaluating}
+                  className="flex-1 max-w-[160px]"
+                >
+                  {isEvaluating ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      评估中...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      评估
+                    </>
+                  )}
+                </Button>
+              )}
 
               <Button
                 onClick={handleNext}
                 disabled={isEvaluating}
                 variant={isLastSentence ? 'default' : 'outline'}
-                className="flex-1"
+                className="flex-1 max-w-[160px]"
               >
                 {isLastSentence ? '完成' : '下一句'}
-                <ChevronRight className="h-4 w-4 mr-1" />
+                <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
           </div>
