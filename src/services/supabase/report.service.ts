@@ -55,7 +55,7 @@ export class ReportService {
     const practiceCount = practices.length;
     const averageScore =
       practices.reduce((sum, p) => sum + (p.total_score || 0), 0) / practiceCount;
-    const studyTime = practices.reduce((sum, p) => sum + (p.duration_seconds || 0), 0);
+    const studyTime = practices.reduce((sum, p) => sum + (p.time_spent || 0), 0);
 
     // Create progress chart data (hour by hour)
     const progressChart = this.createProgressChart(practices);
@@ -124,7 +124,7 @@ export class ReportService {
     const practiceCount = practices.length;
     const averageScore =
       practices.reduce((sum, p) => sum + (p.total_score || 0), 0) / practiceCount;
-    const studyTime = practices.reduce((sum, p) => sum + (p.duration_seconds || 0), 0);
+    const studyTime = practices.reduce((sum, p) => sum + (p.time_spent || 0), 0);
 
     // Create progress chart data (day by day)
     const progressChart = this.createWeeklyProgressChart(practices, startDate);
@@ -191,7 +191,7 @@ export class ReportService {
     const practiceCount = practices.length;
     const averageScore =
       practices.reduce((sum, p) => sum + (p.total_score || 0), 0) / practiceCount;
-    const studyTime = practices.reduce((sum, p) => sum + (p.duration_seconds || 0), 0);
+    const studyTime = practices.reduce((sum, p) => sum + (p.time_spent || 0), 0);
 
     // Create progress chart data (day by day)
     const progressChart = this.createMonthlyProgressChart(practices, year, month);
@@ -227,7 +227,7 @@ export class ReportService {
     const client = this.getClient();
     const { data: practices, error } = await client
       .from('practice_records')
-      .select('total_score, duration_seconds, course_id, completed_at')
+      .select('total_score, time_spent, course_id, completed_at')
       .eq('user_id', userId)
       .order('completed_at', { ascending: false });
 
@@ -250,7 +250,7 @@ export class ReportService {
     }
 
     const totalPracticeCount = practices.length;
-    const totalStudyTime = practices.reduce((sum, p) => sum + (p.duration_seconds || 0), 0);
+    const totalStudyTime = practices.reduce((sum, p) => sum + (p.time_spent || 0), 0);
     const averageScore =
       practices.reduce((sum, p) => sum + (p.total_score || 0), 0) / totalPracticeCount;
     const bestScore = practices.length > 0 ? Math.max(...practices.map((p) => p.total_score || 0)) : 0;
