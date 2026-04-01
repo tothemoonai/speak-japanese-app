@@ -375,6 +375,56 @@ export default function AdminContentPage() {
           </div>
         </header>
 
+        {/* Import Guide Section */}
+        <div className="mt-6 border border-outline-variant/15 rounded-lg bg-surface-container-low overflow-hidden">
+          <button
+            onClick={() => setGuideOpen(!guideOpen)}
+            className="w-full px-4 py-3 flex items-center justify-between text-left font-headline font-bold text-on-surface hover:bg-surface-container-high transition-colors"
+          >
+            <span>导入指南 &amp; JSON模板</span>
+            <span>{guideOpen ? '▲' : '▼'}</span>
+          </button>
+          {guideOpen && (
+            <div className="p-4 border-t border-outline-variant/15 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h3 className="font-headline font-bold mb-2 text-on-surface">嵌套模板（推荐）</h3>
+                  <p className="text-sm text-secondary mb-2">
+                    一个JSON文件包含书本→课程→角色→句子的完整层级。支持自动关联。
+                  </p>
+                  <Button size="sm" variant="outline" onClick={() => downloadJson(NESTED_TEMPLATE, 'nested-template.json')}>
+                    下载嵌套模板
+                  </Button>
+                </div>
+                <div>
+                  <h3 className="font-headline font-bold mb-2 text-on-surface">独立模板</h3>
+                  <p className="text-sm text-secondary mb-2">
+                    每种实体单独导入，需要手动指定关联ID。
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <Button size="sm" variant="outline" onClick={() => downloadJson(BOOKS_TEMPLATE, 'books-template.json')}>书本</Button>
+                    <Button size="sm" variant="outline" onClick={() => downloadJson(COURSES_TEMPLATE, 'courses-template.json')}>课程</Button>
+                    <Button size="sm" variant="outline" onClick={() => downloadJson(CHARACTERS_TEMPLATE, 'characters-template.json')}>角色</Button>
+                    <Button size="sm" variant="outline" onClick={() => downloadJson(SENTENCES_TEMPLATE, 'sentences-template.json')}>句子</Button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <h3 className="font-headline font-bold mb-2 text-on-surface">字段说明</h3>
+                <div className="text-sm text-secondary space-y-1">
+                  <p><code className="bg-surface-container-high px-1 rounded">book_number</code> - 书本业务编号（唯一键）</p>
+                  <p><code className="bg-surface-container-high px-1 rounded">course_number</code> - 课程编号（同一本书内唯一）</p>
+                  <p><code className="bg-surface-container-high px-1 rounded">character_name</code> - 嵌套导入时用角色名自动匹配（无需ID）</p>
+                  <p><code className="bg-surface-container-high px-1 rounded">book_id / course_id</code> - 独立导入时填编号（非数据库ID）</p>
+                  <p><code className="bg-surface-container-high px-1 rounded">difficulty</code> - 书: N5-N1, 课程: N5-N3</p>
+                  <p><code className="bg-surface-container-high px-1 rounded">difficulty_level</code> - 句子: easy/medium/hard</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as Entity)} className="mt-6">
           <TabsList>
@@ -461,56 +511,6 @@ export default function AdminContentPage() {
             />
           </TabsContent>
         </Tabs>
-
-        {/* Import Guide Section */}
-        <div className="mt-8 border border-outline-variant/15 rounded-lg bg-surface-container-low overflow-hidden">
-          <button
-            onClick={() => setGuideOpen(!guideOpen)}
-            className="w-full px-4 py-3 flex items-center justify-between text-left font-headline font-bold text-on-surface hover:bg-surface-container-high transition-colors"
-          >
-            <span>导入指南 &amp; JSON模板</span>
-            <span>{guideOpen ? '▲' : '▼'}</span>
-          </button>
-          {guideOpen && (
-            <div className="p-4 border-t border-outline-variant/15 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <h3 className="font-headline font-bold mb-2 text-on-surface">嵌套模板（推荐）</h3>
-                  <p className="text-sm text-secondary mb-2">
-                    一个JSON文件包含书本→课程→角色→句子的完整层级。支持自动关联。
-                  </p>
-                  <Button size="sm" variant="outline" onClick={() => downloadJson(NESTED_TEMPLATE, 'nested-template.json')}>
-                    下载嵌套模板
-                  </Button>
-                </div>
-                <div>
-                  <h3 className="font-headline font-bold mb-2 text-on-surface">独立模板</h3>
-                  <p className="text-sm text-secondary mb-2">
-                    每种实体单独导入，需要手动指定关联ID。
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    <Button size="sm" variant="outline" onClick={() => downloadJson(BOOKS_TEMPLATE, 'books-template.json')}>书本</Button>
-                    <Button size="sm" variant="outline" onClick={() => downloadJson(COURSES_TEMPLATE, 'courses-template.json')}>课程</Button>
-                    <Button size="sm" variant="outline" onClick={() => downloadJson(CHARACTERS_TEMPLATE, 'characters-template.json')}>角色</Button>
-                    <Button size="sm" variant="outline" onClick={() => downloadJson(SENTENCES_TEMPLATE, 'sentences-template.json')}>句子</Button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <h3 className="font-headline font-bold mb-2 text-on-surface">字段说明</h3>
-                <div className="text-sm text-secondary space-y-1">
-                  <p><code className="bg-surface-container-high px-1 rounded">book_number</code> - 书本业务编号（唯一键）</p>
-                  <p><code className="bg-surface-container-high px-1 rounded">course_number</code> - 课程编号（同一本书内唯一）</p>
-                  <p><code className="bg-surface-container-high px-1 rounded">character_name</code> - 嵌套导入时用角色名自动匹配（无需ID）</p>
-                  <p><code className="bg-surface-container-high px-1 rounded">book_id / course_id</code> - 独立导入时填编号（非数据库ID）</p>
-                  <p><code className="bg-surface-container-high px-1 rounded">difficulty</code> - 书: N5-N1, 课程: N5-N3</p>
-                  <p><code className="bg-surface-container-high px-1 rounded">difficulty_level</code> - 句子: easy/medium/hard</p>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
       </div>
 
       {/* ─── Edit/Add Dialog ─── */}
