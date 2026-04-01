@@ -12,6 +12,7 @@ import { Icon } from '@/components/ui/zen/Icon';
 import { BookList } from '@/components/book/BookList';
 import { getUserLevel } from '@/lib/utils/user';
 import { userProgressService } from '@/services/supabase/userProgress.service';
+import { achievementService } from '@/services/supabase/achievement.service';
 import { supabase } from '@/lib/supabase/client';
 
 export const dynamic = 'force-dynamic';
@@ -59,10 +60,7 @@ export default function DashboardPage() {
 
       let achievementsCount = 0;
       try {
-        const supabaseClient = supabase();
-        const { data: achievements } = await supabaseClient
-          .from('user_achievements').select('id').eq('user_id', user.id);
-        if (achievements) achievementsCount = achievements.length;
+        achievementsCount = await achievementService.getUnlockedCount(user.id);
       } catch { console.warn('成就数据不可用'); }
 
       let todayPractices = 0;

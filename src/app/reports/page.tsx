@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
 import { useDailyReport, useWeeklyReport, useOverallStats } from '@/hooks/useReport';
+import { AchievementGrid } from '@/components/report/AchievementGrid';
 import { DailyReportDisplay, WeeklyReportDisplay } from '@/components/report/DailyReport';
 import { BottomNavBar } from '@/components/ui/zen/BottomNavBar';
 import { StatCard } from '@/components/ui/zen/StatCard';
@@ -208,6 +209,17 @@ export default function ReportsPage() {
                 <p className="text-secondary/50 font-body">今週のデータはまだありません</p>
               </div>
             )}
+          </section>
+        )}
+
+        {/* Achievement Grid */}
+        {period === 'overall' && (
+          <section className="space-y-6">
+            <div>
+              <h2 className="font-headline text-2xl font-bold tracking-tight mb-1">アチーブメント</h2>
+              <p className="text-secondary/50 font-body text-sm">獲得した成就一覧</p>
+            </div>
+            <AchievementGrid userId={user.id} />
           </section>
         )}
       </main>

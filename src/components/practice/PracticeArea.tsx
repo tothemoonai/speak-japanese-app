@@ -14,6 +14,8 @@ import { useAuthStore } from '@/store/authStore';
 import type { Sentence, Character } from '@/types';
 import { Volume2, Mic, CheckCircle, Loader2, AlertCircle, ChevronLeft, ChevronRight, List } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { achievementService } from '@/services/supabase/achievement.service';
+import type { AchievementDef } from '@/config/achievements';
 import { getApiKey } from '@/lib/storage/apiKeyStorage';
 
 interface PracticeAreaProps {
@@ -40,6 +42,7 @@ export function PracticeArea({ course, character, sentences }: PracticeAreaProps
   const [manualTranscript, setManualTranscript] = useState<string>('');
   const [showManualInput, setShowManualInput] = useState(false);
   const [showSentenceSelector, setShowSentenceSelector] = useState(false);
+  const [newAchievements, setNewAchievements] = useState<AchievementDef[]>([]);
 
   const currentSentence = filteredSentences[currentIndex];
   const isLastSentence = currentIndex === filteredSentences.length - 1;
@@ -229,13 +232,24 @@ export function PracticeArea({ course, character, sentences }: PracticeAreaProps
           );
 
           if (success) {
+            // Check achievements
+            let unlockedAchievements: AchievementDef[] = [];
+            try {
+              unlockedAchievements = await achievementService.checkAndUnlock(user.id);
+            } catch { /* non-critical */ }
+
             // Format time for display
             const minutes = Math.floor(totalTimeSpent / 60);
             const seconds = totalTimeSpent % 60;
             const timeString = minutes > 0 ? `${minutes}分${seconds}秒` : `${seconds}秒`;
 
+            // Build achievement text
+            const achievementText = unlockedAchievements.length > 0
+              ? '\n\n🏆 新しいアチーブメント解除！\n' + unlockedAchievements.map(a => `  ${a.name}: ${a.description}`).join('\n')
+              : '';
+
             // Show success message
-            alert(`🎉 恭喜完成所有句子练习！\n\n⏱️ 用时: ${timeString}\n📊 平均分: ${averageScore}分`);
+            alert(`🎉 恭喜完成所有句子练习！\n\n⏱️ 用时: ${timeString}\n📊 平均分: ${averageScore}分${achievementText}`);
 
             // Redirect to dashboard
             router.push('/dashboard');

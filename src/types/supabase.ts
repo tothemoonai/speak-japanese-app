@@ -215,6 +215,38 @@ export interface Database {
           completed_at?: string | null
         }
       }
+      user_achievements: {
+        Row: {
+          id: string
+          user_id: string
+          achievement_id: string
+          achievement_name: string
+          achievement_description: string | null
+          achievement_level: string | null
+          earned_at: string
+          metadata: Json | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          achievement_id: string
+          achievement_name?: string
+          achievement_description?: string | null
+          achievement_level?: string | null
+          earned_at?: string
+          metadata?: Json | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          achievement_id?: string
+          achievement_name?: string
+          achievement_description?: string | null
+          achievement_level?: string | null
+          earned_at?: string
+          metadata?: Json | null
+        }
+      }
       sentence_practices: {
         Row: {
           id: number
