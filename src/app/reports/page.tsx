@@ -214,7 +214,7 @@ export default function ReportsPage() {
 
         {/* Achievement Grid */}
         {period === 'overall' && (
-          <section className="space-y-6">
+          <section className="space-y-6 pt-6">
             <div>
               <h2 className="font-headline text-2xl font-bold tracking-tight mb-1">アチーブメント</h2>
               <p className="text-secondary/50 font-body text-sm">獲得した成就一覧</p>
