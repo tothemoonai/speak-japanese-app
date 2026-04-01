@@ -96,7 +96,8 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-surface">
       {/* Header */}
-      <header className="w-full top-0 sticky z-50 header-gradient flex justify-between items-center px-6 py-4">
+      <header className="w-full top-0 sticky z-50 header-gradient">
+        <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
         <div className="flex items-center gap-4">
           <h1 className="font-headline font-bold tracking-tight text-xl text-primary tracking-tighter">
             IT業務日本語
@@ -114,6 +115,7 @@ export default function DashboardPage() {
           <div className="w-10 h-10 rounded-full border-2 border-primary/20 p-0.5 overflow-hidden bg-surface-container-high flex items-center justify-center">
             <Icon name="person" size={20} className="text-secondary" />
           </div>
+        </div>
         </div>
       </header>
 
