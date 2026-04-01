@@ -86,7 +86,7 @@ function PracticePageContent() {
             {sentences && sentences.length === 0 ? 'このコースには会話フレーズがまだありません' : '後でもう一度お試しください'}
           </p>
           <Link href={`/courses/${courseId}`}>
-            <button className="bg-primary text-on-primary font-headline font-bold px-6 py-3 rounded-xl active:scale-95 transition-all">
+            <button className="bg-primary text-primary-foreground font-headline font-bold px-6 py-3 rounded-xl active:scale-95 transition-all">
               コースに戻る
             </button>
           </Link>
@@ -141,7 +141,7 @@ function PracticePageContent() {
                   className={cn(
                     'px-4 py-2 rounded-full font-headline font-bold text-sm transition-all',
                     selectedCharacter?.id === char.id
-                      ? 'bg-primary text-on-primary'
+                      ? 'bg-primary text-primary-foreground'
                       : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high'
                   )}
                 >

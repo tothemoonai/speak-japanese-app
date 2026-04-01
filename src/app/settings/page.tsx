@@ -185,7 +185,7 @@ export default function SettingsPage() {
                 <button
                   onClick={handleUpdateNickname}
                   disabled={isUpdatingNickname}
-                  className="bg-primary text-on-primary font-headline font-bold text-sm px-5 py-2.5 rounded-xl active:scale-95 transition-all disabled:opacity-50"
+                  className="bg-primary text-primary-foreground font-headline font-bold text-sm px-5 py-2.5 rounded-xl active:scale-95 transition-all disabled:opacity-50"
                 >
                   {isUpdatingNickname ? '保存中...' : '保存'}
                 </button>
@@ -256,7 +256,7 @@ export default function SettingsPage() {
                 <button
                   onClick={handleChangePassword}
                   disabled={isUpdatingPassword}
-                  className="bg-primary text-on-primary font-headline font-bold text-sm px-5 py-2.5 rounded-xl active:scale-95 transition-all disabled:opacity-50"
+                  className="bg-primary text-primary-foreground font-headline font-bold text-sm px-5 py-2.5 rounded-xl active:scale-95 transition-all disabled:opacity-50"
                 >
                   {isUpdatingPassword ? '変更中...' : '確認'}
                 </button>

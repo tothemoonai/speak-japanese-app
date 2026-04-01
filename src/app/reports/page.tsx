@@ -68,7 +68,7 @@ export default function ReportsPage() {
                 className={cn(
                   'flex items-center gap-2 px-5 py-2.5 rounded-xl font-headline font-bold text-sm transition-all',
                   period === tab.key
-                    ? 'bg-primary text-on-primary'
+                    ? 'bg-primary text-primary-foreground'
                     : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high'
                 )}
               >

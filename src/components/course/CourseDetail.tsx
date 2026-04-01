@@ -141,7 +141,7 @@ export function CourseDetail({ course, onPractice }: CourseDetailProps) {
         </div>
 
         <Link href={`/practice/${course.id}`} className="block">
-          <button className="bg-primary text-on-primary font-headline font-bold px-8 py-4 rounded-xl flex items-center gap-3 hover:bg-primary-fixed transition-all active:scale-95 shadow-lg shadow-primary/10">
+          <button className="bg-primary text-primary-foreground font-headline font-bold px-8 py-4 rounded-xl flex items-center gap-3 hover:bg-primary-fixed transition-all active:scale-95 shadow-lg shadow-primary/10">
             練習を始める
             <Icon name="play_circle" size={20} />
           </button>

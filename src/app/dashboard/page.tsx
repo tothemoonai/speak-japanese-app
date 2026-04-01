@@ -227,7 +227,7 @@ export default function DashboardPage() {
       {/* Floating Action Button */}
       <div className="fixed bottom-24 right-6 z-40">
         <Link href="/books">
-          <button className="w-16 h-16 rounded-full bg-primary text-on-primary btn-shadow-primary flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+          <button className="w-16 h-16 rounded-full bg-primary text-primary-foreground btn-shadow-primary flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
             <Icon name="mic" size={28} fill />
           </button>
         </Link>

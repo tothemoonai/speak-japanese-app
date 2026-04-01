@@ -68,7 +68,7 @@ export default function BooksPage() {
               className={cn(
                 'px-6 py-2 rounded-full font-bold text-sm whitespace-nowrap transition-all',
                 selectedDifficulties.length === 0
-                  ? 'bg-primary text-on-primary'
+                  ? 'bg-primary text-primary-foreground'
                   : 'bg-surface-container-low text-on-surface-variant border border-outline-variant/10 hover:border-primary/30'
               )}
             >
@@ -81,7 +81,7 @@ export default function BooksPage() {
                 className={cn(
                   'px-6 py-2 rounded-full font-medium text-sm whitespace-nowrap transition-all',
                   selectedDifficulties.includes(difficulty)
-                    ? 'bg-primary text-on-primary font-bold'
+                    ? 'bg-primary text-primary-foreground font-bold'
                     : 'bg-surface-container-low text-on-surface-variant border border-outline-variant/10 hover:border-primary/30'
                 )}
               >
