@@ -3,10 +3,13 @@
 import { useAudioRecorder } from '@/hooks/useAudioRecorder';
 import { usePCMRecorder } from '@/hooks/usePCMRecorder';
 import { useASR, useJapaneseASR } from '@/hooks/useASR';
+import { useLocalASR } from '@/hooks/useLocalASR';
+import { useASRStore } from '@/store/asrStore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Mic, Square, RotateCcw, AlertCircle, Loader2, Play, Volume2 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Mic, Square, RotateCcw, AlertCircle, Loader2, Play, Volume2, Radio } from 'lucide-react';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { Capacitor } from '@capacitor/core';
 
 interface AudioRecorderProps {
   onRecordingComplete?: (audioBlob: Blob, audioUrl: string) => void;
@@ -29,7 +32,12 @@ export function AudioRecorder({
   provider = 'aliyun',
   usePCM = true, // 默认使用PCM格式（适合阿里云ASR）
 }: AudioRecorderProps) {
-  // 根据usePCM选择不同的录音hook
+  // ASR mode detection
+  const { asrMode } = useASRStore();
+  const localASR = useLocalASR();
+  const isLocalMode = asrMode === 'local' && typeof window !== 'undefined' && Capacitor.getPlatform() === 'android';
+
+  // Cloud recording hooks (still needed for cloud mode)
   const mediaRecorder = useAudioRecorder();
   const pcmRecorder = usePCMRecorder();
 
@@ -41,8 +49,25 @@ export function AudioRecorder({
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Notify parent component when recording completes
+  // Watch for local ASR results
   useEffect(() => {
+    if (isLocalMode && localASR.state.lastResult) {
+      setTranscript(localASR.state.lastResult);
+      onTranscript?.(localASR.state.lastResult);
+    }
+  }, [isLocalMode, localASR.state.lastResult, onTranscript]);
+
+  // Watch for local ASR errors
+  useEffect(() => {
+    if (isLocalMode && localASR.state.error) {
+      onError?.(new Error(localASR.state.error));
+    }
+  }, [isLocalMode, localASR.state.error, onError]);
+
+  // Notify parent component when recording completes (cloud mode only)
+  useEffect(() => {
+    if (isLocalMode) return;
+
     if (
       state.audioBlob &&
       state.audioUrl &&
@@ -57,16 +82,18 @@ export function AudioRecorder({
         performRecognition(state.audioBlob);
       }
     }
-  }, [state.audioBlob, state.audioUrl, state.isRecording, onRecordingComplete, enableASR]);
+  }, [state.audioBlob, state.audioUrl, state.isRecording, onRecordingComplete, enableASR, isLocalMode]);
 
-  // Notify parent component of errors
+  // Notify parent component of errors (cloud mode only)
   useEffect(() => {
+    if (isLocalMode) return;
+
     if (state.error) {
       onError?.(state.error);
     }
-  }, [state.error, onError]);
+  }, [state.error, onError, isLocalMode]);
 
-  // 执行语音识别
+  // 执行语音识别 (cloud mode only)
   const performRecognition = async (audioBlob: Blob) => {
     setIsRecognizing(true);
     setTranscript('');
@@ -83,7 +110,34 @@ export function AudioRecorder({
     }
   };
 
-  // 播放录音
+  // Branched handler functions
+  const handleStartRecording = useCallback(async () => {
+    if (isLocalMode) {
+      await localASR.startRecording();
+    } else {
+      controls.startRecording();
+    }
+  }, [isLocalMode, localASR, controls]);
+
+  const handleStopRecording = useCallback(async () => {
+    if (isLocalMode) {
+      await localASR.stopRecording();
+    } else {
+      controls.stopRecording();
+    }
+  }, [isLocalMode, localASR, controls]);
+
+  const handleReset = useCallback(() => {
+    if (isLocalMode) {
+      localASR.release();
+      setTranscript('');
+    } else {
+      controls.resetRecording();
+      setTranscript('');
+    }
+  }, [isLocalMode, localASR, controls]);
+
+  // 播放录音 (cloud mode only)
   const handlePlayRecording = () => {
     if (!state.audioUrl) return;
 
@@ -99,6 +153,11 @@ export function AudioRecorder({
     setIsPlaying(false);
   };
 
+  // Derived display state that works for both modes
+  const isRecording = isLocalMode ? localASR.state.isRecording : state.isRecording;
+  const hasRecording = isLocalMode ? localASR.state.lastResult !== null : !!state.audioUrl;
+  const errorMessage = isLocalMode ? localASR.state.error : state.error?.message;
+
   // Format duration as MM:SS
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -110,19 +169,35 @@ export function AudioRecorder({
     <Card className="w-full">
       <CardContent className="pt-6">
         <div className="flex flex-col items-center gap-4">
-          {/* Duration Display */}
-          {state.isRecording && (
+          {/* Duration / Listening Display */}
+          {isRecording && (
             <div className="text-center">
-              <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-red-500 animate-pulse">
-                {formatDuration(state.duration)}
-              </div>
-              <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                录音中...{usePCM && '(WAV 16kHz)'}
-              </p>
+              {isLocalMode ? (
+                <>
+                  <div className="flex items-center justify-center gap-2">
+                    <Radio className="h-6 w-6 text-red-500 animate-pulse" />
+                    <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-red-500 animate-pulse">
+                      Listening...
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                    本地识别中...
+                  </p>
+                </>
+              ) : (
+                <>
+                  <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-red-500 animate-pulse">
+                    {formatDuration(state.duration)}
+                  </div>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                    录音中...{usePCM && '(WAV 16kHz)'}
+                  </p>
+                </>
+              )}
             </div>
           )}
 
-          {/* Recognition Progress */}
+          {/* Recognition Progress (cloud mode only) */}
           {isRecognizing && (
             <div className="text-center w-full max-w-md px-4">
               <div className="flex items-center justify-center gap-2 mb-2">
@@ -148,8 +223,8 @@ export function AudioRecorder({
             </div>
           )}
 
-          {/* ASR Error */}
-          {asrState.error && !isRecognizing && (
+          {/* ASR Error (cloud mode) */}
+          {!isLocalMode && asrState.error && !isRecognizing && (
             <div className="flex items-center gap-2 text-orange-600 bg-orange-50 px-3 sm:px-4 py-2 rounded-md w-full max-w-md mx-2 sm:mx-0">
               <AlertCircle className="h-4 w-4 flex-shrink-0" />
               <span className="text-xs sm:text-sm">识别失败：{asrState.error.message}</span>
@@ -158,10 +233,10 @@ export function AudioRecorder({
 
           {/* Controls */}
           <div className="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
-            {!state.isRecording && !state.audioUrl && (
+            {!isRecording && !hasRecording && (
               <Button
                 size="lg"
-                onClick={controls.startRecording}
+                onClick={handleStartRecording}
                 disabled={disabled || isRecognizing}
                 className="w-full sm:w-auto min-w-[120px] sm:w-32"
               >
@@ -170,11 +245,11 @@ export function AudioRecorder({
               </Button>
             )}
 
-            {state.isRecording && (
+            {isRecording && (
               <Button
                 size="lg"
                 variant="destructive"
-                onClick={controls.stopRecording}
+                onClick={handleStopRecording}
                 className="w-full sm:w-auto min-w-[120px] sm:w-32"
               >
                 <Square className="h-5 w-5 mr-2" />
@@ -182,31 +257,34 @@ export function AudioRecorder({
               </Button>
             )}
 
-            {state.audioUrl && !state.isRecording && (
+            {hasRecording && !isRecording && (
               <>
+                {/* Play button only for cloud mode (local mode has no audio blob) */}
+                {!isLocalMode && state.audioUrl && (
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    onClick={handlePlayRecording}
+                    disabled={isPlaying || isRecognizing}
+                    className="w-full sm:w-auto min-w-[120px] sm:w-32"
+                  >
+                    {isPlaying ? (
+                      <>
+                        <Volume2 className="h-5 w-5 mr-2 animate-pulse" />
+                        播放中...
+                      </>
+                    ) : (
+                      <>
+                        <Play className="h-5 w-5 mr-2" />
+                        播放录音
+                      </>
+                    )}
+                  </Button>
+                )}
                 <Button
                   size="lg"
                   variant="outline"
-                  onClick={handlePlayRecording}
-                  disabled={isPlaying || isRecognizing}
-                  className="w-full sm:w-auto min-w-[120px] sm:w-32"
-                >
-                  {isPlaying ? (
-                    <>
-                      <Volume2 className="h-5 w-5 mr-2 animate-pulse" />
-                      播放中...
-                    </>
-                  ) : (
-                    <>
-                      <Play className="h-5 w-5 mr-2" />
-                      播放录音
-                    </>
-                  )}
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  onClick={controls.resetRecording}
+                  onClick={handleReset}
                   disabled={isRecognizing}
                   className="w-full sm:w-auto min-w-[120px] sm:w-32"
                 >
@@ -218,13 +296,13 @@ export function AudioRecorder({
           </div>
 
           {/* Error Message */}
-          {state.error && (
+          {errorMessage && (
             <div className="flex items-center gap-2 text-red-600 bg-red-50 px-3 sm:px-4 py-2 rounded-md mx-2 sm:mx-0">
               <AlertCircle className="h-4 w-4 flex-shrink-0" />
               <span className="text-xs sm:text-sm">
-                {state.error.message.includes('Permission denied')
+                {errorMessage.includes('Permission denied')
                   ? '请允许访问麦克风'
-                  : state.error.message.includes('not found')
+                  : errorMessage.includes('not found')
                   ? '未找到麦克风设备'
                   : '录音出错，请重试'}
               </span>
@@ -232,15 +310,17 @@ export function AudioRecorder({
           )}
 
           {/* Instructions */}
-          {!state.isRecording && !state.audioUrl && !isRecognizing && (
+          {!isRecording && !hasRecording && !isRecognizing && (
             <p className="text-xs sm:text-sm text-muted-foreground text-center px-4">
-              点击"开始录音"按钮，然后清晰地读出目标句子
-              {usePCM && '（使用WAV格式录制，16kHz采样率，适合语音识别）'}
+              {isLocalMode
+                ? '点击"开始录音"按钮，然后清晰地读出目标句子（本地离线识别）'
+                : <>点击"开始录音"按钮，然后清晰地读出目标句子{usePCM && '（使用WAV格式录制，16kHz采样率，适合语音识别）'}</>
+              }
             </p>
           )}
 
-          {/* Audio element for playback */}
-          {state.audioUrl && (
+          {/* Audio element for playback (cloud mode only) */}
+          {!isLocalMode && state.audioUrl && (
             <audio
               ref={audioRef}
               onEnded={handleAudioEnded}

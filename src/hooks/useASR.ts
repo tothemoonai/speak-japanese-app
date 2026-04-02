@@ -4,6 +4,7 @@
  */
 
 import { useState, useCallback } from 'react';
+import { useASRStore } from '@/store/asrStore';
 
 // 识别结果接口
 export interface ASRResult {
@@ -181,6 +182,24 @@ export function useASR(options: ASROptions = {}) {
     state,
     recognize,
     reset,
+  };
+}
+
+/**
+ * useASRWithMode - ASR hook that respects the asrMode setting
+ * Returns cloud ASR capabilities plus mode info for the UI
+ */
+export function useASRWithMode(options: ASROptions = {}) {
+  const { asrMode } = useASRStore();
+  const cloudASR = useASR(options);
+
+  return {
+    ...cloudASR,
+    asrMode,
+    isLocalMode: asrMode === 'local' &&
+      typeof window !== 'undefined' &&
+      typeof (window as any).Capacitor !== 'undefined' &&
+      (window as any).Capacitor?.getPlatform?.() === 'android',
   };
 }
 

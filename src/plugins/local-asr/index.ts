@@ -1,5 +1,5 @@
 import { registerPlugin } from '@capacitor/core';
-import type { LocalASRPlugin } from './definitions';
+import type { LocalASRPlugin, ModelStatus, DownloadProgressEvent, ASRResultEvent, VADStateEvent } from './definitions';
 
 const LocalASR = registerPlugin<LocalASRPlugin>('LocalASR', {
   web: () => import('./web').then(m => new m.LocalASRWeb()),
