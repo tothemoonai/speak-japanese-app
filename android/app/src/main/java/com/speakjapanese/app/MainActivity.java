@@ -8,8 +8,8 @@ import com.speakjapanese.app.localasr.LocalASRPlugin;
 public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         registerPlugin(LocalASRPlugin.class);
+        super.onCreate(savedInstanceState);
 
         // 设置透明状态栏
         getWindow().setStatusBarColor(android.graphics.Color.TRANSPARENT);

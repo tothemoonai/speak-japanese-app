@@ -144,6 +144,26 @@ class LocalASRPlugin : Plugin() {
             return
         }
 
+        // Request RECORD_AUDIO permission if not granted
+        if (getPermissionState("record_audio") != com.getcapacitor.PermissionState.GRANTED) {
+            requestPermissionForAlias("record_audio", call, "permissionCallback")
+            return
+        }
+
+        doStartRecording(call)
+    }
+
+    @com.getcapacitor.annotation.PermissionCallback
+    private fun permissionCallback(call: PluginCall) {
+        if (getPermissionState("record_audio") == com.getcapacitor.PermissionState.GRANTED) {
+            doStartRecording(call)
+        } else {
+            call.reject("Microphone permission denied")
+        }
+    }
+
+    private fun doStartRecording(call: PluginCall) {
+
         val minBufferSize = AudioRecord.getMinBufferSize(
             SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_FLOAT
         )
