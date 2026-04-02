@@ -12,6 +12,7 @@ import { getUserLevel } from '@/lib/utils/user';
 import { ApiKeySettings } from '@/components/settings/ApiKeySettings';
 import { FontSizeSettings } from '@/components/settings/FontSizeSettings';
 import { ColorSchemeSettings } from '@/components/settings/ColorSchemeSettings';
+import { ASRSettings } from '@/components/settings/ASRSettings';
 import { VERSION_DISPLAY } from '@/VERSION';
 
 export default function SettingsPage() {
@@ -306,44 +307,8 @@ export default function SettingsPage() {
           <ApiKeySettings />
         </section>
 
-        {/* ASR Info */}
-        <section className="bg-surface-container-low p-6 rounded-2xl space-y-4">
-          <div className="flex items-center gap-3">
-            <Icon name="mic" size={18} className="text-primary" />
-            <h3 className="font-headline font-bold text-on-surface">音声認識サービス</h3>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="font-label text-[10px] uppercase tracking-widest text-secondary/40 mb-1">モデル</p>
-              <p className="font-body text-sm text-on-surface font-medium">qwen3-asr-flash</p>
-            </div>
-            <div>
-              <p className="font-label text-[10px] uppercase tracking-widest text-secondary/40 mb-1">プロバイダー</p>
-              <p className="font-body text-sm text-on-surface font-medium">Alibaba Cloud DashScope</p>
-            </div>
-            <div>
-              <p className="font-label text-[10px] uppercase tracking-widest text-secondary/40 mb-1">エンドポイント</p>
-              <p className="font-body text-xs text-secondary/60 font-mono break-all">dashscope-intl.aliyuncs.com</p>
-            </div>
-            <div>
-              <p className="font-label text-[10px] uppercase tracking-widest text-secondary/40 mb-1">対応言語</p>
-              <p className="font-body text-sm text-on-surface font-medium">日本語・中国語・英語</p>
-            </div>
-          </div>
-          <div className="pt-4 border-t border-outline-variant/10 space-y-2">
-            {[
-              '高速認識：flashモデル、5-10秒で応答',
-              '高精度：専門日本語音声認識、精度 > 95%',
-              '多言語対応：日本語・中国語・英語を自動検出',
-              '感情分析と言語検出の結果を返却',
-            ].map((feature, i) => (
-              <div key={i} className="flex items-start gap-2">
-                <Icon name="check_circle" size={14} className="text-primary mt-0.5 flex-shrink-0" fill />
-                <span className="text-sm text-secondary/70 font-body">{feature}</span>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* ASR Settings */}
+        <ASRSettings />
 
         {/* Logout */}
         <section className="pt-4">
