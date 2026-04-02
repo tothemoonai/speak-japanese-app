@@ -6,7 +6,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
@@ -181,18 +182,12 @@ class ModelManager(private val context: Context) {
                 try {
                     downloadArchive(tempArchive, callback)
 
-                    if (!isActive) {
-                        cleanupTempFile(tempArchive)
-                        return@launch
-                    }
+                    currentCoroutineContext().ensureActive()
 
                     // Extract the requested model
                     extractModel(tempArchive, type, modelsDir, callback)
 
-                    if (!isActive) {
-                        cleanupTempFile(tempArchive)
-                        return@launch
-                    }
+                    currentCoroutineContext().ensureActive()
 
                     // Clean up archive
                     cleanupTempFile(tempArchive)
@@ -255,7 +250,7 @@ class ModelManager(private val context: Context) {
                     var bytesRead: Int
 
                     while (input.read(buffer).also { bytesRead = it } != -1) {
-                        if (!isActive) return
+                        currentCoroutineContext().ensureActive()
 
                         output.write(buffer, 0, bytesRead)
                         totalRead += bytesRead

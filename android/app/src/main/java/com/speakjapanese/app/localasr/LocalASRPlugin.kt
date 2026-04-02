@@ -100,8 +100,8 @@ class LocalASRPlugin : Plugin() {
 
     @PluginMethod
     fun initialize(call: PluginCall) {
-        val modelType = call.getString("modelType", "int8")
-        val language = call.getString("language", "ja")
+        val modelType = call.getString("modelType", "int8") ?: "int8"
+        val language = call.getString("language", "ja") ?: "ja"
 
         // Init VAD (lazy, once)
         try {
