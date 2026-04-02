@@ -106,33 +106,50 @@ export function PracticeArea({ course, character, sentences, dialogueMode, chara
     initPracticeRecord();
   }, [user?.id]); // 只在用户变化时执行一次
 
-  const handleRecordingComplete = useCallback((blob: Blob, url: string) => {
+  const handleRecordingComplete = useCallback(async (blob: Blob, url: string) => {
     setRecordedAudio({ blob, url });
     setError(null);
+
+    // Auto-transcribe after recording (cloud mode)
+    try {
+      const text = await transcribeAudio(blob);
+      if (text) {
+        setTranscript(text);
+      }
+    } catch (err) {
+      console.warn('Auto-transcribe failed:', err);
+      // Don't block the user - they can still click evaluate
+    }
+  }, []);
+
+  const handleTranscript = useCallback((text: string) => {
+    setTranscript(text);
   }, []);
 
   const handleEvaluate = async () => {
-    if (!recordedAudio || !currentSentence) {
-      return;
-    }
+    if (!currentSentence) return;
+    if (!recordedAudio && !transcript) return;
 
     setIsEvaluating(true);
     setError(null);
 
     try {
-      // Use manual transcript if provided, otherwise try to transcribe
-      let transcription = manualTranscript;
+      // Use manual transcript or transcript from AudioRecorder's ASR
+      let transcription = manualTranscript || transcript;
 
-      if (!transcription) {
+      if (!transcription && recordedAudio) {
         try {
-          // Try to transcribe audio using Zhipu GLM-ASR API
           transcription = await transcribeAudio(recordedAudio.blob);
         } catch (transcribeError) {
-          // If transcription fails, use target text as fallback
           console.warn('Transcription failed, using target text as fallback:', transcribeError);
           transcription = currentSentence.text_jp;
           setError('语音识别失败，将使用目标文本进行评估');
         }
+      }
+
+      if (!transcription) {
+        setError('请先录音');
+        return;
       }
 
       setTranscript(transcription);
@@ -156,9 +173,9 @@ export function PracticeArea({ course, character, sentences, dialogueMode, chara
           await practiceRecordService.savePracticeResult({
             practiceId: practiceId,
             sentenceId: currentSentence.id,
-            userText: transcript,
+            userText: transcription,
             standardText: currentSentence.text_jp,
-            audioUrl: recordedAudio.url,
+            audioUrl: recordedAudio?.url || '',
             overallScore: evaluation.overall_score || 0,
             dimensionScores: evaluation.dimension_scores || {
               emotion: 0,
@@ -450,6 +467,7 @@ export function PracticeArea({ course, character, sentences, dialogueMode, chara
           <CardContent>
             <AudioRecorder
               onRecordingComplete={handleRecordingComplete}
+              onTranscript={handleTranscript}
               disabled={isEvaluating}
               enableASR={false}
               provider="aliyun"
@@ -480,6 +498,18 @@ export function PracticeArea({ course, character, sentences, dialogueMode, chara
       {/* Evaluation Result */}
       {result && <FeedbackDisplay result={result} />}
 
+      {/* Transcript Display - show after evaluation result */}
+      {transcript && !error && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm">识别结果</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm">{transcript}</p>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Navigation Buttons */}
       <Card>
         <CardContent className="pt-4 sm:pt-6">
@@ -499,7 +529,7 @@ export function PracticeArea({ course, character, sentences, dialogueMode, chara
               <Button
                 variant="outline"
                 onClick={handleRetry}
-                disabled={!recordedAudio || isEvaluating}
+                disabled={(!recordedAudio && !transcript) || isEvaluating}
                 className="flex-1 max-w-[160px]"
               >
                 重新录音
@@ -508,7 +538,7 @@ export function PracticeArea({ course, character, sentences, dialogueMode, chara
               {!result && !error && (
                 <Button
                   onClick={handleEvaluate}
-                  disabled={!recordedAudio || isEvaluating}
+                  disabled={(!recordedAudio && !transcript) || isEvaluating}
                   className="flex-1 max-w-[160px]"
                 >
                   {isEvaluating ? (
@@ -538,18 +568,6 @@ export function PracticeArea({ course, character, sentences, dialogueMode, chara
           </div>
         </CardContent>
       </Card>
-
-      {/* Transcript Display (for debugging/feedback) */}
-      {transcript && !error && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm">识别结果</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm">{transcript}</p>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }

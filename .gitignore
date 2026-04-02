@@ -139,3 +139,22 @@ src/app/debug-auth/
 .claude/settings.local.json
 scripts/brcourses/
 scripts/final-verification.js
+
+# Reference project (1.2GB+)
+sherpaJPASR/
+
+# Superpowers plugin cache
+.superpowers/
+
+# Playwright MCP
+.playwright-mcp/
+
+# Android backup files
+android/app/src/main/jniLibs.backup.OLD/
+
+# IDE config
+android/.idea/
+
+# Temp screenshots and files
+temp/*.png
+temp/*.jpg

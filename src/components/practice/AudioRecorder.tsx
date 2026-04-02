@@ -48,12 +48,14 @@ export function AudioRecorder({
   const [isRecognizing, setIsRecognizing] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const localTranscriptRef = useRef<string>('');
 
-  // Watch for local ASR results
+  // Watch for local ASR results - accumulate all results during recording
   useEffect(() => {
     if (isLocalMode && localASR.state.lastResult) {
-      setTranscript(localASR.state.lastResult);
-      onTranscript?.(localASR.state.lastResult);
+      localTranscriptRef.current += localASR.state.lastResult;
+      setTranscript(localTranscriptRef.current);
+      onTranscript?.(localTranscriptRef.current);
     }
   }, [isLocalMode, localASR.state.lastResult, onTranscript]);
 
@@ -113,6 +115,8 @@ export function AudioRecorder({
   // Branched handler functions
   const handleStartRecording = useCallback(async () => {
     if (isLocalMode) {
+      localTranscriptRef.current = '';
+      setTranscript('');
       await localASR.startRecording();
     } else {
       controls.startRecording();
@@ -129,6 +133,7 @@ export function AudioRecorder({
 
   const handleReset = useCallback(() => {
     if (isLocalMode) {
+      localTranscriptRef.current = '';
       localASR.release();
       setTranscript('');
     } else {
@@ -155,7 +160,7 @@ export function AudioRecorder({
 
   // Derived display state that works for both modes
   const isRecording = isLocalMode ? localASR.state.isRecording : state.isRecording;
-  const hasRecording = isLocalMode ? localASR.state.lastResult !== null : !!state.audioUrl;
+  const hasRecording = isLocalMode ? (transcript !== '' || localASR.state.lastResult !== null) : !!state.audioUrl;
   const errorMessage = isLocalMode ? localASR.state.error : state.error?.message;
 
   // Format duration as MM:SS
