@@ -38,8 +38,28 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# capacitor
-android/
+# capacitor - ignore android except tracked native files
+android/app/build/
+android/app/.gradle/
+android/app/src/main/java/com/speakjapanese/
+android/app/src/main/res/
+android/app/src/main/AndroidManifest.xml
+android/app/src/test/
+android/app/src/androidTest/
+android/app/build.gradle
+android/app/proguard-rules.pro
+android/app/libs/
+android/build/
+android/gradle/
+android/.gradle/
+android/build.gradle
+android/settings.gradle
+android/gradle.properties
+android/gradlew
+android/gradlew.bat
+android/local.properties
+android/project.properties
+android/*.iml
 ios/
 .capacitor/
 
