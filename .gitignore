@@ -158,3 +158,32 @@ android/.idea/
 # Temp screenshots and files
 temp/*.png
 temp/*.jpg
+temp/.playwright-mcp/
+
+# Log files
+*.log
+android_log.txt
+vercel-deploy-output.log
+
+# Build scripts (one-time use)
+build-apk.bat
+scripts/build-android.bat
+scripts/compile-android.bat
+scripts/setup-android-asr.bat
+scripts/test-android-local.bat
+scripts/test-local.bat
+
+# UI design references (completed)
+UI/
+
+# Old/outdated docs
+docs/ANDROID_APP_TEST_GUIDE.md
+docs/ANDROID_ASR_GUIDE.md
+docs/ANDROID_ASR_ISSUE_ANALYSIS.md
+docs/ANDROID_ASR_TEST_CHECKLIST.md
+docs/ANDROID_COMPILE_FIX.md
+docs/ANDROID_DEBUG_GUIDE.md
+docs/ANDROID_QUICK_TEST.md
+docs/PROGRESS_UPDATE_SUMMARY.md
+docs/QUICK_START_ANDROID.md
+docs/SHERPA_ONNX_OPTIMIZATION.md
