@@ -42,6 +42,7 @@ next-env.d.ts
 android/app/build/
 android/app/.gradle/
 android/app/src/main/java/com/speakjapanese/
+!android/app/src/main/java/com/speakjapanese/app/localasr/
 android/app/src/main/res/
 android/app/src/main/AndroidManifest.xml
 android/app/src/test/
