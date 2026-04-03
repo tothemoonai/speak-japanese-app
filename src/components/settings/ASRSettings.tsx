@@ -106,7 +106,7 @@ export function ASRSettings() {
             <div className="flex items-start gap-2">
               <Icon name="info" size={14} className="text-primary mt-0.5 flex-shrink-0" />
               <p className="text-xs text-secondary/70 font-body">
-                ローカルASRはオフラインで動作します。初回使用時にモデルのダウンロードが必要です（約1.1GB）。
+                ローカルASRはオフラインで動作します。初回使用時にモデルのダウンロードが必要です。
               </p>
             </div>
           </div>
@@ -167,20 +167,6 @@ export function ASRSettings() {
             </div>
           )}
 
-          {/* Local ASR Features */}
-          <div className="pt-3 border-t border-outline-variant/10 space-y-2">
-            {[
-              'オフライン動作：ネットワーク接続不要',
-              'プライバシー保護：音声データは端末内で処理',
-              'Silero VAD：自動的な発話区間検出',
-              'SenseVoice：多言語対応（日・中・英・韓・粤）',
-            ].map((feature, i) => (
-              <div key={i} className="flex items-start gap-2">
-                <Icon name="check_circle" size={14} className="text-primary mt-0.5 flex-shrink-0" fill />
-                <span className="text-sm text-secondary/70 font-body">{feature}</span>
-              </div>
-            ))}
-          </div>
         </div>
       )}
     </section>
