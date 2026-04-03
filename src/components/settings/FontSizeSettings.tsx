@@ -61,25 +61,6 @@ export function FontSizeSettings() {
             );
           })}
         </div>
-
-        {/* 预览文本 */}
-        <div className="mt-4 p-4 rounded-lg bg-muted/50 border">
-          <p className="text-sm font-medium mb-2">预览效果</p>
-          <p className="text-base mb-1">IT日语学习平台</p>
-          <p className="text-sm text-muted-foreground">
-            通过AI技术，帮助你进行沉浸式的IT日语练习
-          </p>
-        </div>
-
-        {/* 说明文字 */}
-        <div className="mt-4 text-xs text-muted-foreground">
-          <p>💡 提示：</p>
-          <ul className="list-disc list-inside space-y-1 mt-1">
-            <li>选择适合您的字体大小</li>
-            <li>设置将在所有页面生效</li>
-            <li>手机上建议使用"小"或"中"</li>
-          </ul>
-        </div>
       </CardContent>
     </Card>
   );

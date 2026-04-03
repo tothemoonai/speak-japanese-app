@@ -205,12 +205,8 @@ export function ApiKeySettings() {
         <div className="flex items-start gap-3 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
           <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
           <div className="text-sm text-blue-800 dark:text-blue-200">
-            <p className="font-medium mb-1">安全说明</p>
             <ul className="space-y-1 text-xs">
-              <li>• 所有 API 密钥都安全地存储在本地设备上</li>
-              <li>• 移动端使用加密存储，网页版使用浏览器本地存储</li>
-              <li>• 我们不会收集或上传你的 API 密钥到服务器</li>
-              <li>• 请妥善保管你的密钥，不要分享给他人</li>
+              <li>• 移动端和网页版须分别配置</li>
             </ul>
           </div>
         </div>

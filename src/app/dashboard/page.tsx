@@ -38,6 +38,7 @@ export default function DashboardPage() {
     today_practices: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [lastPracticeCourseId, setLastPracticeCourseId] = useState<string | null>(null);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -74,6 +75,18 @@ export default function DashboardPage() {
           .not('completed_at', 'is', null);
         if (todayRecords) todayPractices = todayRecords.length;
       } catch { console.warn('今日练习数据不可用'); }
+
+      // Fetch last practice course and save to localStorage
+      try {
+        const supabaseClient = supabase();
+        const { data: lastRecord } = await supabaseClient
+          .from('practice_records').select('course_id')
+          .eq('user_id', user.id).order('started_at', { ascending: false }).limit(1);
+        if (lastRecord && lastRecord.length > 0) {
+          setLastPracticeCourseId(lastRecord[0].course_id);
+          localStorage.setItem('lastPracticeCourseId', lastRecord[0].course_id);
+        }
+      } catch { console.warn('最近练习数据不可用'); }
 
       setUserStats({
         total_practices: stats.total_practices,
@@ -224,15 +237,6 @@ export default function DashboardPage() {
           <BookList userId={user.id} />
         </section>
       </main>
-
-      {/* Floating Action Button */}
-      <div className="fixed bottom-24 right-6 z-40">
-        <Link href="/books">
-          <button className="w-16 h-16 rounded-full bg-primary text-primary-foreground btn-shadow-primary flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
-            <Icon name="mic" size={28} fill />
-          </button>
-        </Link>
-      </div>
 
       <BottomNavBar />
     </div>

@@ -143,7 +143,7 @@ export function ASRSettings() {
             label="INT8 モデル"
             size="228MB"
             isDownloaded={state.modelStatus?.int8 ?? false}
-            isDownloading={state.isDownloading && localModelType === 'int8'}
+            isDownloading={state.isDownloading && state.downloadingType === 'int8'}
             progress={state.downloadProgress}
             onDownload={() => downloadModel('int8')}
             onDelete={() => deleteModel('int8')}
@@ -154,7 +154,7 @@ export function ASRSettings() {
             label="FP32 モデル"
             size="894MB"
             isDownloaded={state.modelStatus?.fp32 ?? false}
-            isDownloading={state.isDownloading && localModelType === 'fp32'}
+            isDownloading={state.isDownloading && state.downloadingType === 'fp32'}
             progress={state.downloadProgress}
             onDownload={() => downloadModel('fp32')}
             onDelete={() => deleteModel('fp32')}
@@ -205,6 +205,13 @@ function ModelRow({
   onDownload: () => void;
   onDelete: () => void;
 }) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  // Reset confirm state when download status changes
+  useEffect(() => {
+    if (!isDownloaded) setConfirmDelete(false);
+  }, [isDownloaded]);
+
   return (
     <div className="flex items-center justify-between py-2 px-3 bg-surface-container-high rounded-xl">
       <div className="flex items-center gap-3">
@@ -221,22 +228,52 @@ function ModelRow({
       </div>
       <div className="flex items-center gap-2">
         {isDownloading ? (
-          <div className="w-24">
-            <div className="h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
-              <div
-                className="h-full bg-primary rounded-full transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              />
+          progress >= 70 ? (
+            <div className="flex items-center gap-1.5">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+              </span>
+              <span className="text-[10px] text-primary font-label font-bold">解压中...</span>
             </div>
-            <p className="text-[10px] text-secondary/50 font-label text-right mt-1">{progress}%</p>
-          </div>
+          ) : (
+            <div className="w-28">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] text-primary font-label font-bold">下载中</span>
+                <span className="text-[10px] text-secondary/50 font-label">{Math.round(progress / 69 * 100)}%</span>
+              </div>
+              <div className="h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-primary rounded-full transition-all duration-300"
+                  style={{ width: `${Math.round(progress / 69 * 100)}%` }}
+                />
+              </div>
+            </div>
+          )
         ) : isDownloaded ? (
-          <button
-            onClick={onDelete}
-            className="text-xs text-destructive font-label font-bold tracking-widest hover:underline"
-          >
-            削除
-          </button>
+          confirmDelete ? (
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => { onDelete(); setConfirmDelete(false); }}
+                className="text-[10px] text-destructive font-label font-bold px-2 py-1 bg-destructive/10 rounded-lg"
+              >
+                確認
+              </button>
+              <button
+                onClick={() => setConfirmDelete(false)}
+                className="text-[10px] text-secondary/50 font-label px-2 py-1"
+              >
+                キャンセル
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setConfirmDelete(true)}
+              className="text-xs text-destructive font-label font-bold tracking-widest hover:underline"
+            >
+              削除
+            </button>
+          )
         ) : (
           <button
             onClick={onDownload}

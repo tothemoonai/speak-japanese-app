@@ -293,9 +293,7 @@ export default function SettingsPage() {
         </section>
 
         {/* Font Size Settings */}
-        <section className="bg-surface-container-low p-6 rounded-2xl">
-          <FontSizeSettings />
-        </section>
+        <FontSizeSettings />
 
         {/* Color Scheme Settings */}
         <section className="bg-surface-container-low p-6 rounded-2xl">
@@ -303,9 +301,7 @@ export default function SettingsPage() {
         </section>
 
         {/* API Key Settings */}
-        <section className="bg-surface-container-low p-6 rounded-2xl">
-          <ApiKeySettings />
-        </section>
+        <ApiKeySettings />
 
         {/* ASR Settings */}
         <ASRSettings />

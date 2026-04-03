@@ -11,6 +11,7 @@ interface LocalASRState {
   isInitialized: boolean;
   isRecording: boolean;
   isDownloading: boolean;
+  downloadingType: 'int8' | 'fp32' | null;
   downloadProgress: number;
   modelStatus: ModelStatus | null;
   error: string | null;
@@ -26,6 +27,7 @@ export function useLocalASR() {
     isInitialized: false,
     isRecording: false,
     isDownloading: false,
+    downloadingType: null,
     downloadProgress: 0,
     modelStatus: null,
     error: null,
@@ -76,14 +78,14 @@ export function useLocalASR() {
 
   const downloadModel = useCallback(async (type: 'int8' | 'fp32') => {
     if (!isAndroid) return;
-    setState(prev => ({ ...prev, isDownloading: true, downloadProgress: 0, error: null }));
+    setState(prev => ({ ...prev, isDownloading: true, downloadingType: type, downloadProgress: 0, error: null }));
     try {
       await LocalASR.downloadModel({ type });
       await checkStatus();
     } catch (e: any) {
       setState(prev => ({ ...prev, error: e.message || 'Download failed' }));
     } finally {
-      setState(prev => ({ ...prev, isDownloading: false, downloadProgress: 0 }));
+      setState(prev => ({ ...prev, isDownloading: false, downloadingType: null, downloadProgress: 0 }));
     }
   }, [isAndroid, checkStatus]);
 
