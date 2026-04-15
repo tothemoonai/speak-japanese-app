@@ -122,17 +122,11 @@ migrate.sh
 fix-*.sql
 insert-test-*.sql
 
-# Temporary screenshots
-pics/*.png
-pics/*.jpg
-
 # Temporary documentation
 EXECUTION_GUIDE.md
 GET_DB_PASSWORD.md
 QUICK_START_MIGRATION.md
 SETUP_DB_CONNECTION.md
-documents/2026*.md
-documents/SUPABASE_UPDATE_GUIDE.md
 
 # Debug pages (remove from production)
 src/app/debug-auth/
@@ -155,11 +149,6 @@ android/app/src/main/jniLibs.backup.OLD/
 # IDE config
 android/.idea/
 
-# Temp screenshots and files
-temp/*.png
-temp/*.jpg
-temp/.playwright-mcp/
-
 # Log files
 *.log
 android_log.txt
@@ -176,14 +165,16 @@ scripts/test-local.bat
 # UI design references (completed)
 UI/
 
+# Development and temporary directories (not source code)
+docs/
+temp/
+tests/
+documents/
+pics/
+snapshot/
+test-local-asr-dev/
+test-results/
+playwright-report/
+coverage/
+
 # Old/outdated docs
-docs/ANDROID_APP_TEST_GUIDE.md
-docs/ANDROID_ASR_GUIDE.md
-docs/ANDROID_ASR_ISSUE_ANALYSIS.md
-docs/ANDROID_ASR_TEST_CHECKLIST.md
-docs/ANDROID_COMPILE_FIX.md
-docs/ANDROID_DEBUG_GUIDE.md
-docs/ANDROID_QUICK_TEST.md
-docs/PROGRESS_UPDATE_SUMMARY.md
-docs/QUICK_START_ANDROID.md
-docs/SHERPA_ONNX_OPTIMIZATION.md
