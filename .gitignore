@@ -177,4 +177,9 @@ test-results/
 playwright-report/
 coverage/
 
+# Personal documents and local settings
+给继任者.MD
+settings.json
+CLAUDE.md
+
 # Old/outdated docs
