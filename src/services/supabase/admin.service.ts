@@ -13,7 +13,7 @@ export class AdminService {
   async checkAdmin(userId: string): Promise<boolean> {
     const client = getAdminClient();
     const { data } = await client
-      .from('users')
+      .from('jp_users')
       .select('is_admin')
       .eq('id', userId)
       .single();
@@ -23,13 +23,13 @@ export class AdminService {
   // --- Books ---
   async listBooks() {
     const client = getAdminClient();
-    return client.from('books').select('*').order('book_number');
+    return client.from('jp_books').select('*').order('book_number');
   }
 
   async upsertBook(book: Record<string, unknown>) {
     const client = getAdminClient();
     return client
-      .from('books')
+      .from('jp_books')
       .upsert(book, { onConflict: 'book_number' })
       .select()
       .single();
@@ -37,19 +37,19 @@ export class AdminService {
 
   async deleteBook(id: number) {
     const client = getAdminClient();
-    return client.from('books').delete().eq('id', id);
+    return client.from('jp_books').delete().eq('id', id);
   }
 
   // --- Courses ---
   async listCourses() {
     const client = getAdminClient();
-    return client.from('courses').select('*').order('book_id', { ascending: true }).order('course_number', { ascending: true });
+    return client.from('jp_courses').select('*').order('book_id', { ascending: true }).order('course_number', { ascending: true });
   }
 
   async upsertCourse(course: Record<string, unknown>) {
     const client = getAdminClient();
     return client
-      .from('courses')
+      .from('jp_courses')
       .upsert(course, { onConflict: 'book_id,course_number' })
       .select()
       .single();
@@ -57,51 +57,51 @@ export class AdminService {
 
   async deleteCourse(id: number) {
     const client = getAdminClient();
-    return client.from('courses').delete().eq('id', id);
+    return client.from('jp_courses').delete().eq('id', id);
   }
 
   // --- Characters ---
   async listCharacters() {
     const client = getAdminClient();
-    return client.from('characters').select('*').order('id');
+    return client.from('jp_characters').select('*').order('id');
   }
 
   async upsertCharacter(character: Record<string, unknown>) {
     const client = getAdminClient();
-    return client.from('characters').upsert(character).select().single();
+    return client.from('jp_characters').upsert(character).select().single();
   }
 
   async deleteCharacter(id: number) {
     const client = getAdminClient();
-    return client.from('characters').delete().eq('id', id);
+    return client.from('jp_characters').delete().eq('id', id);
   }
 
   // --- Sentences ---
   async listSentences() {
     const client = getAdminClient();
-    return client.from('sentences').select('*').order('book_id').order('course_id').order('sentence_order');
+    return client.from('jp_sentences').select('*').order('book_id').order('course_id').order('sentence_order');
   }
 
   async upsertSentence(sentence: Record<string, unknown>) {
     const client = getAdminClient();
-    return client.from('sentences').upsert(sentence).select().single();
+    return client.from('jp_sentences').upsert(sentence).select().single();
   }
 
   async deleteSentence(id: number) {
     const client = getAdminClient();
-    return client.from('sentences').delete().eq('id', id);
+    return client.from('jp_sentences').delete().eq('id', id);
   }
 
   // --- Import helpers ---
   async getCharacterByName(nameJp: string) {
     const client = getAdminClient();
-    return client.from('characters').select('id').eq('name_jp', nameJp).limit(1);
+    return client.from('jp_characters').select('id').eq('name_jp', nameJp).limit(1);
   }
 
   async updateBookTotalCourses(bookId: number) {
     const client = getAdminClient();
-    const { data: courses } = await client.from('courses').select('id').eq('book_id', bookId);
-    return client.from('books').update({ total_courses: courses?.length || 0 }).eq('id', bookId);
+    const { data: courses } = await client.from('jp_courses').select('id').eq('book_id', bookId);
+    return client.from('jp_books').update({ total_courses: courses?.length || 0 }).eq('id', bookId);
   }
 }
 

@@ -26,7 +26,7 @@ export class CourseService {
   }> {
     const client = this.getClient();
     let query = client
-      .from('courses')
+      .from('jp_courses')
       .select('*')
       .order('sort_order', { ascending: true });
 
@@ -50,7 +50,7 @@ export class CourseService {
 
       // Fetch practice records for these courses
       const { data: practices } = await client
-        .from('practice_records')
+        .from('jp_practice_records')
         .select('course_id, completed_at, total_score, id')
         .eq('user_id', userId)
         .in('course_id', courseIds)
@@ -107,7 +107,7 @@ export class CourseService {
 
     // Fetch course with book_number (simplified query without JOIN)
     const { data: course, error: courseError } = await client
-      .from('courses')
+      .from('jp_courses')
       .select('*')
       .eq('id', courseId)
       .single();
@@ -122,7 +122,7 @@ export class CourseService {
     // Fetch characters for this course
     // Use book_id and course_number to query course_characters junction table
     const { data: courseCharacters } = await client
-      .from('course_characters')
+      .from('jp_course_characters')
       .select('character_id, character_order, is_primary, characters(*)')
       .eq('book_id', course.book_id)
       .eq('course_id', course.course_number)
@@ -146,7 +146,7 @@ export class CourseService {
 
     // Fetch sentences for this course using course_number (not id!)
     const { data: sentences } = await client
-      .from('sentences')
+      .from('jp_sentences')
       .select('*')
       .eq('book_id', course.book_id)
       .eq('course_id', course.course_number)
@@ -161,7 +161,7 @@ export class CourseService {
 
     if (userId) {
       const { data: practices } = await client
-        .from('practice_records')
+        .from('jp_practice_records')
         .select('completed_at, total_score, id')
         .eq('user_id', userId)
         .eq('course_id', courseId)
@@ -208,7 +208,7 @@ export class CourseService {
     const client = this.getClient();
 
     const { data, error } = await client
-      .from('courses')
+      .from('jp_courses')
       .select('*')
       .eq('book_id', bookId)
       .order('sort_order', { ascending: true });
@@ -225,7 +225,7 @@ export class CourseService {
 
       // Fetch practice records for these courses
       const { data: practices } = await client
-        .from('practice_records')
+        .from('jp_practice_records')
         .select('course_id, completed_at, total_score, id')
         .eq('user_id', userId)
         .in('course_id', courseIds)
@@ -280,7 +280,7 @@ export class CourseService {
     error: PostgrestError | null;
   }> {
     const client = this.getClient();
-    let query = client.from('courses').select('*');
+    let query = client.from('jp_courses').select('*');
 
     // Apply book_id filter (note: book_id stores book_number)
     if (filter.book_id) {
@@ -323,7 +323,7 @@ export class CourseService {
       const courseIds = data.map((course) => course.id);
 
       const { data: practices } = await client
-        .from('practice_records')
+        .from('jp_practice_records')
         .select('course_id, completed_at, total_score')
         .eq('user_id', userId)
         .in('course_id', courseIds);
@@ -388,7 +388,7 @@ export class CourseService {
 
     // First get the course to find book_id and course_number
     const { data: course } = await client
-      .from('courses')
+      .from('jp_courses')
       .select('book_id, course_number')
       .eq('id', courseId)
       .single();
@@ -399,7 +399,7 @@ export class CourseService {
 
     // Try course_characters junction table first
     const { data: courseCharacters, error: junctionError } = await client
-      .from('course_characters')
+      .from('jp_course_characters')
       .select('character_id, character_order, is_primary, characters(*)')
       .eq('book_id', course.book_id)  // Add book_id filter
       .eq('course_id', course.course_number)
@@ -434,7 +434,7 @@ export class CourseService {
 
     // First get the course to find book_id and course_number
     const { data: course } = await client
-      .from('courses')
+      .from('jp_courses')
       .select('book_id, course_number')
       .eq('id', courseId)
       .single();
@@ -445,7 +445,7 @@ export class CourseService {
 
     // Query sentences using book_id and course_number (not courses.id!)
     const { data, error } = await client
-      .from('sentences')
+      .from('jp_sentences')
       .select('*')
       .eq('book_id', course.book_id)
       .eq('course_id', course.course_number)
@@ -463,7 +463,7 @@ export class CourseService {
   }> {
     const client = this.getClient();
     const { data, error } = await client
-      .from('courses')
+      .from('jp_courses')
       .select('theme')
       .not('theme', 'is', null);
 

@@ -60,7 +60,7 @@ export class UserProgressService {
       // 获取总练习次数和平均分数
       // 注意：数据库使用 total_score，不是 overall_score
       const { data: practices, error: practiceError } = await supabase()
-        .from('practice_records')
+        .from('jp_practice_records')
         .select('total_score')
         .eq('user_id', userId)
         .not('total_score', 'is', null);
@@ -78,7 +78,7 @@ export class UserProgressService {
 
       // 获取完成的课程数（假设练习记录覆盖不同课程）
       const { data: courses, error: courseError } = await supabase()
-        .from('practice_records')
+        .from('jp_practice_records')
         .select('course_id')
         .eq('user_id', userId);
 
@@ -135,7 +135,7 @@ export class UserProgressService {
     try {
       // 获取当前用户level
       const { data: user, error: userError } = await supabase()
-        .from('users')
+        .from('jp_users')
         .select('level')
         .eq('id', userId)
         .single();
@@ -156,7 +156,7 @@ export class UserProgressService {
       // 执行升级 - 更新public.users表
       const newLevel = progress.next_level!;
       const { error: updateError } = await supabase()
-        .from('users')
+        .from('jp_users')
         .update({ level: newLevel })
         .eq('id', userId);
 
@@ -188,7 +188,7 @@ export class UserProgressService {
   ): Promise<LevelProgress | null> {
     try {
       const { data: user, error: userError } = await supabase()
-        .from('users')
+        .from('jp_users')
         .select('level')
         .eq('id', userId)
         .single();

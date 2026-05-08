@@ -49,7 +49,7 @@ export class PracticeRecordService {
 
       // 查询角色ID映射（获取实际的角色ID）
       const { data: characterData } = await client
-        .from('characters')
+        .from('jp_characters')
         .select('id')
         .eq('id', params.characterId)
         .single();
@@ -61,7 +61,7 @@ export class PracticeRecordService {
 
       // 创建练习记录
       const { data, error } = await client
-        .from('practice_records')
+        .from('jp_practice_records')
         .insert({
           user_id: params.userId,
           course_id: params.courseId,
@@ -96,7 +96,7 @@ export class PracticeRecordService {
       const client = supabase();
 
       const { error } = await client
-        .from('practice_records')
+        .from('jp_practice_records')
         .update({
           completed_at: new Date().toISOString(),
           time_spent: totalTimeSpent,
@@ -124,7 +124,7 @@ export class PracticeRecordService {
       const client = supabase();
 
       const { error } = await client
-        .from('practice_results')
+        .from('jp_practice_results')
         .insert({
           practice_id: params.practiceId,
           sentence_id: params.sentenceId,

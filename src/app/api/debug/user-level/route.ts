@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
     // 1. 查找用户
     const { data: users, error: userError } = await supabase
-      .from('users')
+      .from('jp_users')
       .select('*')
       .or(`email.ilike.%${email}%,nickname.ilike.%${email}%`)
       .limit(1);
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
 
     // 2. 查询练习记录
     const { data: practices, error: practiceError } = await supabase
-      .from('practice_records')
+      .from('jp_practice_records')
       .select('overall_score, course_id, created_at')
       .eq('user_id', user.id)
       .not('overall_score', 'is', null);

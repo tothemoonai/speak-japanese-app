@@ -18,7 +18,7 @@ export class AchievementService {
 
       // 1. Get already unlocked IDs
       const { data: unlocked } = await client
-        .from('user_achievements')
+        .from('jp_user_achievements')
         .select('achievement_id')
         .eq('user_id', userId);
       const unlockedIds = new Set((unlocked || []).map((a: any) => a.achievement_id));
@@ -45,7 +45,7 @@ export class AchievementService {
           achievement_level: a.level,
         }));
         const { error } = await client
-          .from('user_achievements')
+          .from('jp_user_achievements')
           .upsert(rows as any, { onConflict: 'user_id,achievement_id' });
         if (error) console.error('Failed to insert achievements:', error);
       }
@@ -64,7 +64,7 @@ export class AchievementService {
     try {
       const client = this.getClient();
       const { data: practices, error } = await client
-        .from('practice_records')
+        .from('jp_practice_records')
         .select('total_score, completed_at, course_id')
         .eq('user_id', userId)
         .not('completed_at', 'is', null);
@@ -125,7 +125,7 @@ export class AchievementService {
     try {
       const client = this.getClient();
       const { count } = await client
-        .from('user_achievements')
+        .from('jp_user_achievements')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', userId);
       return count || 0;
@@ -141,7 +141,7 @@ export class AchievementService {
     try {
       const client = this.getClient();
       const { data } = await client
-        .from('user_achievements')
+        .from('jp_user_achievements')
         .select('achievement_id, earned_at')
         .eq('user_id', userId)
         .order('earned_at', { ascending: false });

@@ -49,7 +49,7 @@ export interface Database {
           is_admin?: boolean | null
         }
       }
-      courses: {
+      jp_courses: {
         Row: {
           id: number
           course_number: number
@@ -95,7 +95,7 @@ export interface Database {
           sort_order?: number | null
         }
       }
-      characters: {
+      jp_characters: {
         Row: {
           id: number
           course_id: number
@@ -130,7 +130,7 @@ export interface Database {
           difficulty_level?: 'easy' | 'medium' | 'hard' | null
         }
       }
-      sentences: {
+      jp_sentences: {
         Row: {
           id: number
           course_id: number
@@ -171,7 +171,7 @@ export interface Database {
           difficulty_level?: 'easy' | 'medium' | 'hard' | null
         }
       }
-      practice_records: {
+      jp_practice_records: {
         Row: {
           id: number
           user_id: string
@@ -215,7 +215,7 @@ export interface Database {
           completed_at?: string | null
         }
       }
-      user_achievements: {
+      jp_user_achievements: {
         Row: {
           id: string
           user_id: string

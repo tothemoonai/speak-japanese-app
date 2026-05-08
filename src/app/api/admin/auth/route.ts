@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { data: profile } = await supabase
-      .from('users')
+      .from('jp_users')
       .select('is_admin')
       .eq('id', user.id)
       .single();

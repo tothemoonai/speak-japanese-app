@@ -29,7 +29,7 @@ export class AuthService {
       // 从public.users表获取level和其他信息
       const client = this.getClient();
       const { data: publicUser, error } = await client
-        .from('users')
+        .from('jp_users')
         .select('level, total_study_time, avatar_url, is_admin')
         .eq('id', user.id)
         .single();
@@ -99,36 +99,65 @@ export class AuthService {
 
   async register(input: RegisterInput) {
     const { email, password, nickname } = input;
-    const defaultNickname = nickname || email.split('@')[0];
-    const client = this.getClient();
-
-    const redirectTo = `${window.location.origin}/auth/callback`;
-    const { data, error } = await client.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectTo,
-        data: {
-          nickname: defaultNickname,
-        },
-      },
-    });
-
-    const user = data.user ? await this.enrichUserFromPublic(data.user) : null;
-    return { user, error };
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, nickname }),
+      });
+      const data = await response.json();
+      
+      if (!response.ok) {
+        return { user: null, error: new Error(data.error) };
+      }
+      
+      // Set the session in Supabase client
+      const client = this.getClient();
+      await client.auth.setSession({
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token,
+      });
+      
+      const user = await this.enrichUserFromPublic({ 
+        id: data.user.id, 
+        email: data.user.email,
+        user_metadata: data.user.user_metadata
+      });
+      return { user, error: null };
+    } catch (error) {
+      return { user: null, error };
+    }
   }
 
   async login(input: LoginInput) {
     const { email, password } = input;
-    const client = this.getClient();
-
-    const { data, error } = await client.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    const user = data.user ? await this.enrichUserFromPublic(data.user) : null;
-    return { user, error };
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      
+      if (!response.ok) {
+        return { user: null, error: new Error(data.error) };
+      }
+      
+      // Set the session in Supabase client
+      const client = this.getClient();
+      await client.auth.setSession({
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token,
+      });
+      
+      const user = await this.enrichUserFromPublic({ 
+        id: data.user.id, 
+        email: data.user.email 
+      });
+      return { user, error: null };
+    } catch (error) {
+      return { user: null, error };
+    }
   }
 
   async logout() {
@@ -153,22 +182,18 @@ export class AuthService {
    * 更新用户昵称
    */
   async updateNickname(nickname: string) {
+    const currentUser = await this.getCurrentUser();
+    if (!currentUser) return { user: null, error: new Error('Not logged in') };
+
     const client = this.getClient();
-    const { data, error } = await client.auth.updateUser({
-      data: { nickname },
-    });
+    const { error } = await client
+      .from('jp_users')
+      .update({ nickname })
+      .eq('id', currentUser.id);
 
     if (error) return { user: null, error };
 
-    // 同时更新public.users表
-    if (data.user) {
-      await client
-        .from('users')
-        .update({ nickname })
-        .eq('id', data.user.id);
-    }
-
-    const user = data.user ? await this.enrichUserFromPublic(data.user) : null;
+    const user = await this.getCurrentUser();
     return { user, error: null };
   }
 
@@ -176,34 +201,39 @@ export class AuthService {
    * 修改密码
    */
   async updatePassword(newPassword: string) {
-    const client = this.getClient();
-    const { error } = await client.auth.updateUser({
-      password: newPassword,
-    });
-
-    return { error };
+    const user = await this.getCurrentUser();
+    if (!user) return { error: new Error('Not logged in') };
+    
+    try {
+      const response = await fetch('/api/auth/update-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email, password: newPassword }),
+      });
+      const data = await response.json();
+      if (!response.ok) return { error: new Error(data.error) };
+      return { error: null };
+    } catch (error) {
+      return { error };
+    }
   }
 
   /**
    * 更新用户等级
    */
   async updateLevel(level: 'beginner' | 'intermediate' | 'advanced') {
+    const currentUser = await this.getCurrentUser();
+    if (!currentUser) return { user: null, error: new Error('Not logged in') };
+
     const client = this.getClient();
-    const { data, error } = await client.auth.updateUser({
-      data: { level },
-    });
+    const { error } = await client
+      .from('jp_users')
+      .update({ level })
+      .eq('id', currentUser.id);
 
     if (error) return { user: null, error };
 
-    // 同时更新public.users表
-    if (data.user) {
-      await client
-        .from('users')
-        .update({ level })
-        .eq('id', data.user.id);
-    }
-
-    const user = data.user ? await this.enrichUserFromPublic(data.user) : null;
+    const user = await this.getCurrentUser();
     return { user, error: null };
   }
 

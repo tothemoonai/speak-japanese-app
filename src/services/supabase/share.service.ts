@@ -48,7 +48,7 @@ export class ShareService {
     // Ensure unique code
     while (!isUnique && attempts < 10) {
       const { data: existing } = await client
-        .from('shares')
+        .from('jp_shares')
         .select('share_code')
         .eq('share_code', shareCode)
         .single();
@@ -71,7 +71,7 @@ export class ShareService {
 
     // Create share record
     const { data, error } = await client
-      .from('shares')
+      .from('jp_shares')
       .insert({
         share_code: shareCode,
         user_id: input.userId,
@@ -99,13 +99,13 @@ export class ShareService {
 
     // First, increment click count
     await client
-      .from('shares')
-      .update({ click_count: (await client.from('shares').select('click_count').eq('share_code', code).single()).data?.click_count || 0 + 1 })
+      .from('jp_shares')
+      .update({ click_count: (await client.from('jp_shares').select('click_count').eq('share_code', code).single()).data?.click_count || 0 + 1 })
       .eq('share_code', code);
 
     // Get share with user info
     const { data, error } = await client
-      .from('shares')
+      .from('jp_shares')
         .select(`
           *,
           user:users!user_id(nickname, avatar_url)
@@ -134,7 +134,7 @@ export class ShareService {
   }> {
     const client = this.getClient();
     const { data, error } = await client
-      .from('shares')
+      .from('jp_shares')
       .select('*')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
@@ -150,7 +150,7 @@ export class ShareService {
   }> {
     const client = this.getClient();
     const { error } = await client
-      .from('shares')
+      .from('jp_shares')
       .delete()
       .eq('id', shareId);
 

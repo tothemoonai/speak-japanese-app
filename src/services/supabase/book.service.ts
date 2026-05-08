@@ -27,13 +27,13 @@ export class BookService {
 
     // Fetch practice records for user
     const { data: practices } = await client
-      .from('practice_records')
+      .from('jp_practice_records')
       .select('course_id, completed_at, total_score')
       .eq('user_id', userId);
 
     // Fetch all courses to map books to courses
     const { data: courses } = await client
-      .from('courses')
+      .from('jp_courses')
       .select('id, book_id')
       .in('book_id', bookNumbers);  // Use book_number to query courses
 
@@ -93,7 +93,7 @@ export class BookService {
     const client = this.getClient();
 
     const { data, error } = await client
-      .from('books')
+      .from('jp_books')
       .select('*')
       .eq('is_published', true)
       .order('sort_order', { ascending: true });
@@ -121,7 +121,7 @@ export class BookService {
     const client = this.getClient();
 
     const { data: book, error } = await client
-      .from('books')
+      .from('jp_books')
       .select('*')
       .eq('book_number', bookNumber)
       .eq('is_published', true)
@@ -153,7 +153,7 @@ export class BookService {
   }> {
     const client = this.getClient();
     let query = client
-      .from('books')
+      .from('jp_books')
       .select('*')
       .eq('is_published', true);
 

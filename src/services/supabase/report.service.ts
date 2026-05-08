@@ -27,7 +27,7 @@ export class ReportService {
     endDate.setHours(23, 59, 59, 999);
 
     const { data: practices, error } = await client
-      .from('practice_records')
+      .from('jp_practice_records')
       .select('*')
       .eq('user_id', userId)
       .gte('completed_at', startDate.toISOString())
@@ -92,7 +92,7 @@ export class ReportService {
     endDate.setHours(23, 59, 59, 999);
 
     const { data: practices, error } = await client
-      .from('practice_records')
+      .from('jp_practice_records')
       .select('*')
       .eq('user_id', userId)
       .gte('completed_at', startDate.toISOString())
@@ -161,7 +161,7 @@ export class ReportService {
     const endDate = new Date(year, month, 0, 23, 59, 59, 999);
 
     const { data: practices, error } = await client
-      .from('practice_records')
+      .from('jp_practice_records')
       .select('*')
       .eq('user_id', userId)
       .gte('completed_at', startDate.toISOString())
@@ -226,7 +226,7 @@ export class ReportService {
   }> {
     const client = this.getClient();
     const { data: practices, error } = await client
-      .from('practice_records')
+      .from('jp_practice_records')
       .select('total_score, time_spent, course_id, completed_at')
       .eq('user_id', userId)
       .order('completed_at', { ascending: false });

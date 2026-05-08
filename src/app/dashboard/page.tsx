@@ -70,7 +70,7 @@ export default function DashboardPage() {
         const supabaseClient = supabase();
         const today = new Date(); today.setHours(0, 0, 0, 0);
         const { data: todayRecords } = await supabaseClient
-          .from('practice_records').select('id')
+          .from('jp_practice_records').select('id')
           .eq('user_id', user.id).gte('started_at', today.toISOString())
           .not('completed_at', 'is', null);
         if (todayRecords) todayPractices = todayRecords.length;
@@ -80,7 +80,7 @@ export default function DashboardPage() {
       try {
         const supabaseClient = supabase();
         const { data: lastRecord } = await supabaseClient
-          .from('practice_records').select('course_id')
+          .from('jp_practice_records').select('course_id')
           .eq('user_id', user.id).order('started_at', { ascending: false }).limit(1);
         if (lastRecord && lastRecord.length > 0) {
           setLastPracticeCourseId(lastRecord[0].course_id);
