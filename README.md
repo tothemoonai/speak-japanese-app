@@ -214,11 +214,17 @@ git commit -m "fix: 修复登录时的错误提示"
 
 ## 🚢 部署
 
-### Vercel（推荐）
+### Vercel（当前方案，CLI 手动部署）
 
-1. 连接GitHub仓库到Vercel
-2. 配置环境变量
-3. 自动部署
+本项目未连接 Vercel 的 Git 自动部署，**push 不会上线**，需要手动部署：
+
+```bash
+npm i -g vercel@latest
+vercel login
+vercel --prod --yes
+```
+
+详细说明（环境变量、密钥体系、常见故障）见 `documents/guides/deployment-部署与配置.md`。
 
 ### 其他平台
 

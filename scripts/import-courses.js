@@ -38,7 +38,7 @@ async function importCourses() {
   try {
     // 1. 检查书本是否已存在
     const { data: existingBook } = await supabase
-      .from('books')
+      .from('jp_books')
       .select('*')
       .eq('book_number', data.book.book_number)
       .single();
@@ -52,7 +52,7 @@ async function importCourses() {
     } else {
       // 插入新书本
       const { data: newBook, error: bookError } = await supabase
-        .from('books')
+        .from('jp_books')
         .insert({
           book_number: data.book.book_number,
           title_cn: data.book.title_cn,
@@ -78,11 +78,11 @@ async function importCourses() {
     for (const courseData of data.courses) {
       console.log(`📖 处理课程: ${courseData.title_cn}`);
 
-      // 检查课程是否已存在
+      // 检查课程是否已存在（book_id 存的是业务键 book_number）
       const { data: existingCourse } = await supabase
-        .from('courses')
+        .from('jp_courses')
         .select('*')
-        .eq('book_id', book.id)
+        .eq('book_id', book.book_number)
         .eq('course_number', courseData.course_number)
         .single();
 
@@ -96,9 +96,9 @@ async function importCourses() {
 
       // 插入课程
       const { data: newCourse, error: courseError } = await supabase
-        .from('courses')
+        .from('jp_courses')
         .insert({
-          book_id: book.id,
+          book_id: book.book_number,
           course_number: courseData.course_number,
           title_cn: courseData.title_cn,
           title_jp: courseData.title_jp,
@@ -124,9 +124,10 @@ async function importCourses() {
 
         for (const sentenceData of courseData.sentences) {
           const { error: sentenceError } = await supabase
-            .from('sentences')
+            .from('jp_sentences')
             .insert({
-              course_id: course.id,
+              book_id: book.book_number,
+              course_id: course.course_number,
               sentence_order: sentenceData.sentence_order,
               character_id: sentenceData.character_id || 1,
               text_jp: sentenceData.text_jp,
@@ -153,16 +154,16 @@ async function importCourses() {
       }
     }
 
-    // 3. 更新书本的课程总数
+    // 3. 更新书本的课程总数（book_id 为业务键 book_number）
     const { data: allCourses } = await supabase
-      .from('courses')
+      .from('jp_courses')
       .select('id')
-      .eq('book_id', book.id);
+      .eq('book_id', book.book_number);
 
     const courseCount = allCourses ? allCourses.length : 0;
 
     const { error: updateError } = await supabase
-      .from('books')
+      .from('jp_books')
       .update({ total_courses: courseCount })
       .eq('id', book.id);
 
