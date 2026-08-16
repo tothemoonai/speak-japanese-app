@@ -109,7 +109,7 @@ async function importCourses() {
           total_sentences: courseData.total_sentences,
           vocab_count: courseData.vocab_count || null,
           grammar_count: courseData.grammar_count || null,
-          sort_order: courseData.sort_order
+          sort_order: courseData.sort_order ?? courseData.course_number
         })
         .select()
         .single();

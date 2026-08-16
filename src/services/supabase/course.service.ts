@@ -28,7 +28,8 @@ export class CourseService {
     let query = client
       .from('jp_courses')
       .select('*')
-      .order('sort_order', { ascending: true });
+      .order('sort_order', { ascending: true })
+      .order('course_number', { ascending: true });
 
     const { data, error } = await query;
 
@@ -211,7 +212,8 @@ export class CourseService {
       .from('jp_courses')
       .select('*')
       .eq('book_id', bookId)
-      .order('sort_order', { ascending: true });
+      .order('sort_order', { ascending: true })
+      .order('course_number', { ascending: true });
 
     if (error) {
       return { data: null, error };
@@ -302,7 +304,9 @@ export class CourseService {
       query = query.or(`title_cn.ilike.%${filter.search}%,title_jp.ilike.%${filter.search}%,description.ilike.%${filter.search}%`);
     }
 
-    query = query.order('sort_order', { ascending: true });
+    query = query
+      .order('sort_order', { ascending: true })
+      .order('course_number', { ascending: true });
 
     const { data, error } = await query;
 

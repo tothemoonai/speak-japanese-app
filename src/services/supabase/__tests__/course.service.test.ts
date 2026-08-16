@@ -37,10 +37,8 @@ describe('CourseService', () => {
 
       const mockQuery = {
         select: jest.fn().mockReturnThis(),
-        order: jest.fn().mockResolvedValue({
-          data: mockCourses,
-          error: null,
-        }),
+        order: jest.fn().mockReturnThis(),
+        then: (resolve: (v: any) => void) => resolve({ data: mockCourses, error: null }),
       };
 
       mockFrom.mockReturnValue(mockQuery);
@@ -51,6 +49,7 @@ describe('CourseService', () => {
       expect(result.data).toEqual(mockCourses);
       expect(mockQuery.select).toHaveBeenCalledWith('*');
       expect(mockQuery.order).toHaveBeenCalledWith('sort_order', { ascending: true });
+      expect(mockQuery.order).toHaveBeenCalledWith('course_number', { ascending: true });
     });
 
     it('should fetch courses with user progress', async () => {
@@ -62,17 +61,10 @@ describe('CourseService', () => {
         { course_id: 1, completed_at: '2025-01-09', total_score: 85, id: 1 },
       ];
 
-      let callCount = 0;
       const mockQuery = {
         select: jest.fn().mockReturnThis(),
-        order: jest.fn().mockImplementation(() => {
-          callCount++;
-          if (callCount === 1) {
-            return Promise.resolve({ data: mockCourses, error: null });
-          } else {
-            return Promise.resolve({ data: mockPractices, error: null });
-          }
-        }),
+        order: jest.fn().mockReturnThis(),
+        then: (resolve: (v: any) => void) => resolve({ data: mockCourses, error: null }),
       };
 
       const mockInnerQuery = {
@@ -86,7 +78,7 @@ describe('CourseService', () => {
       };
 
       mockFrom.mockImplementation((table: string) => {
-        if (table === 'courses') {
+        if (table === 'jp_courses') {
           return mockQuery;
         } else {
           return mockInnerQuery;
@@ -112,10 +104,8 @@ describe('CourseService', () => {
 
       const mockQuery = {
         select: jest.fn().mockReturnThis(),
-        order: jest.fn().mockResolvedValue({
-          data: null,
-          error: mockError,
-        }),
+        order: jest.fn().mockReturnThis(),
+        then: (resolve: (v: any) => void) => resolve({ data: null, error: mockError }),
       };
 
       mockFrom.mockReturnValue(mockQuery);
@@ -135,17 +125,10 @@ describe('CourseService', () => {
         { course_id: 1, completed_at: '2025-01-09', total_score: 95, id: 1 },
       ];
 
-      let callCount = 0;
       const mockQuery = {
         select: jest.fn().mockReturnThis(),
-        order: jest.fn().mockImplementation(() => {
-          callCount++;
-          if (callCount === 1) {
-            return Promise.resolve({ data: mockCourses, error: null });
-          } else {
-            return Promise.resolve({ data: mockPractices, error: null });
-          }
-        }),
+        order: jest.fn().mockReturnThis(),
+        then: (resolve: (v: any) => void) => resolve({ data: mockCourses, error: null }),
       };
 
       const mockInnerQuery = {
@@ -159,7 +142,7 @@ describe('CourseService', () => {
       };
 
       mockFrom.mockImplementation((table: string) => {
-        if (table === 'courses') {
+        if (table === 'jp_courses') {
           return mockQuery;
         } else {
           return mockInnerQuery;
@@ -318,10 +301,8 @@ describe('CourseService', () => {
       const mockQuery = {
         select: jest.fn().mockReturnThis(),
         in: jest.fn().mockReturnThis(),
-        order: jest.fn().mockResolvedValue({
-          data: mockCourses,
-          error: null,
-        }),
+        order: jest.fn().mockReturnThis(),
+        then: (resolve: (v: any) => void) => resolve({ data: mockCourses, error: null }),
       };
 
       mockFrom.mockReturnValue(mockQuery);
@@ -341,10 +322,8 @@ describe('CourseService', () => {
       const mockQuery = {
         select: jest.fn().mockReturnThis(),
         in: jest.fn().mockReturnThis(),
-        order: jest.fn().mockResolvedValue({
-          data: mockCourses,
-          error: null,
-        }),
+        order: jest.fn().mockReturnThis(),
+        then: (resolve: (v: any) => void) => resolve({ data: mockCourses, error: null }),
       };
 
       mockFrom.mockReturnValue(mockQuery);
@@ -364,10 +343,8 @@ describe('CourseService', () => {
       const mockQuery = {
         select: jest.fn().mockReturnThis(),
         or: jest.fn().mockReturnThis(),
-        order: jest.fn().mockResolvedValue({
-          data: mockCourses,
-          error: null,
-        }),
+        order: jest.fn().mockReturnThis(),
+        then: (resolve: (v: any) => void) => resolve({ data: mockCourses, error: null }),
       };
 
       mockFrom.mockReturnValue(mockQuery);
@@ -393,10 +370,8 @@ describe('CourseService', () => {
         select: jest.fn().mockReturnThis(),
         in: jest.fn().mockReturnThis(),
         or: jest.fn().mockReturnThis(),
-        order: jest.fn().mockResolvedValue({
-          data: mockCourses,
-          error: null,
-        }),
+        order: jest.fn().mockReturnThis(),
+        then: (resolve: (v: any) => void) => resolve({ data: mockCourses, error: null }),
       };
 
       const mockQueryForPractices = {
@@ -435,10 +410,8 @@ describe('CourseService', () => {
         select: jest.fn().mockReturnThis(),
         in: jest.fn().mockReturnThis(),
         or: jest.fn().mockReturnThis(),
-        order: jest.fn().mockResolvedValue({
-          data: mockCourses,
-          error: null,
-        }),
+        order: jest.fn().mockReturnThis(),
+        then: (resolve: (v: any) => void) => resolve({ data: mockCourses, error: null }),
       };
 
       mockFrom.mockReturnValue(mockQuery);
@@ -463,10 +436,8 @@ describe('CourseService', () => {
         select: jest.fn().mockReturnThis(),
         in: jest.fn().mockReturnThis(),
         or: jest.fn().mockReturnThis(),
-        order: jest.fn().mockResolvedValue({
-          data: mockCourses,
-          error: null,
-        }),
+        order: jest.fn().mockReturnThis(),
+        then: (resolve: (v: any) => void) => resolve({ data: mockCourses, error: null }),
       };
 
       mockFrom.mockReturnValue(mockQuery);
